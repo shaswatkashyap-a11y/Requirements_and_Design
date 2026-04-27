@@ -1,0 +1,96 @@
+<service_line_config>
+  <name>salesforce</name>
+  <category>crm_erp</category>
+
+  <tech_context>
+This project is built on Salesforce platform. Key technologies and concepts:
+- Core Platform: Sales Cloud, Service Cloud, Experience Cloud, Marketing Cloud
+- UI Development: Lightning Web Components (LWC), Aura Components, Lightning App Builder
+- Backend: Apex classes, triggers, batch jobs, scheduled jobs, queueable jobs
+- Data: SOQL, SOSL, standard/custom objects, relationships (lookup, master-detail, junction)
+- Automation: Flows (record-triggered, screen, scheduled), Process Builder, Approval Processes
+- Security: Profiles, Permission Sets, Sharing Rules, Field-Level Security, org-wide defaults
+- Integration: REST/SOAP/Bulk/Streaming APIs, Platform Events, Change Data Capture
+- Middleware: MuleSoft, Boomi, Informatica for external system integration
+- DevOps: Salesforce DX, scratch orgs, change sets, CI/CD pipelines
+- Governance: Governor Limits (API callouts, SOQL queries, DML operations, heap size, CPU time)
+- Environments: Production, sandboxes (Developer, Partial, Full), scratch orgs
+  </tech_context>
+
+  <artifact_overrides>
+    <module_extraction>
+Map modules to Salesforce functional areas where applicable:
+- Portal/community features → Experience Cloud
+- CRM features → Sales Cloud or Service Cloud capabilities
+- Data and object model areas → Salesforce Object model
+- Integration features → middleware and API patterns
+- Security and access control → Salesforce security model
+Do NOT create modules for standard Salesforce administration — focus on what is being built or customized.
+    </module_extraction>
+
+    <functional_req>
+Reference Salesforce platform capabilities in requirements:
+- Specify whether a requirement uses declarative features (clicks) or custom development (code)
+- Reference Salesforce objects (standard or custom) when relevant
+- For portal requirements, reference Experience Cloud components and capabilities
+- For integration requirements, specify the API type and middleware
+- Note Governor Limit implications for data-intensive or bulk requirements
+    </functional_req>
+
+    <nonfunctional_req>
+Include Salesforce-specific non-functional requirements:
+- Governor Limits compliance: API callout limits, SOQL query limits, DML limits per transaction
+- Data storage and file storage limits
+- Platform availability (trust.salesforce.com SLA dependencies)
+- Large data volume (LDV) considerations: indexing, skinny tables, archival strategy
+- Login and session security policies
+- Sharing model performance for role hierarchy and sharing rules
+- Sandbox refresh cadence and test data strategy
+    </nonfunctional_req>
+
+    <task>
+Include Salesforce-specific implementation tasks where applicable:
+- Object model: custom objects, fields, relationships, page layouts, record types
+- UI: Lightning pages, LWC components, Experience Cloud configuration
+- Backend: Apex classes, triggers, batch/scheduled/queueable jobs
+- Automation: Flows, approval processes, validation rules
+- Integration: Named Credentials, External Services, middleware configuration, API development
+- Security: profiles, permission sets, sharing rules, field-level security setup
+- Data: migration scripts, data loader configuration, transformation rules
+- Deployment: change sets, Salesforce DX packages, sandbox promotion
+    </task>
+
+    <test_case>
+Include Salesforce-specific testing considerations:
+- Test with multiple user profiles and permission sets to verify access control
+- Test bulk operations against Governor Limit thresholds
+- Test portal/community access for both authenticated and guest users where applicable
+- Test integrations with mock responses, error handling, and retry scenarios
+- Verify sharing rule behavior across different roles and territories
+- Apex test classes must meet minimum 75% code coverage requirement
+    </test_case>
+
+    <architecture>
+Describe architecture using Salesforce platform terminology:
+- Org strategy: single-org vs multi-org, sandbox topology
+- Object model: standard vs custom objects, relationship types, record types
+- UI architecture: Lightning App Builder pages, custom LWC components, Experience Cloud templates
+- Integration architecture: API patterns, middleware layer, event-driven vs request-response
+- Security architecture: org-wide defaults, role hierarchy, sharing model, encryption
+- Automation architecture: declarative (Flows) vs programmatic (Apex) decision criteria
+- Deployment architecture: environments, promotion path, CI/CD approach
+Do NOT use generic web architecture terms when Salesforce-specific terms exist.
+    </architecture>
+
+    <risk_entry>
+Include Salesforce platform-specific risks:
+- Governor Limit violations under high data volumes or complex transactions
+- Salesforce seasonal release impact (3 major releases per year may affect custom code)
+- License costs and limits (API calls, data storage, feature licenses)
+- Middleware reliability and external API rate limits
+- Data migration complexity and volume constraints
+- Over-customization leading to technical debt (custom code vs declarative solutions)
+- Sandbox limitations affecting testing quality
+    </risk_entry>
+  </artifact_overrides>
+</service_line_config>

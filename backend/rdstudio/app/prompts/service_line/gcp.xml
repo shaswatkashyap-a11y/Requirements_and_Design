@@ -1,0 +1,81 @@
+<service_line_config>
+  <name>gcp</name>
+  <category>cloud</category>
+
+  <tech_context>
+This project deploys on Google Cloud Platform. Key considerations:
+- Compute: Cloud Run, GKE, Cloud Functions, Compute Engine, App Engine
+- Database: Cloud SQL, Cloud Spanner, Firestore, Bigtable, Memorystore (Redis)
+- Storage: Cloud Storage, Filestore, Persistent Disks
+- Messaging: Pub/Sub, Cloud Tasks, Eventarc
+- Networking: VPC, Cloud Load Balancing, Cloud CDN, Cloud Armor, Private Service Connect
+- Security: IAM, Service Accounts, Secret Manager, VPC Service Controls, Cloud KMS
+- Monitoring: Cloud Monitoring, Cloud Logging, Cloud Trace, Error Reporting
+- DevOps: Cloud Build, Artifact Registry, Terraform, Deployment Manager
+- Data/AI: BigQuery, Vertex AI, Dataflow, Dataproc
+  </tech_context>
+
+  <artifact_overrides>
+    <module_extraction>
+Map modules to GCP project structure or application tiers. Consider separation by compute, data, integration, and security boundaries.
+    </module_extraction>
+
+    <functional_req>
+- Reference specific GCP services for implementation approach
+- For data requirements, specify Cloud SQL vs Firestore vs Spanner vs BigQuery
+- For event-driven requirements, specify Pub/Sub topics and subscriptions
+- For serverless requirements, specify Cloud Run vs Cloud Functions tradeoffs
+    </functional_req>
+
+    <nonfunctional_req>
+- GCP service SLAs and composite availability targets
+- Auto-scaling configuration: Cloud Run concurrency, GKE HPA, min/max instances
+- Multi-region strategy and data residency requirements
+- Backup: Cloud SQL automated backups, Cloud Storage lifecycle policies
+- Cost: committed use discounts, billing alerts, resource labeling
+- Security: IAM least-privilege, VPC Service Controls, encryption (CMEK vs Google-managed)
+- Observability: Cloud Monitoring SLOs, uptime checks, alert policies
+    </nonfunctional_req>
+
+    <task>
+- Infrastructure: Terraform modules, GCP project setup, API enablement
+- Networking: VPC configuration, subnets, firewall rules, load balancers
+- Compute: Cloud Run/GKE/Functions deployment, container configuration
+- Data: database provisioning, schema management, migration scripts
+- Security: IAM roles, service accounts, Secret Manager, VPC Service Controls
+- Messaging: Pub/Sub topics, subscriptions, dead-letter configuration
+- Monitoring: dashboards, SLOs, alert policies, log-based metrics
+- DevOps: Cloud Build triggers, Artifact Registry, deployment pipelines
+    </task>
+
+    <test_case>
+- Test auto-scaling under load (Cloud Run concurrency, GKE pod scaling)
+- Test Pub/Sub message delivery with acknowledgment and retry scenarios
+- Test service account permissions with least-privilege verification
+- Test Cloud SQL failover and backup restoration
+- Test VPC firewall rules and Private Service Connect connectivity
+- Verify IAM policy compliance across all projects
+    </test_case>
+
+    <architecture>
+- GCP organization, folder, and project hierarchy
+- Network architecture: VPC design, subnets, firewall rules, interconnect
+- Compute architecture: service selection, container strategy, scaling model
+- Data architecture: database selection, BigQuery datasets, caching layer
+- Event architecture: Pub/Sub topology, Eventarc triggers, dead-letter handling
+- Security architecture: IAM hierarchy, service accounts, encryption, VPC controls
+- Observability architecture: monitoring workspace, log routing, trace sampling
+- IaC architecture: Terraform module structure, state backend, workspace strategy
+    </architecture>
+
+    <risk_entry>
+- GCP service outages in specific regions
+- Cost overruns from BigQuery queries or unoptimized Cloud Run scaling
+- IAM misconfiguration granting excessive permissions
+- Pub/Sub message loss from unhandled errors and dead-letter overflow
+- Terraform state corruption or drift from manual console changes
+- Vendor lock-in from GCP-specific services (Spanner, Firestore)
+- GCP API deprecation requiring migration effort
+    </risk_entry>
+  </artifact_overrides>
+</service_line_config>

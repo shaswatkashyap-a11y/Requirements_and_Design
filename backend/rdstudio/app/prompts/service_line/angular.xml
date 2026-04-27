@@ -1,0 +1,79 @@
+<service_line_config>
+  <name>angular</name>
+  <category>frontend_frameworks</category>
+
+  <tech_context>
+The frontend is built with Angular. Key considerations:
+- Framework: Angular 17+ with standalone components, signals, and control flow
+- Architecture: Feature modules or standalone component architecture, lazy loading
+- State management: NgRx, Angular Signals, RxJS-based services
+- Routing: Angular Router with guards, resolvers, lazy-loaded routes
+- HTTP: HttpClient with interceptors, typed API services
+- Forms: Reactive Forms (FormBuilder, FormGroup, validators)
+- UI: Angular Material, PrimeNG, or custom design system with SCSS
+- Testing: Jasmine + Karma, Jest, Angular Testing Library, Cypress for E2E
+- Build: Angular CLI, Nx for monorepos, esbuild
+- DevOps: ng build, Docker, environment.ts configuration
+  </tech_context>
+
+  <artifact_overrides>
+    <module_extraction>
+Map modules to Angular feature modules or standalone component groups. Each module should correspond to a lazy-loaded route or feature area in the application.
+    </module_extraction>
+
+    <functional_req>
+- Reference Angular components, services, and routing when relevant
+- For form requirements, specify Reactive Forms with validation rules
+- For data display requirements, specify component hierarchy and data binding
+- For state requirements, specify NgRx store/effects or signal-based approach
+    </functional_req>
+
+    <nonfunctional_req>
+- Initial bundle size targets and lazy loading strategy
+- Core Web Vitals: LCP, FID, CLS thresholds
+- Accessibility: WCAG 2.1 AA compliance
+- Browser support matrix
+- Lighthouse performance score targets
+- Internationalization (i18n) requirements if applicable
+    </nonfunctional_req>
+
+    <task>
+- Project scaffolding: Angular CLI setup, module structure, shared libraries
+- Shared components: design system, reusable UI components, SCSS theming
+- Feature development: components, services, routing, guards, resolvers
+- State management: store setup, actions, reducers, effects, selectors
+- Form development: reactive forms, custom validators, error display
+- API integration: typed HTTP services, interceptors, error handling
+- Testing: component tests, service tests, E2E tests
+- Build optimization: lazy loading, tree shaking, bundle analysis
+    </task>
+
+    <test_case>
+- Test components with Angular Testing Library or TestBed
+- Test services with HttpClientTestingModule for mocked HTTP
+- Test NgRx store with mock store providers
+- Test form validation with various input scenarios
+- Test routing with RouterTestingModule and guard logic
+- E2E tests for critical user flows with Cypress
+    </test_case>
+
+    <architecture>
+- Application structure: module/standalone organization, lazy-loaded routes
+- Component architecture: smart vs presentational components, input/output contracts
+- State management: store structure, action/effect patterns, selector composition
+- API layer: typed service classes, interceptor chain, error handling strategy
+- Routing architecture: route hierarchy, guards, resolvers, preloading strategy
+- Styling architecture: SCSS structure, theming, Angular Material customization
+- Build architecture: environments, optimization, deployment artifacts
+    </architecture>
+
+    <risk_entry>
+- Angular major version migration effort
+- Bundle size growth affecting load performance
+- RxJS complexity and memory leaks from unsubscribed observables
+- Component coupling making testing and refactoring difficult
+- Third-party UI library version conflicts with Angular versions
+- State management complexity in large applications
+    </risk_entry>
+  </artifact_overrides>
+</service_line_config>

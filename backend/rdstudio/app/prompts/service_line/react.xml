@@ -1,0 +1,37 @@
+<service_line_config>
+  <name>react</name>
+  <category>frontend_frameworks</category>
+
+  <tech_context>
+The frontend is built with React. Key considerations:
+- Component-based architecture with functional components and hooks
+- State management (React Context, Redux, Zustand, or similar)
+- Routing via React Router
+- API integration via fetch, Axios, or TanStack Query
+- Consistent styling approach (CSS Modules, Tailwind, Styled Components)
+- Build tooling: Vite or Next.js depending on SSR requirements
+- Testing with React Testing Library and Jest
+  </tech_context>
+
+  <artifact_overrides>
+    <architecture>
+Describe frontend architecture in React terms:
+- Component hierarchy and page structure
+- State management strategy and data flow
+- API integration layer (service classes or custom hooks)
+- Routing structure
+- Shared component library / design system
+- Error boundary strategy
+    </architecture>
+
+    <task>
+Include React-specific tasks:
+- Project scaffolding and tooling setup
+- Shared component / design system development
+- Page-level component implementation
+- State management setup
+- API integration hooks/services
+- Unit and integration tests
+    </task>
+  </artifact_overrides>
+</service_line_config>

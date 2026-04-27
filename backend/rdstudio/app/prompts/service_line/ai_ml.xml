@@ -1,0 +1,82 @@
+<service_line_config>
+  <name>ai_ml</name>
+  <category>ai_intelligence</category>
+
+  <tech_context>
+This project involves AI/ML model development and deployment. Key considerations:
+- ML Frameworks: scikit-learn, TensorFlow, PyTorch, XGBoost, LightGBM
+- Data Processing: pandas, NumPy, PySpark, Dask for large-scale data
+- Feature Engineering: feature stores (Feast, Tecton), feature pipelines
+- Model Training: hyperparameter tuning (Optuna, Ray Tune), experiment tracking (MLflow, W&amp;B)
+- Model Serving: FastAPI, TensorFlow Serving, TorchServe, Triton Inference Server
+- MLOps: MLflow, Kubeflow, SageMaker, Vertex AI, Azure ML
+- Data Versioning: DVC, LakeFS, Delta Lake
+- Monitoring: model drift detection, data quality monitoring, prediction logging
+- Infrastructure: GPU compute, distributed training, model registries
+  </tech_context>
+
+  <artifact_overrides>
+    <module_extraction>
+Map modules to ML pipeline stages: data ingestion, feature engineering, model training, model serving, monitoring. Also consider separate modules for data quality, experimentation, and MLOps infrastructure.
+    </module_extraction>
+
+    <functional_req>
+- Specify the ML task type: classification, regression, NLP, computer vision, recommendation
+- Define input data sources, formats, and volume
+- Specify model performance requirements (accuracy, F1, latency)
+- Define training pipeline: data prep, feature engineering, training, evaluation, registration
+- Define serving requirements: batch vs real-time, API contract, response format
+    </functional_req>
+
+    <nonfunctional_req>
+- Model inference latency: p50, p95, p99 targets
+- Training pipeline execution time and compute budget
+- Model accuracy thresholds for production deployment (precision, recall, F1, AUC)
+- Data freshness: maximum age of training data, retraining frequency
+- Model drift detection: statistical thresholds for triggering retraining
+- Data quality: completeness, consistency, and validity thresholds
+- GPU/compute cost budgets for training and inference
+    </nonfunctional_req>
+
+    <task>
+- Data pipeline: ingestion, cleaning, validation, transformation
+- Feature engineering: feature computation, feature store integration
+- Model development: algorithm selection, training scripts, hyperparameter tuning
+- Evaluation: metric computation, model comparison, bias/fairness analysis
+- Model registry: versioning, metadata, approval workflow
+- Serving: API development, model loading, batch prediction pipeline
+- Monitoring: drift detection, prediction logging, alerting
+- MLOps: CI/CD for ML, automated retraining triggers, A/B testing infrastructure
+    </task>
+
+    <test_case>
+- Test data pipeline with missing, malformed, and edge-case data
+- Test feature computation correctness with known input/output pairs
+- Test model inference with representative and adversarial inputs
+- Test serving API latency under concurrent load
+- Test model versioning and rollback procedures
+- Validate model fairness across protected demographic groups
+- Test drift detection alerts with synthetic distribution shifts
+    </test_case>
+
+    <architecture>
+- Data architecture: data lake/warehouse, ingestion pipelines, data versioning
+- Feature architecture: feature store, computation pipelines, online/offline serving
+- Training architecture: experiment tracking, distributed training, hyperparameter search
+- Model registry: versioning, metadata, promotion workflow
+- Serving architecture: model serving infrastructure, scaling, A/B routing
+- Monitoring architecture: prediction logging, drift detection, alerting
+- MLOps: CI/CD pipelines, automated retraining, model governance
+    </architecture>
+
+    <risk_entry>
+- Model accuracy degradation from data drift or concept drift
+- Training data quality issues leading to biased or incorrect models
+- GPU compute costs exceeding budget during hyperparameter search
+- Model serving latency spikes under unexpected traffic patterns
+- Lack of model interpretability for regulated use cases
+- Data privacy violations in training data handling
+- Model versioning confusion causing wrong model in production
+    </risk_entry>
+  </artifact_overrides>
+</service_line_config>

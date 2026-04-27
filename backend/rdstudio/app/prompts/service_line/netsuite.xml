@@ -1,0 +1,76 @@
+<service_line_config>
+  <name>netsuite</name>
+  <category>crm_erp</category>
+
+  <tech_context>
+This project is built on Oracle NetSuite platform. Key technologies and concepts:
+- Core Modules: ERP, CRM, eCommerce (SuiteCommerce), HCM, PSA
+- Customization: SuiteScript 2.x (server-side and client-side), SuiteFlow, SuiteBuilder
+- UI: Suitelets, portlets, custom forms, SuiteCommerce Advanced (SCA) themes
+- Data: SuiteAnalytics, saved searches, SuiteQL, custom records and fields
+- Integration: SuiteTalk (SOAP/REST), RESTlets, SuiteCloud Connect, middleware (Celigo, Boomi, MuleSoft)
+- Workflows: SuiteFlow for approval and automation processes
+- Security: Roles, permissions, record-level access, IP restrictions, two-factor authentication
+- DevOps: SuiteCloud Development Framework (SDF), sandbox accounts, release preview
+- Governance: Script governance limits (usage units, API concurrency, execution time)
+- Environments: Production, sandbox, release preview accounts
+  </tech_context>
+
+  <artifact_overrides>
+    <module_extraction>
+Map modules to NetSuite functional areas: financials, order management, inventory, CRM, eCommerce, procurement, reporting. Focus on what is being customized or extended, not standard NetSuite configuration.
+    </module_extraction>
+
+    <functional_req>
+- Specify whether a requirement uses native NetSuite features or requires SuiteScript customization
+- Reference NetSuite record types (transactions, entities, custom records) when relevant
+- For integration requirements, specify RESTlet vs SuiteTalk vs middleware approach
+- Note governance limit implications for bulk processing requirements
+    </functional_req>
+
+    <nonfunctional_req>
+- SuiteScript governance unit limits per script execution
+- API concurrency limits and rate throttling
+- Saved search performance for large data volumes
+- SuiteCommerce page load and response time requirements
+- Data storage and file cabinet limits
+- Sandbox refresh and data masking considerations
+    </nonfunctional_req>
+
+    <task>
+- SuiteBuilder configuration: custom records, fields, forms, sublists
+- SuiteScript development: user event, scheduled, map/reduce, client scripts
+- SuiteFlow workflow development and approval chains
+- SuiteCommerce theme and extension development
+- Integration: RESTlet development, middleware configuration, data mapping
+- Migration: CSV imports, data transformation, validation scripts
+- Deployment: SDF project packaging, sandbox-to-production promotion
+    </task>
+
+    <test_case>
+- Test with multiple NetSuite roles to verify record-level access
+- Test SuiteScript governance limit boundaries with bulk data
+- Test saved searches and SuiteAnalytics with production-scale data volumes
+- Test integrations with error handling and retry scenarios
+- Verify workflow triggers fire correctly across transaction lifecycle
+    </test_case>
+
+    <architecture>
+- NetSuite account topology: production, sandbox, and release preview strategy
+- Record model: standard vs custom records, field types, relationships
+- Script architecture: which script types for which use cases (user event, scheduled, map/reduce)
+- Integration architecture: RESTlets, SuiteTalk, middleware, data flow patterns
+- SuiteCommerce architecture: themes, extensions, shopping/checkout flow
+- Deployment architecture: SDF projects, bundles, change management
+    </architecture>
+
+    <risk_entry>
+- Governance limit violations in high-volume processing
+- NetSuite release cycle impact (twice-yearly major updates)
+- SuiteScript API deprecation risks
+- Data migration complexity with interrelated transaction records
+- Performance degradation from excessive saved search complexity
+- Sandbox data limitations affecting testing accuracy
+    </risk_entry>
+  </artifact_overrides>
+</service_line_config>

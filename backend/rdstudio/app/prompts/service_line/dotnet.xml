@@ -1,0 +1,79 @@
+<service_line_config>
+  <name>dotnet</name>
+  <category>custom_dev</category>
+
+  <tech_context>
+This project is built with .NET technologies. Key considerations:
+- Framework: .NET 8+ (or .NET Framework for legacy), ASP.NET Core
+- API: ASP.NET Core Web API, Minimal APIs, gRPC services
+- ORM: Entity Framework Core, Dapper for high-performance queries
+- Architecture patterns: Clean Architecture, CQRS, MediatR, Repository pattern
+- Authentication: ASP.NET Identity, OAuth 2.0, Azure AD / Entra ID, JWT
+- Messaging: MassTransit, RabbitMQ, Azure Service Bus
+- Caching: IDistributedCache, Redis, MemoryCache
+- Testing: xUnit, NUnit, Moq, FluentAssertions, integration test fixtures
+- DevOps: MSBuild, NuGet, Docker, GitHub Actions or Azure DevOps pipelines
+- Hosting: IIS, Kestrel, Azure App Service, Azure Container Apps, Azure Kubernetes Service
+  </tech_context>
+
+  <artifact_overrides>
+    <module_extraction>
+Map modules to .NET solution projects or bounded contexts. Each module should correspond to a logical service, library, or domain area in the solution structure.
+    </module_extraction>
+
+    <functional_req>
+- Reference .NET patterns and libraries where applicable (EF Core, Identity, MediatR)
+- For API requirements, specify endpoint patterns (REST conventions, versioning)
+- For data requirements, reference EF Core entities, migrations, and query patterns
+- Note authentication and authorization approach for protected features
+    </functional_req>
+
+    <nonfunctional_req>
+- API response time and throughput benchmarks
+- EF Core query performance and N+1 prevention
+- Connection pool sizing and database connection management
+- Memory usage and garbage collection considerations for high-traffic endpoints
+- Logging and observability (Serilog, Application Insights, OpenTelemetry)
+- Health check and readiness probe requirements
+    </nonfunctional_req>
+
+    <task>
+- Solution structure setup: projects, layers, NuGet packages
+- Domain model: entities, value objects, EF Core configuration, migrations
+- API development: controllers/minimal APIs, request/response models, validation
+- Service layer: business logic, MediatR handlers, repository implementation
+- Authentication: Identity setup, JWT configuration, role/policy authorization
+- Integration: HTTP clients, message consumers/publishers, external API wrappers
+- Testing: unit tests, integration tests, test fixtures
+- DevOps: Dockerfile, CI/CD pipeline, environment configuration
+    </task>
+
+    <test_case>
+- Test API endpoints with authenticated and unauthenticated requests
+- Test EF Core queries with in-memory database or test containers
+- Test business logic in isolation with mocked dependencies
+- Test integration points with stub/mock external services
+- Test concurrency scenarios for shared resources
+- Verify API response contracts match OpenAPI specification
+    </test_case>
+
+    <architecture>
+- Solution structure: project layout, layer separation, dependency direction
+- API architecture: routing, middleware pipeline, versioning, error handling
+- Data architecture: EF Core context, entity configuration, migration strategy
+- Authentication architecture: Identity provider, token flow, authorization policies
+- Integration architecture: HTTP client factory, message broker, retry policies
+- Caching architecture: distributed vs in-memory, cache invalidation strategy
+- Deployment architecture: containerization, hosting, environment management
+    </architecture>
+
+    <risk_entry>
+- .NET version migration complexity for long-running projects
+- EF Core performance issues with complex queries or large datasets
+- Dependency injection complexity in large solutions
+- NuGet package version conflicts and security vulnerabilities
+- Memory leaks from improper async/await or disposable handling
+- Breaking changes in third-party library updates
+    </risk_entry>
+  </artifact_overrides>
+</service_line_config>

@@ -1,0 +1,55 @@
+# ── Python ───────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Environment variables / secrets
+.env
+.env.*
+*.env
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Alembic (keep migrations, ignore env cache)
+backend/rdstudio/alembic/versions/__pycache__/
+
+# Uploads folder (user-uploaded files)
+backend/rdstudio/uploads/
+
+# ── Node / Frontend ──────────────────────────────────────────
+node_modules/
+frontend/node_modules/
+
+# Build output
+dist/
+build/
+frontend/dist/
+
+# ── IDE / OS ─────────────────────────────────────────────────
+.vscode/
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Logs ─────────────────────────────────────────────────────
+*.log
+logs/
+npm-debug.log*
+
+# ── Misc ─────────────────────────────────────────────────────
+*.pem
+*.key
+*.cert

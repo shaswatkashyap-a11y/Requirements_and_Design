@@ -1,0 +1,36 @@
+<service_line_config>
+  <name>aws</name>
+  <category>cloud_platforms</category>
+
+  <tech_context>
+This project deploys on Amazon Web Services. Key considerations:
+- Compute: EC2, ECS/Fargate, Lambda
+- Database: RDS, DynamoDB, ElastiCache
+- Storage: S3, EBS
+- Networking: VPC, ALB/NLB, Route53, CloudFront
+- Security: IAM, Security Groups, KMS, Secrets Manager
+- Monitoring: CloudWatch, X-Ray
+- IaC: CloudFormation or Terraform
+  </tech_context>
+
+  <artifact_overrides>
+    <architecture>
+Reference specific AWS services for each component:
+- Which compute service and why
+- Which database service and configuration
+- Networking topology (VPC, subnets, load balancer)
+- Security architecture (IAM, encryption, network isolation)
+Do NOT use generic terms like "the server" — name the AWS service.
+    </architecture>
+
+    <nonfunctional_req>
+Include AWS-specific NFRs:
+- Auto-scaling configuration and limits
+- Multi-AZ or multi-region availability
+- Backup strategy (RDS snapshots, S3 versioning, cross-region replication)
+- Cost optimization (Reserved Instances, Savings Plans, right-sizing)
+- Security (KMS encryption at rest, TLS in transit)
+- Monitoring and alerting thresholds
+    </nonfunctional_req>
+  </artifact_overrides>
+</service_line_config>

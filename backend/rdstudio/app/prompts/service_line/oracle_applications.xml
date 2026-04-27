@@ -1,0 +1,77 @@
+<service_line_config>
+  <name>oracle_applications</name>
+  <category>crm_erp</category>
+
+  <tech_context>
+This project is built on Oracle Applications platform. Key technologies and concepts:
+- Core Products: Oracle Fusion Cloud (ERP, HCM, SCM, CX), Oracle E-Business Suite (EBS)
+- UI: Oracle Visual Builder (VBCS), Oracle JET, APEX, ADF
+- Backend: PL/SQL, Oracle REST Data Services (ORDS), SOA composites, OIC integrations
+- Integration: Oracle Integration Cloud (OIC), Oracle SOA Suite, FBDI, BIP reports, REST/SOAP APIs
+- Data: Oracle Database, Oracle Analytics Cloud, OTBI, BI Publisher, SQL queries
+- Workflow: Oracle BPM, approval workflows, notifications
+- Security: Oracle IDCS/IAM, data roles, security contexts, duty roles, function security
+- DevOps: Oracle Cloud lifecycle management, sandbox environments, migration tools
+- Extensions: Oracle Fusion extensibility (Application Composer, page composer, sandbox)
+  </tech_context>
+
+  <artifact_overrides>
+    <module_extraction>
+Map modules to Oracle functional areas: financials (GL, AP, AR), procurement, supply chain, HCM, CX/sales, reporting and analytics. Focus on customizations, extensions, and integrations being built.
+    </module_extraction>
+
+    <functional_req>
+- Specify whether a requirement uses standard Oracle configuration, VBCS extension, or custom PL/SQL
+- Reference Oracle Fusion modules, objects, and flexfields when relevant
+- For integration requirements, specify OIC, FBDI, BIP, or REST/SOAP approach
+- For EBS projects, reference forms, concurrent programs, and interfaces
+    </functional_req>
+
+    <nonfunctional_req>
+- Oracle Cloud service availability and SLA dependencies
+- FBDI and bulk import performance for large data volumes
+- OIC connection and message rate limits
+- Report generation time for OTBI and BIP reports
+- Data security and role-based access performance
+- Backup and disaster recovery within Oracle Cloud
+    </nonfunctional_req>
+
+    <task>
+- Oracle configuration: setup tasks, flexfields, lookups, value sets, profiles
+- Extension development: Application Composer, VBCS pages, custom objects
+- PL/SQL development: packages, procedures, concurrent programs
+- Integration: OIC flows, FBDI templates, BIP report development, API configuration
+- Data migration: FBDI loads, data conversion programs, reconciliation scripts
+- Security: role configuration, data access policies, duty role assignment
+- Testing: functional validation, integration testing, data reconciliation
+    </task>
+
+    <test_case>
+- Test with multiple Oracle security roles and data access contexts
+- Test FBDI bulk loads with production-scale data volumes
+- Test OIC integrations with error handling and retry scenarios
+- Test concurrent program execution and scheduling
+- Verify data security policies restrict cross-business-unit access
+- Test reports with various parameter combinations and data volumes
+    </test_case>
+
+    <architecture>
+- Oracle Cloud environment topology: development, test, production pods
+- Module architecture: which Oracle modules are in scope and integration points
+- Extension architecture: Application Composer vs VBCS vs custom development
+- Integration architecture: OIC patterns, FBDI pipelines, real-time vs batch
+- Reporting architecture: OTBI, BIP, Oracle Analytics Cloud
+- Security architecture: role hierarchy, data security, function security
+- Migration architecture: FBDI strategy, data conversion approach
+    </architecture>
+
+    <risk_entry>
+- Oracle Cloud update cycle impact (quarterly patches may affect customizations)
+- OIC connection limits and throttling under high integration volumes
+- FBDI import failures and data quality issues at scale
+- Extension compatibility with Oracle quarterly updates
+- Data migration complexity across multiple Oracle modules
+- Performance degradation with complex security rules on large datasets
+    </risk_entry>
+  </artifact_overrides>
+</service_line_config>

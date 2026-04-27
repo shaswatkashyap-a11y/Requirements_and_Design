@@ -1,0 +1,84 @@
+<service_line_config>
+  <name>agentic_ai</name>
+  <category>ai_intelligence</category>
+
+  <tech_context>
+This project involves agentic AI systems. Key considerations:
+- Agent Frameworks: LangChain, LangGraph, CrewAI, AutoGen, custom agent loops
+- LLM Providers: OpenAI, Anthropic, Google, Azure OpenAI, self-hosted (Ollama, vLLM)
+- Tool Use: function calling, MCP (Model Context Protocol), custom tool definitions
+- Memory: conversation memory, vector stores (Pinecone, Weaviate, ChromaDB, pgvector)
+- RAG: retrieval-augmented generation, document chunking, embedding models, rerankers
+- Orchestration: multi-agent workflows, task delegation, agent communication patterns
+- Guardrails: input/output validation, content filtering, hallucination detection
+- Evaluation: LLM-as-judge, human evaluation, automated test suites
+- Observability: LangSmith, Langfuse, custom logging for agent traces
+- Cost Management: token tracking, model routing, caching strategies
+  </tech_context>
+
+  <artifact_overrides>
+    <module_extraction>
+Map modules to agent capabilities, tool integrations, or pipeline stages. Consider separating: core agent logic, tool/API integrations, memory/knowledge systems, orchestration layer, and evaluation/monitoring.
+    </module_extraction>
+
+    <functional_req>
+- Specify the agent architecture: single agent, multi-agent, or hierarchical
+- For tool requirements, define tool schemas, input/output contracts, and error handling
+- For memory requirements, specify short-term (conversation) vs long-term (vector store) needs
+- For RAG requirements, specify data sources, chunking strategy, and retrieval approach
+- Define fallback behavior when LLM calls fail or produce low-quality output
+    </functional_req>
+
+    <nonfunctional_req>
+- LLM response latency targets (end-to-end agent turn time)
+- Token cost budgets per request/conversation/user
+- Hallucination rate thresholds and factual accuracy targets
+- Agent reliability: task completion rate, error recovery success rate
+- RAG retrieval accuracy: precision, recall, relevance thresholds
+- Guardrail effectiveness: false positive/negative rates for content filtering
+- Observability: full agent trace logging for debugging and audit
+    </nonfunctional_req>
+
+    <task>
+- Agent framework setup: agent definitions, prompt templates, system instructions
+- Tool development: tool schemas, implementations, error handling, retry logic
+- Memory system: vector store setup, embedding pipeline, conversation management
+- RAG pipeline: document ingestion, chunking, indexing, retrieval, reranking
+- Orchestration: multi-agent workflow, task routing, communication protocols
+- Guardrails: input validation, output filtering, safety checks
+- Evaluation: test suite development, benchmark creation, automated scoring
+- Observability: trace logging, token tracking, cost dashboards
+    </task>
+
+    <test_case>
+- Test agent with known-answer scenarios to verify task completion accuracy
+- Test tool calling with valid, invalid, and edge-case inputs
+- Test RAG retrieval with queries that have known relevant documents
+- Test guardrails with adversarial inputs (prompt injection, harmful content)
+- Test multi-agent delegation with complex multi-step tasks
+- Test fallback behavior when LLM provider returns errors or timeouts
+- Evaluate output quality with LLM-as-judge scoring
+    </test_case>
+
+    <architecture>
+- Agent architecture: single/multi-agent topology, delegation patterns
+- LLM layer: model selection, routing, fallback chains, caching
+- Tool architecture: tool registry, schema definitions, authentication
+- Memory architecture: conversation store, vector database, embedding pipeline
+- RAG architecture: ingestion pipeline, chunking strategy, retrieval + reranking
+- Orchestration: workflow engine, state management, error recovery
+- Guardrail architecture: input/output validation pipeline, content filters
+- Observability: trace collection, token metering, quality monitoring
+    </architecture>
+
+    <risk_entry>
+- LLM provider outages or rate limiting disrupting agent availability
+- Hallucination causing incorrect actions or misleading information
+- Prompt injection attacks bypassing safety guardrails
+- Token cost escalation from verbose agent reasoning or retry loops
+- RAG retrieval returning irrelevant or outdated information
+- Multi-agent coordination failures causing infinite loops or deadlocks
+- LLM model deprecation requiring prompt and workflow migration
+    </risk_entry>
+  </artifact_overrides>
+</service_line_config>

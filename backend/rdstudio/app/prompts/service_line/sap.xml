@@ -1,0 +1,79 @@
+<service_line_config>
+  <name>sap</name>
+  <category>crm_erp</category>
+
+  <tech_context>
+This project is built on SAP platform. Key technologies and concepts:
+- Core Modules: SAP S/4HANA, ECC, MM, SD, FI/CO, PP, HCM, BW
+- UI: SAP Fiori, SAPUI5, SAP Business Application Studio
+- Backend: ABAP, CDS Views, OData services, BAPIs, RFCs, IDocs
+- Integration: SAP Integration Suite (CPI), SAP PI/PO, RFC, IDocs, OData, BAPI
+- Data: SAP HANA, BW/4HANA, SAP Analytics Cloud, ALV reports
+- Workflow: SAP Business Workflow, SAP Build Process Automation
+- Security: SAP roles, authorization objects, SoD (Segregation of Duties), GRC
+- DevOps: SAP Transport Management, ChaRM, SAP BTP CI/CD
+- Environments: Development, Quality, Pre-Production, Production (landscape)
+- Extensions: SAP BTP (Business Technology Platform), side-by-side extensions, in-app extensions
+  </tech_context>
+
+  <artifact_overrides>
+    <module_extraction>
+Map modules to SAP functional areas: financials (FI/CO), sales and distribution (SD), materials management (MM), production planning (PP), human capital management (HCM), analytics/reporting. Focus on custom development and configuration, not standard SAP setup.
+    </module_extraction>
+
+    <functional_req>
+- Specify whether a requirement uses standard SAP configuration, custom ABAP development, or Fiori app extension
+- Reference SAP transaction codes, tables, and objects when relevant
+- For integration requirements, specify IDoc, BAPI, RFC, or OData approach
+- Note SAP authorization object requirements for security-sensitive features
+    </functional_req>
+
+    <nonfunctional_req>
+- HANA database performance and memory consumption targets
+- Transport request management and landscape consistency
+- Authorization and SoD compliance requirements
+- Report execution time for BW queries and CDS views
+- Integration throughput for IDoc and batch processing scenarios
+- System availability across the SAP landscape
+    </nonfunctional_req>
+
+    <task>
+- SAP configuration: IMG activities, customizing tables, master data setup
+- ABAP development: reports, enhancements, BADIs, user exits, CDS views
+- Fiori/SAPUI5 development: custom apps, extensions, tiles, launchpad config
+- Integration development: IDoc configuration, BAPI wrappers, OData services
+- Data migration: LSMW, LTMC, data load programs, legacy mapping
+- Testing: unit test classes, transport to QA, integration test execution
+- Transport management: request creation, release, import sequence
+    </task>
+
+    <test_case>
+- Test with multiple SAP roles to verify authorization object checks
+- Test across the full SAP landscape (Dev → QA → Pre-Prod)
+- Test IDoc and integration scenarios with error handling and reprocessing
+- Test data migration with production-scale volumes
+- Verify transport import sequence doesn't break dependent objects
+- Test Fiori apps on multiple devices and browsers
+    </test_case>
+
+    <architecture>
+- SAP system landscape: Dev/QA/Pre-Prod/Prod topology
+- Module architecture: which SAP modules are in scope and their interdependencies
+- Extension approach: in-app (classic ABAP) vs side-by-side (SAP BTP)
+- Integration architecture: CPI/PI flows, IDoc channels, OData services, RFC destinations
+- Fiori architecture: app types (transactional, analytical, factsheet), launchpad configuration
+- Data architecture: HANA models, CDS views, BW extractors
+- Transport strategy: request types, release workflow, import queue management
+    </architecture>
+
+    <risk_entry>
+- Transport conflicts and import sequence dependencies
+- Authorization and SoD compliance gaps
+- HANA memory and performance issues with custom CDS views
+- Integration failures due to IDoc/RFC configuration mismatches across landscape
+- SAP upgrade and support pack compatibility with custom ABAP code
+- Data migration quality and volume constraints
+- Fiori compatibility across SAP versions and browsers
+    </risk_entry>
+  </artifact_overrides>
+</service_line_config>

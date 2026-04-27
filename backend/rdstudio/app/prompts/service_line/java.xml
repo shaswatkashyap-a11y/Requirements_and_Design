@@ -1,0 +1,80 @@
+<service_line_config>
+  <name>java</name>
+  <category>custom_dev</category>
+
+  <tech_context>
+This project is built with Java. Key considerations:
+- Framework: Spring Boot, Spring Framework (MVC, Security, Data, Cloud)
+- API: Spring Web MVC, Spring WebFlux for reactive, gRPC
+- ORM: Spring Data JPA (Hibernate), MyBatis, JDBC Template
+- Architecture: Layered architecture, hexagonal/ports-and-adapters, microservices
+- Authentication: Spring Security, OAuth 2.0, Keycloak, JWT
+- Messaging: Spring Kafka, Spring AMQP (RabbitMQ), JMS
+- Caching: Spring Cache (Redis, Caffeine, EhCache)
+- Testing: JUnit 5, Mockito, Spring Boot Test, Testcontainers, MockMvc
+- Build: Maven or Gradle, Docker, Jenkins/GitHub Actions CI/CD
+- Code quality: SonarQube, Checkstyle, SpotBugs, JaCoCo coverage
+- Hosting: Embedded Tomcat, Docker, Kubernetes, AWS ECS/EKS, Azure AKS
+  </tech_context>
+
+  <artifact_overrides>
+    <module_extraction>
+Map modules to Spring Boot services or Maven/Gradle modules. Each module should correspond to a bounded context, microservice, or library in the project structure.
+    </module_extraction>
+
+    <functional_req>
+- Reference Spring components where applicable (Controllers, Services, Repositories)
+- For API requirements, specify REST conventions, DTOs, and validation annotations
+- For data requirements, reference JPA entities, relationships, and repository queries
+- For security requirements, specify Spring Security filter chain and method-level security
+    </functional_req>
+
+    <nonfunctional_req>
+- API throughput and latency benchmarks under concurrent load
+- JPA query performance and N+1 detection
+- JVM heap sizing and garbage collection tuning targets
+- Connection pool configuration (HikariCP)
+- Thread pool sizing for async and blocking operations
+- Health check, metrics, and distributed tracing requirements (Micrometer, Zipkin)
+    </nonfunctional_req>
+
+    <task>
+- Project scaffolding: Spring Boot starters, module structure, build configuration
+- Domain model: JPA entities, value objects, Flyway/Liquibase migrations
+- API development: controllers, DTOs, validation, exception handlers
+- Service layer: business logic, transaction management, event publishing
+- Security: Spring Security config, OAuth resource server, role/authority setup
+- Integration: RestTemplate/WebClient, Kafka producers/consumers, external APIs
+- Testing: unit tests, MockMvc integration tests, Testcontainers for DB tests
+- DevOps: Dockerfile, multi-stage build, CI pipeline, Kubernetes manifests
+    </task>
+
+    <test_case>
+- Test API endpoints with MockMvc or WebTestClient
+- Test JPA repositories with @DataJpaTest and embedded database
+- Test service layer with Mockito-mocked dependencies
+- Test integration flows with Testcontainers (database, Kafka, Redis)
+- Test Spring Security with @WithMockUser and custom SecurityContext
+- Verify API contracts with Spring REST Docs or contract tests
+    </test_case>
+
+    <architecture>
+- Module structure: multi-module Maven/Gradle project layout
+- API architecture: controller organization, DTO mapping, global exception handling
+- Data architecture: JPA entity design, repository pattern, migration strategy
+- Security architecture: Spring Security filter chain, OAuth flows, method security
+- Messaging architecture: Kafka topics, consumer groups, dead letter topics
+- Caching architecture: cache regions, eviction policies, cache-aside pattern
+- Deployment architecture: Docker images, Kubernetes deployments, config management
+    </architecture>
+
+    <risk_entry>
+- Spring Boot version upgrade breaking changes in auto-configuration
+- JPA lazy loading issues and unexpected queries in production
+- JVM memory pressure under high concurrency
+- Dependency version conflicts in multi-module projects
+- Kafka consumer lag and message processing failures
+- Testcontainers CI/CD compatibility and execution time overhead
+    </risk_entry>
+  </artifact_overrides>
+</service_line_config>

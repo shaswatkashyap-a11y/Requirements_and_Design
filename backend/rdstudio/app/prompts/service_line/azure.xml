@@ -1,0 +1,81 @@
+<service_line_config>
+  <name>azure</name>
+  <category>cloud</category>
+
+  <tech_context>
+This project deploys on Microsoft Azure. Key considerations:
+- Compute: Azure App Service, Azure Functions, AKS, Container Apps, Virtual Machines
+- Database: Azure SQL, Cosmos DB, Azure Database for PostgreSQL/MySQL, Azure Cache for Redis
+- Storage: Blob Storage, Azure Files, Table Storage, Queue Storage
+- Messaging: Azure Service Bus, Event Hubs, Event Grid, Azure Queue Storage
+- Networking: Virtual Networks, Application Gateway, Azure Front Door, Private Endpoints
+- Security: Azure AD / Entra ID, Managed Identity, Key Vault, NSGs, Azure Policy
+- Monitoring: Azure Monitor, Application Insights, Log Analytics, Azure Alerts
+- DevOps: Azure DevOps, GitHub Actions, Azure Resource Manager (ARM/Bicep), Terraform
+- AI Services: Azure OpenAI, Cognitive Services, Azure ML
+  </tech_context>
+
+  <artifact_overrides>
+    <module_extraction>
+Map modules to Azure resource groups or application tiers where applicable. Consider separation by compute, data, integration, and security concerns.
+    </module_extraction>
+
+    <functional_req>
+- Reference specific Azure services for implementation approach
+- For data requirements, specify Azure SQL vs Cosmos DB vs other data services
+- For integration requirements, specify Service Bus, Event Grid, or Logic Apps
+- For authentication, specify Azure AD/Entra ID integration approach
+    </functional_req>
+
+    <nonfunctional_req>
+- Azure service SLAs and composite availability calculations
+- Auto-scaling rules and capacity planning (App Service plans, AKS node pools)
+- Azure region strategy: primary and failover regions
+- Backup and disaster recovery: geo-redundant storage, SQL geo-replication
+- Cost management: resource tagging, budget alerts, reserved instances
+- Security: Managed Identity usage, Key Vault integration, network isolation
+- Monitoring: Application Insights SLA, alert response time thresholds
+    </nonfunctional_req>
+
+    <task>
+- Infrastructure: ARM/Bicep templates or Terraform modules, resource group setup
+- Networking: VNet configuration, subnets, NSGs, private endpoints
+- Compute: App Service/AKS/Function App deployment configuration
+- Data: database provisioning, connection configuration, migration scripts
+- Security: Entra ID app registrations, Managed Identity, Key Vault secrets
+- Integration: Service Bus queues/topics, Event Grid subscriptions, Logic Apps
+- Monitoring: Application Insights, dashboards, alert rules, log queries
+- DevOps: CI/CD pipelines, environment provisioning, deployment slots
+    </task>
+
+    <test_case>
+- Test auto-scaling behavior under simulated load
+- Test failover scenarios between Azure regions
+- Test Managed Identity authentication from all services
+- Test Service Bus message processing with error and dead-letter scenarios
+- Test network isolation with private endpoint connectivity
+- Verify Azure Policy compliance across all resource groups
+    </test_case>
+
+    <architecture>
+- Azure subscription and resource group topology
+- Network architecture: VNet design, subnet layout, NSGs, private endpoints
+- Compute architecture: service selection, scaling strategy, deployment model
+- Data architecture: database selection, partitioning, caching, replication
+- Integration architecture: messaging patterns, event-driven flows, API Management
+- Security architecture: Entra ID, Managed Identity, Key Vault, network security
+- Monitoring architecture: Application Insights, Log Analytics workspace, alert rules
+- IaC architecture: ARM/Bicep/Terraform module structure, state management
+    </architecture>
+
+    <risk_entry>
+- Azure service outages affecting application availability
+- Cost overruns from unoptimized resources or unexpected traffic spikes
+- Entra ID configuration errors causing authentication failures
+- Data loss from insufficient backup or replication configuration
+- Network misconfiguration exposing services to public internet
+- Azure service deprecation requiring migration to replacement services
+- Terraform/Bicep state drift from manual portal changes
+    </risk_entry>
+  </artifact_overrides>
+</service_line_config>

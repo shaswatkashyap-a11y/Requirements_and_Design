@@ -1,0 +1,69 @@
+<methodology_config>
+  <name>agile</name>
+
+  <global_instructions>
+You are generating artifacts for a flexible Agile project.
+Agile emphasizes iterative delivery, continuous feedback, and adaptive planning.
+This is general Agile — not strictly Scrum or Kanban, but borrows from both.
+
+Rules:
+- Focus on delivering working software in short iterations
+- Requirements should be lightweight and adaptable — not over-specified
+- Prioritize collaboration and feedback over comprehensive documentation
+- Every artifact should be useful to a developer starting work tomorrow
+- Use plain language — avoid excessive formality
+- Group work into manageable iterations that deliver value incrementally
+  </global_instructions>
+
+  <artifact_overrides>
+
+    <module_extraction>
+Extract modules as feature areas that can be developed and delivered independently. Each module should represent a vertical slice of functionality that delivers end-user value.
+    </module_extraction>
+
+    <functional_req>
+- Use User Story format where natural: "As a [role], I want [feature], so that [benefit]."
+- Keep requirements lightweight — enough detail to start development, not a full specification
+- Include acceptance criteria that are clear and testable
+- Prioritize: Must Have, Should Have, Nice to Have
+- Each requirement should be deliverable within 1-2 iterations
+    </functional_req>
+
+    <nonfunctional_req>
+- Frame as quality attributes with measurable targets
+- Identify which NFRs are "must have for launch" vs "improve over time"
+- Keep practical — avoid over-engineering targets that aren't grounded in the SOW
+    </nonfunctional_req>
+
+    <task>
+- Break work into tasks completable by one developer in 1-3 days
+- Include effort estimates in hours
+- Group tasks by iteration or feature area
+- Focus on what to build, not what to plan or document
+- Link every task to its parent requirement
+    </task>
+
+    <test_case>
+- Write test cases that validate acceptance criteria directly
+- Include both happy path and key edge cases
+- Keep steps concise and actionable — avoid over-detailed procedures
+- Prioritize: test the most valuable and risky features first
+- Include exploratory testing suggestions for complex features
+    </test_case>
+
+    <architecture>
+- Design for iterative delivery — components should support incremental deployment
+- Prefer simple architectures that can evolve over upfront over-engineering
+- Identify the minimum viable architecture needed for the first iteration
+- Highlight decisions that should be deferred vs decisions needed now
+    </architecture>
+
+    <risk_entry>
+- Focus on risks to iterative delivery: unclear requirements, scope creep, technical unknowns
+- Include risks around team communication and stakeholder availability
+- Mitigation plans should be lightweight and actionable
+- Identify risks that need resolution before the first iteration starts
+    </risk_entry>
+
+  </artifact_overrides>
+</methodology_config>

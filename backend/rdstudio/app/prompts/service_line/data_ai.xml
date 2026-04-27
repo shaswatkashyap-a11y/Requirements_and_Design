@@ -1,0 +1,83 @@
+<service_line_config>
+  <name>data_ai</name>
+  <category>ai_intelligence</category>
+
+  <tech_context>
+This project involves data engineering and analytics. Key considerations:
+- Data Platforms: Snowflake, Databricks, BigQuery, Azure Synapse, Redshift
+- ETL/ELT: dbt, Apache Spark, Airflow, Fivetran, Stitch, custom Python pipelines
+- Orchestration: Apache Airflow, Prefect, Dagster, Azure Data Factory
+- Streaming: Apache Kafka, Spark Streaming, Flink, Kinesis
+- Storage: Data lakes (S3, ADLS, GCS), data warehouses, lakehouses (Delta Lake, Iceberg)
+- Data Quality: Great Expectations, dbt tests, Soda, Monte Carlo
+- Governance: data catalogs (Alation, Collibra), lineage tracking, access policies
+- Analytics: Tableau, Power BI, Looker, Metabase, custom dashboards
+- Data Modeling: dimensional modeling (Kimball), data vault, one big table
+- Programming: SQL, Python, PySpark, Scala
+  </tech_context>
+
+  <artifact_overrides>
+    <module_extraction>
+Map modules to data pipeline stages or data domains: ingestion, transformation, data warehouse modeling, data quality, analytics/reporting, governance. Consider separating by source system or business domain.
+    </module_extraction>
+
+    <functional_req>
+- Specify data sources, formats (CSV, JSON, API, database), and ingestion frequency
+- Define transformation logic: business rules, aggregations, joins
+- Specify data model: dimensional model, entities, relationships, grain
+- Define report/dashboard requirements: metrics, dimensions, filters, refresh frequency
+- Specify data quality rules: completeness, uniqueness, referential integrity
+    </functional_req>
+
+    <nonfunctional_req>
+- Pipeline execution time SLAs (daily load must complete by X time)
+- Data freshness: maximum latency from source to analytics layer
+- Query performance: dashboard load time, ad-hoc query response time
+- Data quality thresholds: acceptable null rates, duplicate rates, validation pass rates
+- Storage cost management: partitioning, clustering, retention policies
+- Data volume projections: current and 12-month growth estimates
+- Concurrent user capacity for analytics tools
+    </nonfunctional_req>
+
+    <task>
+- Infrastructure: data platform setup, warehouse/lakehouse configuration
+- Ingestion: source connectors, extraction scripts, CDC configuration
+- Transformation: dbt models, Spark jobs, SQL transformations
+- Data modeling: dimensional model design, table DDL, relationship definitions
+- Data quality: test definitions, validation rules, monitoring dashboards
+- Orchestration: DAG development, scheduling, dependency management, alerting
+- Analytics: dashboard development, metric definitions, self-service setup
+- Governance: catalog entries, lineage documentation, access policies
+    </task>
+
+    <test_case>
+- Test ingestion with missing, late, and malformed source data
+- Test transformation logic with known input/output datasets
+- Test data model referential integrity and uniqueness constraints
+- Test pipeline idempotency: re-running should not create duplicates
+- Test data quality rules catch known bad data scenarios
+- Test dashboard accuracy by comparing metrics to source system totals
+- Test pipeline recovery after infrastructure failures
+    </test_case>
+
+    <architecture>
+- Data platform architecture: warehouse, lakehouse, or hybrid topology
+- Ingestion architecture: batch vs streaming, CDC, connector patterns
+- Transformation architecture: ELT layers (staging, intermediate, mart), dbt project structure
+- Storage architecture: partitioning, clustering, file formats, retention
+- Orchestration architecture: DAG design, dependency patterns, failure handling
+- Analytics architecture: semantic layer, dashboard organization, access model
+- Governance architecture: catalog integration, lineage, data classification, PII handling
+    </architecture>
+
+    <risk_entry>
+- Source system schema changes breaking ingestion pipelines
+- Data quality degradation going undetected and affecting downstream analytics
+- Pipeline failures during critical business reporting windows
+- Storage costs growing faster than projected
+- Query performance degradation as data volumes increase
+- Governance gaps leading to unauthorized access to sensitive data
+- Pipeline complexity making debugging and maintenance difficult
+    </risk_entry>
+  </artifact_overrides>
+</service_line_config>

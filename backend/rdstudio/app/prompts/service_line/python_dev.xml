@@ -1,0 +1,80 @@
+<service_line_config>
+  <name>python_dev</name>
+  <category>custom_dev</category>
+
+  <tech_context>
+This project is built with Python. Key considerations:
+- Web Frameworks: FastAPI, Django, Flask
+- ORM: SQLAlchemy, Django ORM, Tortoise ORM
+- Async: asyncio, HTTPX, aiohttp for async HTTP, Celery for background tasks
+- Data validation: Pydantic for schema validation and serialization
+- Authentication: OAuth 2.0, JWT, python-jose, Authlib
+- Messaging: Celery + Redis/RabbitMQ, Kafka (confluent-kafka)
+- Caching: Redis (redis-py), in-memory caching
+- Testing: pytest, pytest-asyncio, unittest.mock, factory_boy, httpx for API testing
+- DevOps: pip/poetry for dependencies, Docker, GitHub Actions, pre-commit hooks
+- Code quality: mypy, ruff, black, isort
+- Hosting: Uvicorn/Gunicorn, Docker containers, AWS/Azure/GCP
+  </tech_context>
+
+  <artifact_overrides>
+    <module_extraction>
+Map modules to Python packages or service boundaries. Each module should correspond to a logical package, app (Django), or router group (FastAPI) in the project structure.
+    </module_extraction>
+
+    <functional_req>
+- Reference Python frameworks and libraries where applicable
+- For API requirements, specify endpoint patterns and Pydantic schemas
+- For data requirements, reference ORM models, relationships, and migration approach
+- For async requirements, specify Celery tasks vs async endpoints
+    </functional_req>
+
+    <nonfunctional_req>
+- API response time and concurrent request handling capacity
+- Database connection pooling and query optimization
+- Celery worker concurrency and task queue management
+- Memory usage for long-running processes and large dataset handling
+- Logging and observability (structlog, OpenTelemetry)
+- Type safety coverage (mypy strict mode targets)
+    </nonfunctional_req>
+
+    <task>
+- Project scaffolding: package structure, dependency management, configuration
+- Data layer: ORM models, relationships, Alembic/Django migrations
+- API development: routers/views, Pydantic schemas, dependency injection
+- Service layer: business logic, repository pattern, error handling
+- Background tasks: Celery tasks, scheduled jobs, retry policies
+- Integration: HTTP clients, message producers/consumers, external API wrappers
+- Testing: pytest fixtures, API tests, mocked dependencies, factory classes
+- DevOps: Dockerfile, CI pipeline, linting and type checking setup
+    </task>
+
+    <test_case>
+- Test API endpoints with pytest and HTTPX test client
+- Test database operations with test database or SQLite in-memory
+- Test Celery tasks in isolation with eager mode
+- Test async code with pytest-asyncio
+- Test business logic with mocked repository dependencies
+- Verify Pydantic schema validation for edge case inputs
+    </test_case>
+
+    <architecture>
+- Project structure: package layout, layer separation, import conventions
+- API architecture: router organization, middleware, error handling, versioning
+- Data architecture: ORM models, session management, migration strategy
+- Task architecture: Celery configuration, task routing, result backends
+- Integration architecture: HTTP client patterns, retry/circuit-breaker policies
+- Configuration: environment-based settings, secrets management
+- Deployment architecture: container setup, ASGI server, worker processes
+    </architecture>
+
+    <risk_entry>
+- Python GIL limitations for CPU-bound operations
+- Dependency conflicts in complex requirements (pip resolution)
+- Async/sync mixing leading to event loop blocking
+- ORM N+1 query issues degrading performance
+- Celery task reliability and dead letter queue handling
+- Type safety gaps in dynamically typed code paths
+    </risk_entry>
+  </artifact_overrides>
+</service_line_config>

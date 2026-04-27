@@ -1,0 +1,80 @@
+<service_line_config>
+  <name>servicenow</name>
+  <category>itsm_workflow</category>
+
+  <tech_context>
+This project is built on ServiceNow platform. Key technologies and concepts:
+- Core Modules: ITSM (Incident, Problem, Change), ITOM, ITBM, HRSD, CSM, SecOps
+- UI: Service Portal, UI Builder, Agent Workspace, Now Mobile
+- Backend: Server-side scripts (Business Rules, Script Includes, Scheduled Jobs), GlideRecord API
+- Client-side: Client Scripts, UI Policies, UI Actions, Catalog Client Scripts
+- Workflows: Flow Designer, Orchestration, Legacy Workflows
+- Integration: IntegrationHub, Scripted REST APIs, Import Sets, MID Server, SOAP/REST
+- Data: CMDB, tables, sys_dictionary, GlideRecord, Performance Analytics
+- Security: ACLs, roles, groups, data policies, context-based security
+- DevOps: Update Sets, Application Repository, ATF (Automated Test Framework), CI/CD via App Engine Studio
+- Environments: Development, Test, Staging, Production (instance topology)
+  </tech_context>
+
+  <artifact_overrides>
+    <module_extraction>
+Map modules to ServiceNow application scopes: ITSM processes, service catalog items, CMDB areas, portals, integrations, reporting. Focus on custom applications, process modifications, and integrations being built.
+    </module_extraction>
+
+    <functional_req>
+- Specify whether a requirement uses out-of-box ServiceNow capability or requires custom scripting
+- Reference ServiceNow tables (incident, change_request, custom tables) when relevant
+- For workflow requirements, specify Flow Designer vs legacy workflow approach
+- For portal requirements, specify Service Portal widget or UI Builder approach
+- Note ACL and role requirements for data access rules
+    </functional_req>
+
+    <nonfunctional_req>
+- Instance performance: transaction response time, scheduled job execution windows
+- CMDB data quality and relationship accuracy thresholds
+- Integration throughput via IntegrationHub and MID Server capacity
+- Service Portal page load time and widget rendering performance
+- Update Set promotion reliability across instance pipeline
+- Performance Analytics data collection and dashboard refresh rates
+    </nonfunctional_req>
+
+    <task>
+- Platform configuration: tables, fields, forms, lists, related lists, UI policies
+- Script development: Business Rules, Script Includes, Client Scripts, UI Actions
+- Flow Designer: flows, subflows, actions, spokes
+- Service Portal: widget development, page configuration, theming
+- Integration: IntegrationHub spokes, Scripted REST APIs, Import Set transforms
+- CMDB: CI class configuration, identification rules, health rules
+- Security: ACLs, roles, groups, data policies
+- Deployment: Update Set creation, review, promotion across instances
+    </task>
+
+    <test_case>
+- Test with multiple ServiceNow roles to verify ACL enforcement
+- Test workflows with various approval paths and edge cases
+- Test Service Portal on multiple browsers and mobile devices
+- Test integrations via MID Server with network failure scenarios
+- Use ATF (Automated Test Framework) for regression test suites
+- Test CMDB discovery and reconciliation accuracy
+    </test_case>
+
+    <architecture>
+- Instance topology: dev, test, staging, prod promotion path
+- Application architecture: scoped vs global applications, module structure
+- Process architecture: ITSM process flows, approval chains, SLA definitions
+- Integration architecture: IntegrationHub, MID Server placement, API patterns
+- Portal architecture: Service Portal pages, widgets, themes, angular providers
+- CMDB architecture: CI classes, relationships, discovery sources
+- Deployment architecture: Update Sets, application repository, ATF suites
+    </architecture>
+
+    <risk_entry>
+- ServiceNow platform upgrade impact on custom scripts and integrations
+- Update Set conflicts during parallel development
+- CMDB data quality degradation affecting downstream processes
+- MID Server reliability for critical integrations
+- Performance degradation from complex Business Rules on high-volume tables
+- Instance clone and data masking limitations for testing
+    </risk_entry>
+  </artifact_overrides>
+</service_line_config>

@@ -1,0 +1,71 @@
+<methodology_config>
+  <n>waterfall</n>
+
+  <global_instructions>
+You are generating artifacts for a Waterfall methodology project.
+Waterfall follows sequential phases: Requirements → Design → Implementation → Testing → Deployment.
+
+Rules:
+- Use formal language: "The system shall..." for all requirements
+- Every requirement must be atomic — one behavior per requirement
+- Traceability is critical — every artifact must reference its source
+- Prioritize completeness over speed — cover every SOW item
+- Flag any ambiguity as an assumption or risk
+- Do NOT use Agile terminology (no sprints, stories, epics, story points)
+  </global_instructions>
+
+  <artifact_overrides>
+
+    <module_extraction>
+Group the SOW scope into major Functional Areas or Sub-systems typical of a formal Business Requirements Document (BRD). Each module should map to a chapter or section in the BRD.
+    </module_extraction>
+
+    <functional_req>
+- Use formal requirement statement format: "The system shall [action] when [condition]."
+- Each requirement must be atomic — one testable behavior per requirement
+- Assign priority: Critical, High, Medium, or Low
+- Include traceability: reference the source SOW section for every requirement
+- Group requirements by functional area
+    </functional_req>
+
+    <nonfunctional_req>
+- Use formal statement format: "The system shall [meet criteria] under [condition]."
+- Every non-functional requirement must have a measurable acceptance threshold
+- Include performance benchmarks, security standards, and compliance requirements
+- Reference industry standards where applicable (ISO, OWASP, WCAG)
+    </nonfunctional_req>
+
+    <task>
+- Break down into formal Work Breakdown Structure (WBS) tasks
+- Each task should map to a phase: Requirements, Design, Implementation, Testing, Deployment
+- Include effort estimates in hours
+- Do NOT use Agile terminology — no sprints, stories, or story points
+- Tasks should be sequential, not iterative
+    </task>
+
+    <test_case>
+- Write formal test procedures suitable for a Test Plan document
+- Include detailed preconditions, step-by-step procedures, and expected results
+- Cover positive tests, negative tests, and boundary conditions
+- Each test case must trace back to a specific functional requirement
+- Include test environment requirements in preconditions
+    </test_case>
+
+    <architecture>
+- Produce a formal architecture specification
+- Include component responsibilities, interfaces, and data flows
+- Reference specific technologies from the SOW context
+- Identify integration points and external dependencies
+- Include deployment architecture considerations
+    </architecture>
+
+    <risk_entry>
+- Produce a formal Risk Register suitable for project governance
+- Include probability and impact ratings: High, Medium, Low
+- Every risk must have a concrete mitigation plan and contingency plan
+- Assign a risk owner role
+- Consider risks across all Waterfall phases
+    </risk_entry>
+
+  </artifact_overrides>
+</methodology_config>
