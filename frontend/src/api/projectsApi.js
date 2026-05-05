@@ -1,4 +1,4 @@
-const BASE = 'http://localhost:8000/api'
+const BASE = '/api'
 
 export async function fetchProjects() {
   const res = await fetch(`${BASE}/projects/?limit=100`)

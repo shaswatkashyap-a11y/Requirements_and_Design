@@ -55,12 +55,21 @@ const SERVICE_LINE_GROUPS = [
   },
 ]
 
+const PROJECT_TYPES = [
+  { value: 'ams',            label: 'AMS / RUN Services',        hint: 'Managed services, support, SLA-based engagement' },
+  { value: 'implementation', label: 'Platform Implementation',   hint: 'Salesforce / ServiceNow implementation or rollout' },
+  { value: 'integration',    label: 'Integration / Middleware',  hint: 'Connecting existing systems via APIs or middleware' },
+  { value: 'custom_dev',     label: 'Custom Development',        hint: 'Building new software or applications' },
+  { value: 'data_analytics', label: 'Data & Analytics',          hint: 'Data pipelines, dashboards, warehouses' },
+]
+
 const empty = {
   name: '',
   client_name: '',
   description: '',
   engagement_model: '',
   methodology: '',
+  project_type: '',
   service_line: [],
 }
 
@@ -187,6 +196,38 @@ export default function NewProjectModal({ onClose, onSubmit, loading }) {
                 ))}
               </select>
             </div>
+          </div>
+
+          {/* Project Type */}
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-2">
+              Project Type <span className="text-gray-400 font-normal">(helps AI generate accurate design)</span>
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {PROJECT_TYPES.map((pt) => {
+                const active = form.project_type === pt.value
+                return (
+                  <button
+                    key={pt.value}
+                    type="button"
+                    onClick={() => set('project_type', active ? '' : pt.value)}
+                    title={pt.hint}
+                    className={`px-3 py-1.5 text-xs rounded-full border transition-all ${
+                      active
+                        ? 'bg-blue-50 border-blue-400 text-blue-700 font-medium'
+                        : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300'
+                    }`}
+                  >
+                    {pt.label}
+                  </button>
+                )
+              })}
+            </div>
+            {form.project_type && (
+              <p className="text-[11px] text-gray-400 mt-1.5">
+                {PROJECT_TYPES.find((pt) => pt.value === form.project_type)?.hint}
+              </p>
+            )}
           </div>
 
           {/* Service Lines */}

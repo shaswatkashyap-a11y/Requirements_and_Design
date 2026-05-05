@@ -7,6 +7,10 @@ import SOWDetail from './pages/SOWDetail'
 import GenerationProgress from './pages/GenerationProgress'
 import GenerationResults from './pages/GenerationResults'
 import PromptEditor from './pages/PromptEditor'
+import DesignStudio from './pages/DesignStudio'
+import DesignProjectDetail from './pages/DesignProjectDetail'
+import LLDStudio from './pages/LLDStudio'
+import LLDProjectDetail from './pages/LLDProjectDetail'
 
 function Layout({ children }) {
   return (
@@ -29,6 +33,10 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/requirement-studio" element={<RequirementStudio />} />
+          <Route path="/design-studio" element={<DesignStudio />} />
+          <Route path="/design-studio/projects/:projectId" element={<DesignProjectDetail />} />
+          <Route path="/lld-studio" element={<LLDStudio />} />
+          <Route path="/lld-studio/projects/:projectId" element={<LLDProjectDetail />} />
           <Route path="/projects/:projectId/sow/:sowId" element={<SOWDetail />} />
           <Route path="/projects/:projectId/generations/:runId" element={<GenerationProgress />} />
           <Route path="/projects/:projectId/generations/:runId/results" element={<GenerationResults />} />

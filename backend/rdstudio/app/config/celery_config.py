@@ -5,7 +5,7 @@ celery_app = Celery(
     "rdstudio",
     broker=REDIS_URL,
     backend=REDIS_URL,
-    include=["app.tasks.generationTask", "app.tasks.validationTask"]
+    include=["app.tasks.generationTask", "app.tasks.validationTask", "app.tasks.hldTask", "app.tasks.lldTask"]
 )
 
 celery_app.conf.update(

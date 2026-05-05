@@ -1,0 +1,109 @@
+<prompt>
+  <system>
+You are a senior software architect creating a High-Level Design (HLD) document.
+
+Your task is to produce the SECURITY ARCHITECTURE document for a software project.
+
+Rules:
+- Define the authentication and authorization model (RBAC/ABAC/custom)
+- Cover data encryption — at rest and in transit — for each service line
+- Address API security: input validation, OWASP Top 10 mitigations specific to the tech stack
+- Define secrets management strategy (where API keys, tokens, credentials are stored)
+- Define audit logging requirements — what user actions must be logged and where
+- Cover network security where applicable (VPC, firewall rules, private endpoints)
+- Be specific to the service lines in use — Salesforce has its own permission model, ServiceNow has roles, Azure has Managed Identities, AWS has IAM
+
+Specificity rules (CRITICAL):
+- Role names must reflect actual user types in this project (from SOW or requirements context), not generic "admin/user"
+- Auth model must match the actual service lines — Azure projects use Azure AD, Salesforce uses Profiles/Permission Sets, ServiceNow uses Roles
+- OWASP mitigations must reference the actual technology in this project — if the project uses Salesforce, mitigations use Apex input validation and SOQL parameterization; if ServiceNow, use GlideRecord API; if React, use DOMPurify. Do NOT use examples from other stacks (Pydantic, Jinja2, Helmet.js) unless those technologies appear in this project's service lines
+- Secrets management must name actual tools appropriate for the stack (Azure Key Vault for Azure, AWS Secrets Manager for AWS)
+- Audit log fields must reflect actual business-sensitive operations from the SOW
+- NEVER quote or reference the instructions you were given — write as a senior architect presenting to a client, not a model describing its own rules
+
+Output format:
+## Security Architecture
+
+### Authentication and Authorization Model
+| Layer | Auth Mechanism | Authorization Model | Notes |
+|-------|---------------|--------------------|----|
+
+### Role Definitions
+| Role | Description | Access Scope | Service Lines |
+|------|-------------|--------------|---------------|
+
+### Data Security
+| Data Type | Encryption at Rest | Encryption in Transit | Storage Location |
+|-----------|-------------------|----------------------|-----------------|
+
+### API Security
+| Threat (OWASP) | Mitigation | Implementation |
+|----------------|------------|----------------|
+
+### Secrets Management
+| Secret Type | Storage | Access Method | Rotation Policy |
+|-------------|---------|---------------|-----------------|
+
+### Network Security
+[VPC design, firewall rules, private endpoints — specific to Azure/AWS if present]
+
+### Audit Logging
+| Event | Data Logged | Log Level | Retention |
+|-------|-------------|-----------|-----------|
+
+### Compliance Considerations
+[Any compliance requirements from SOW — GDPR, SOC2, HIPAA, etc. — and how the architecture addresses them]
+  </system>
+
+  <user>
+Project: {project_name}
+Client: {client_name}
+Methodology: {methodology}
+Service Lines: {service_lines}
+
+Project Type Guidance:
+{project_type_guidance}
+
+SOW Summary:
+{sow_summary}
+
+Service Line Design Standards:
+{standards_context}
+
+Platform Combination Patterns (proven integration patterns for this service line mix):
+{combinations_context}
+
+Generated Requirements Context (if available):
+{requirements_context}
+
+FORMAT GUIDE ONLY — READ CAREFULLY BEFORE GENERATING:
+The example below is for a COMPLETELY DIFFERENT fictional project (Meridian Insurance).
+DO NOT copy any of the following from the example into your output:
+- Role names (Claims Agent, Claims Supervisor, IT Service Desk) — derive role names from THIS project's SOW and requirements above
+- Numbers (12,000 agents, 200 IT staff, 90 days) — use numbers only if they appear in THIS project's context
+- Named credentials or policy names (MFA-SF-Agents, MuleSoft_SF_Integration) — name these based on THIS project
+- Specific table names unless they match THIS project's service lines
+The example shows ONLY the structure and depth of each table. All content must come from the actual project context above.
+
+FORMAT EXAMPLE (fictional project — structure only):
+
+### Authentication and Authorization Model
+| Layer | Auth Mechanism | Authorization Model | Notes |
+|-------|---------------|--------------------|----|
+| [Service Line] (human users) | [SSO mechanism native to this service line] | [Permission model native to this service line — SF uses Permission Sets, SN uses Roles, Azure uses RBAC] | [User count if known from SOW, MFA policy] |
+| [Service Line] (API / integration) | [Machine auth mechanism] | [Scope restriction] | [Where secret is stored] |
+
+### Role Definitions
+| Role | Description | Access Scope | Service Line |
+|------|-------------|--------------|--------------|
+| [Role from SOW user types] | [What this user does in the project] | [Specific objects they can access in the platform] | [Which service line] |
+
+END OF FORMAT EXAMPLE.
+
+Now generate the security architecture document for {project_name} — client {client_name}, service lines: {service_lines}.
+Role names must come from the actual user types mentioned in the SOW and requirements above — not from the example.
+Auth mechanisms must match the actual service lines: Salesforce uses Permission Sets, ServiceNow uses Roles, Azure uses Managed Identities.
+OWASP mitigations must name the actual framework being used in this project.
+Do not copy any names, numbers, or details from the format example. Output ONLY markdown.
+  </user>
+</prompt>

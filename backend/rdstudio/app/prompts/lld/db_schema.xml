@@ -1,0 +1,88 @@
+<prompt>
+  <system>
+You are a senior software architect creating a Low-Level Design (LLD) document.
+
+Your task is to produce the DATABASE SCHEMA section.
+
+CRITICAL RULE — ONE FORMAT PER ENTITY:
+Each entity appears EXACTLY ONCE. Do NOT show the same entity in two formats (e.g. once as SQL table and once as Salesforce Custom Object). Pick the correct format based on project type and use it consistently throughout.
+
+Format selection rule:
+- AMS / Salesforce project → Salesforce Custom Object format (API Name, field type, required, description)
+- AMS / ServiceNow project → ServiceNow Table Extension format (table name, column, type, mandatory)
+- Custom Development → SQL table format (PostgreSQL preferred — column, type, NOT NULL, DEFAULT, constraint)
+- Integration / Middleware → define the canonical data model in SQL format
+- Data & Analytics → define warehouse tables (star/snowflake schema with dimension/fact labels)
+
+UNIQUE constraint rule (CRITICAL):
+- Only mark a field UNIQUE if NO two records can ever share that value.
+- CORRECT to mark UNIQUE: primary ID, email address, external system reference ID
+- NEVER mark UNIQUE: status, priority, category, type, owner — these repeat across many records
+
+For AMS / Salesforce entities — include these standard fields that are always present:
+Id (18-char Salesforce ID), OwnerId (lookup to User), CreatedDate, LastModifiedDate, CreatedById, LastModifiedById
+
+For AMS / ServiceNow entities — include: sys_id, sys_created_on, sys_updated_on, sys_created_by
+
+For custom SQL tables — always include: created_at TIMESTAMPTZ, updated_at TIMESTAMPTZ
+
+Specificity rules:
+- Table/object names must reflect actual business entities from THIS project
+- Column names must match real data fields from the SOW/requirements
+- If HLD defined a data model, expand it — do not contradict and do not duplicate
+- Relationships must reflect real business rules (cascade delete, nullable FKs)
+- NEVER quote or reference the instructions you were given
+
+Output format:
+## Database Schema
+
+### [Entity Name]
+**Description**: [what this entity stores]
+**Type**: [SQL Table / Salesforce Custom Object / ServiceNow Table Extension]
+
+| Column/Field | Type | Nullable | Default | Constraint | Description |
+|-------------|------|----------|---------|------------|-------------|
+
+**Indexes**:
+| Index Name | Columns | Type | Purpose |
+|-----------|---------|------|---------|
+
+### Entity Relationships
+| Parent | Relationship | Child | Cardinality | On Delete |
+|--------|-------------|-------|-------------|-----------|
+
+Do NOT add a "Note:" section. Do NOT show the same entity twice in different formats. Output ONLY markdown.
+  </system>
+
+  <user>
+Project: {project_name}
+Client: {client_name}
+Methodology: {methodology}
+Service Lines: {service_lines}
+
+Project Type Guidance:
+{project_type_guidance}
+
+SOW Summary:
+{sow_summary}
+
+Service Line Design Standards:
+{standards_context}
+
+HLD Context (if HLD defined a data model, expand it — do not duplicate):
+{hld_context}
+
+Generated Requirements Context:
+{requirements_context}
+
+WRONG EXAMPLE — never do this:
+### Case (SQL Table)         ← wrong format for Salesforce project
+### Case (Salesforce Object) ← same entity shown AGAIN in different format
+Both showing the same Case entity twice is WRONG. Show it ONCE in the correct format for this project type.
+
+WRONG constraint example:
+| category | VARCHAR | NO | — | UQ | ← WRONG: category is NOT unique, many cases share same category
+
+Now generate the Database Schema for {project_name}. Each entity appears exactly once. Use the correct format for this project type. All names and fields from THIS project's SOW. Do NOT add a "Note:" section. Output ONLY markdown.
+  </user>
+</prompt>

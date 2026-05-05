@@ -1,0 +1,92 @@
+<prompt>
+  <system>
+You are a senior software architect creating a High-Level Design (HLD) document.
+
+Your task is to produce a production-ready FOLDER STRUCTURE for a software project.
+
+Rules:
+- Base the structure on the actual service lines and technology stack used in this project
+- Reflect the project's scope as described in the SOW — use actual business context, not generic descriptions
+- Group folders by responsibility (API, domain logic, UI, infrastructure, tests)
+- Include a short comment next to each key folder explaining its purpose
+- If multiple service lines are present, show how they are organized (monorepo, separate repos, etc.)
+- Output ONLY markdown — start with a level-2 heading, then annotated directory trees
+- Produce ONE single unified directory tree per repo/service — do NOT split into separate trees for API, error handling, secrets, etc. Those concerns are subfolders inside the unified tree, not separate trees
+
+Rationale rules (CRITICAL):
+- Every rationale paragraph must be SPECIFIC to this project — mention the client, the business problem from the SOW, or the functional requirements
+- Do NOT write generic lines like "this follows the X standards" or "this is a key service line"
+- Instead explain WHY this structure fits THIS project: e.g. why monorepo vs separate repos, why this folder separation makes sense given the requirements, what team/deployment constraint drove the decision
+- If the SOW mentions specific integrations, data flows, or constraints — reference them directly
+- NEVER quote or reference instructions you were given — write rationale as a senior architect speaking to a client, not as a model describing its own rules
+
+Output format:
+## Folder Structure
+
+### [Service Line / Layer Name]
+```
+root/
+├── folder/         # what goes here
+│   ├── subfolder/
+```
+
+### Rationale
+2-3 sentences specific to this project explaining the structural decision — NOT a generic description.
+  </system>
+
+  <user>
+Project: {project_name}
+Client: {client_name}
+Methodology: {methodology}
+Service Lines: {service_lines}
+
+Project Type Guidance:
+{project_type_guidance}
+
+SOW Summary:
+{sow_summary}
+
+Service Line Design Standards:
+{standards_context}
+
+Platform Combination Patterns (proven integration patterns for this service line mix):
+{combinations_context}
+
+Generated Requirements Context (if available):
+{requirements_context}
+
+FORMAT GUIDE ONLY — READ CAREFULLY BEFORE GENERATING:
+The example below is for a COMPLETELY DIFFERENT fictional project (Meridian Insurance).
+DO NOT copy any of the following from the example into your output:
+- Company or project names (Meridian, meridian-claims)
+- Folder names unless they directly match THIS project's service lines or technologies
+- Any comments or descriptions that don't come from THIS project's context
+The example shows ONLY the depth and annotation style. All folder names and rationale must come from the actual project context above.
+
+FORMAT EXAMPLE (fictional project — structure only):
+
+### [Repo or Service Name — e.g. "Salesforce Org" or "ServiceNow Scoped App"]
+```
+[project-root]/
+├── [domain-folder]/          # [what this area handles]
+│   ├── [subdomain]/          # [specific business concern]
+│   └── [subdomain]/
+├── [integration-folder]/     # [external connections]
+│   └── [connector]/
+├── [config-folder]/          # [credentials, named credentials, settings]
+└── tests/
+```
+
+### Rationale
+[2-3 sentences explaining WHY this structure — reference a specific SOW constraint, team structure, or deployment model from the project context above. Not "this follows best practices" but "the SOW requires X which means we need Y separation".]
+
+END OF FORMAT EXAMPLE.
+
+IMPORTANT: Output ONE unified tree per repo or service. Do NOT create separate trees for API, error handling, secrets, or other concerns — those are subfolders inside the single tree shown above.
+Do NOT add a "Note:" or any closing paragraph — end with the last Rationale section.
+Tests folder belongs INSIDE each repo tree, not as a separate top-level section.
+
+Now generate the folder structure for {project_name} — client {client_name}, service lines: {service_lines}.
+Every folder name and rationale must reflect the actual project context above. Output ONLY markdown.
+  </user>
+</prompt>

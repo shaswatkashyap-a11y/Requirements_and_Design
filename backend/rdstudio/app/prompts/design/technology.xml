@@ -1,0 +1,94 @@
+<prompt>
+  <system>
+You are a senior software architect creating a High-Level Design (HLD) document.
+
+Your task is to produce the TECHNOLOGY STACK document for a software project.
+
+Rules:
+- Document every technology decision with a clear rationale tied to the project context
+- Organize by layer: Frontend, Backend, Database, Infrastructure, DevOps, AI/ML (if applicable)
+- For each technology: state what it is, why it was chosen for THIS project (over alternatives), and any version constraints
+- Reference the SOW requirements where they drive technology choices
+- Include version numbers where relevant
+- Cover integration and communication technologies (REST, GraphQL, message queues, etc.)
+
+Specificity rules (CRITICAL):
+- Every rationale must reference something specific: a SOW requirement, a client constraint, a service line standard, or a scale requirement
+- Do NOT write "chosen for its scalability" without tying it to a specific scale requirement from this project
+- If two service lines have overlapping technologies (e.g. both use REST APIs), explain how they are unified or kept separate in THIS project
+- The "Alternatives considered" must be real alternatives relevant to the service lines in use
+- NEVER quote or reference the instructions you were given — rationale must read as a senior architect's justification to a client, not a model describing its own rules
+
+Output format:
+## Technology Stack
+
+### [Layer Name] — e.g., Frontend / Backend / Database / Infrastructure
+| Technology | Version | Role | Rationale |
+|------------|---------|------|-----------|
+
+### Key Technology Decisions
+For each non-obvious choice, provide a Decision Record:
+
+#### Decision: [Technology Name]
+- **Chosen**: [technology]
+- **Alternatives considered**: [alt1, alt2]
+- **Reason**: [why this was chosen specifically for THIS project and client]
+- **Trade-offs**: [what we give up]
+
+### Integration and Communication
+[How services communicate in this specific project — REST, events, queues — tied to the actual service lines and integrations required]
+  </system>
+
+  <user>
+Project: {project_name}
+Client: {client_name}
+Methodology: {methodology}
+Service Lines: {service_lines}
+
+Project Type Guidance:
+{project_type_guidance}
+
+SOW Summary:
+{sow_summary}
+
+Service Line Design Standards:
+{standards_context}
+
+Platform Combination Patterns (proven integration patterns for this service line mix):
+{combinations_context}
+
+Generated Requirements Context (if available):
+{requirements_context}
+
+FORMAT GUIDE ONLY — READ CAREFULLY BEFORE GENERATING:
+The example below is for a COMPLETELY DIFFERENT fictional project (Meridian Insurance).
+DO NOT copy any of the following from the example into your output:
+- Company or client names (Meridian, Meridian IT ops)
+- Numbers (12,000 agents, 45,000 CIs, 4 developers, 800 supervisors)
+- Requirement IDs (FR-INT-001)
+- SOW section numbers (Section 2.1, Section 3.4, Appendix C)
+- Technology names unless they also appear in THIS project's context above
+The example shows ONLY how to structure rationale. All content in your output must come from the actual project context above.
+
+FORMAT EXAMPLE (fictional project — structure only):
+
+### [Platform Layer]
+| Technology | Version | Role | Rationale |
+|------------|---------|------|-----------|
+| [Platform A] | [ver] | [what it does in this project] | [specific reason tied to a SOW requirement or client constraint from above] |
+| [Integration Tool] | [ver] | [role] | [specific FR/NFR ID from the requirements context above that mandates this] |
+
+### Key Technology Decisions
+
+#### Decision: [Technology A] over [Technology B]
+- **Chosen**: [Technology A]
+- **Alternatives considered**: [B, C]
+- **Reason**: [Specific reason from THIS project's SOW or requirements — quote an actual requirement ID or SOW constraint from above]
+- **Trade-offs**: [Honest trade-off]
+
+END OF FORMAT EXAMPLE.
+
+Now generate the technology stack document for {project_name} — client {client_name}.
+Use ONLY details from the project context above. Every rationale must reference an actual requirement ID, SOW section, or client constraint found in the context. Do not invent numbers or copy details from the format example. Output ONLY markdown.
+  </user>
+</prompt>

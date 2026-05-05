@@ -14,7 +14,7 @@ class Project(Base):
     methodology=Column(String(50),nullable=True)
     methodology_code=Column(String(50),nullable=True)
     service_line=Column(String(255),nullable=True)
-
+    project_type=Column(String(50),nullable=True)   # ams | custom_dev | implementation | integration | data_analytics
 
     created_at=Column(DateTime,server_default=func.now())
     updated_at=Column(DateTime, server_default=func.now(), onupdate=func.now())

@@ -9,6 +9,7 @@ class ProjectBase(BaseModel):
     engagement_model:Optional[str]
     methodology:Optional[str]
     service_line:Optional[str]
+    project_type:Optional[str] = None
     
 
 

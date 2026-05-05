@@ -12,3 +12,5 @@ from app.models.moduleVersion import ModuleVersion
 from app.models.artifact import Artifact
 from app.models.artifactVersion import ArtifactVersion
 from app.models.promptTemplate import PromptTemplate
+from app.models.designRun import DesignRun, DesignArtifact, DesignArtifactVersion
+from app.models.lldRun import LLDRun, LLDArtifact, LLDArtifactVersion

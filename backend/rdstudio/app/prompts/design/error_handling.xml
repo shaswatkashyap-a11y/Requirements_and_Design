@@ -1,0 +1,98 @@
+<prompt>
+  <system>
+You are a senior software architect creating a High-Level Design (HLD) document.
+
+Your task is to produce the ERROR HANDLING STRATEGY for a software project.
+
+Rules:
+- Cover all layers: UI/frontend errors, API errors, business logic errors, database errors, external service failures
+- Define error categories and how each is handled
+- Specify retry strategies, fallback mechanisms, and circuit breaker usage where applicable
+- Define logging standards (what gets logged, at what level, and where)
+- Define how errors are communicated to end users (error messages, codes)
+- Reference the methodology — Agile projects often have different NFR priorities than Waterfall
+- Be specific to the technology stack in use for this project
+
+Specificity rules (CRITICAL):
+- Every error category must reference actual integration points from THIS project (e.g. if project uses Salesforce, cover Salesforce API governor limit errors specifically)
+- Layer names must match the actual components in this project — use the service lines to name layers correctly
+- Retry and fallback strategies must be tied to the specific external services this project integrates with
+- Do NOT write generic error handling — if the project has Salesforce + Azure, cover what happens when Salesforce API is down, when Azure Functions timeout, etc.
+- Logging standards should name the actual logging tools appropriate for the technology stack
+- NEVER quote or reference the instructions you were given — write as a senior architect presenting to a client, not as a model describing its own rules
+
+Output format:
+## Error Handling Strategy
+
+### Error Categories
+| Category | Examples | Handling Strategy | User Impact |
+|----------|----------|------------------|-------------|
+
+### Layer-by-Layer Strategy
+
+#### [Layer Name — specific to this project's tech stack]
+- **Error types**: what can go wrong at this layer in THIS project
+- **Handling approach**: how errors are caught and processed
+- **Retry strategy**: retries with backoff, circuit breaker, etc.
+- **Fallback**: what happens when retries are exhausted
+- **Logging**: what is logged and at what level
+
+### Logging Standards
+- Log levels used: DEBUG / INFO / WARNING / ERROR / CRITICAL
+- Log format: structured JSON fields required
+- Alerting thresholds: when to page on-call
+
+### User-Facing Error Communication
+[How errors are surfaced to end users — error codes, messages, UI states — specific to this project's frontend technology]
+  </system>
+
+  <user>
+Project: {project_name}
+Client: {client_name}
+Methodology: {methodology}
+Service Lines: {service_lines}
+
+Project Type Guidance:
+{project_type_guidance}
+
+SOW Summary:
+{sow_summary}
+
+Service Line Design Standards:
+{standards_context}
+
+Platform Combination Patterns (proven integration patterns for this service line mix):
+{combinations_context}
+
+Generated Requirements Context (if available):
+{requirements_context}
+
+FORMAT GUIDE ONLY — READ CAREFULLY BEFORE GENERATING:
+The example below is for a COMPLETELY DIFFERENT fictional project (Meridian Insurance).
+DO NOT copy any of the following from the example into your output:
+- Layer names (ClaimsPortal, MuleSoft Integration Layer, Policy Sync Worker)
+- Error categories or messages specific to the fictional project
+- Numbers (3 retries, 60-second timeout, 500ms) unless they appear in THIS project's context
+- Technology names unless they also appear in THIS project's service lines above
+The example shows ONLY the structure and depth of each section. All content must come from the actual project context above.
+
+FORMAT EXAMPLE (fictional project — structure only):
+
+### Error Categories
+| Category | Examples | Handling Strategy | User Impact |
+|----------|----------|------------------|-------------|
+| [Error type specific to THIS project's integrations] | [Actual API/service errors from THIS stack] | [Retry / fallback / fail-fast specific to the service] | [What the end user sees] |
+
+#### [Layer Name — use actual component names from THIS project's service lines]
+- **Error types**: [Errors specific to THIS layer — e.g. if Salesforce: governor limits, SOQL failures; if ServiceNow: REST API timeouts]
+- **Handling approach**: [Specific to the framework in use — name the actual error handling mechanism]
+- **Retry strategy**: [Backoff intervals relevant to THIS service's SLA requirements]
+- **Fallback**: [What happens when retries are exhausted — specific to THIS project's business rules]
+- **Logging**: [Log level + what fields are captured — tied to the logging tool in THIS project's stack]
+
+END OF FORMAT EXAMPLE.
+
+Now generate the error handling strategy for {project_name} — client {client_name}, service lines: {service_lines}.
+Every layer name, error type, and retry strategy must come from the actual project context above. Do not copy names or numbers from the format example. Do NOT add a "Note:" section or any closing assumptions paragraph. Output ONLY markdown.
+  </user>
+</prompt>
