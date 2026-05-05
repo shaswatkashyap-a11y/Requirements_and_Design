@@ -1,0 +1,92 @@
+service_line: dotnet
+display_name: .NET / ASP.NET Core
+category: custom_dev
+
+terminology:
+  user: Application User / API Consumer
+  system: .NET Application / ASP.NET Core Service
+  module: .NET Project / ASP.NET Controller Area
+  requirement: Functional Requirement / API Requirement
+  environment: Environment (Development / QA / Staging / Production)
+  data_store: Database / Entity Framework DbContext (SQL Server / Azure SQL)
+
+roles:
+  - name: .NET Developer
+    description: Implements ASP.NET Core controllers, services, EF Core models, and background workers
+  - name: Solutions Architect / Tech Lead
+    description: Defines solution structure, API contracts, DI configuration, and data model
+  - name: DevOps Engineer
+    description: Manages Azure DevOps pipelines, Docker containers, and Kubernetes or Azure App Service deployments
+  - name: QA Engineer
+    description: Writes xUnit/NUnit unit tests and integration tests using WebApplicationFactory
+  - name: Database Administrator
+    description: Manages EF Core migrations, SQL Server performance, and connection pooling
+
+extra_sections:
+  - id: api_specification
+    title: API Specification Overview
+    placement: after
+    relative_to: module_overview
+    required: true
+    content_guidance: >
+      Summarize the REST (or gRPC) API surface: list all major controller groups,
+      HTTP methods, authentication mechanism (ASP.NET Core Identity / Azure AD /
+      JWT Bearer), and API versioning strategy (URL versioning vs header versioning).
+      Note Swagger/OpenAPI documentation via Swashbuckle or NSwag. Include key
+      request/response DTO names per module.
+
+  - id: data_model_overview
+    title: Data Model & Persistence Overview
+    placement: after
+    relative_to: api_specification
+    required: true
+    content_guidance: >
+      Describe EF Core model structure: key entities per module, relationships
+      (navigation properties, foreign keys), database choice (SQL Server / Azure SQL /
+      PostgreSQL), migration strategy (EF Core Migrations or Flyway), and DbContext
+      configuration (connection resilience, query tracking behavior). Note
+      repository pattern usage if applicable.
+
+compliance_standards:
+  - name: OWASP Top 10
+    description: Web application security — SQL injection, XSS, broken auth, CSRF
+    applicable_sections: [nonfunctional_requirements, detailed_requirements]
+  - name: OAuth 2.0 / OpenID Connect (Microsoft Identity Platform)
+    description: Azure AD and Microsoft Identity Platform for enterprise auth
+    applicable_sections: [api_specification, nonfunctional_requirements]
+  - name: Microsoft Security Development Lifecycle (SDL)
+    description: Microsoft's secure coding and review practices
+    applicable_sections: [nonfunctional_requirements]
+
+highlight_artifacts:
+  - type: architecture
+    emphasis: >
+      Present components as .NET solution layers: Controllers (API surface),
+      Application Services (business logic), Domain Models (EF Core entities),
+      Repositories (data access), Background Services (IHostedService / Worker Service).
+      Reference NuGet packages by name for key integrations (MediatR, AutoMapper,
+      Polly, Serilog, Hangfire).
+  - type: nonfunctional_req
+    emphasis: >
+      Include .NET-specific targets: API throughput (req/s via Kestrel), response time
+      p95, EF Core query performance (avoid N+1, use .AsNoTracking()), connection pool
+      sizing (SQL Server max pool size), memory usage under load, and GC configuration
+      (Server GC for APIs).
+  - type: task
+    emphasis: >
+      Frame tasks as .NET development work: scaffold ASP.NET Core project with DI
+      registration, define EF Core entities and migrations, implement controller +
+      service + repository, configure Serilog + Application Insights, write xUnit
+      integration tests with WebApplicationFactory.
+  - type: risk
+    emphasis: >
+      Highlight .NET risks: EF Core lazy loading N+1 queries, async/await deadlocks
+      in legacy code, SQL Server connection pool exhaustion, Azure AD token caching
+      issues, and NuGet dependency version conflicts.
+
+content_notes:
+  - Always use "EF Core entities" and "DbContext" — not generic "ORM models".
+  - All dependency injection must use ASP.NET Core's built-in DI container — note lifetime (Singleton/Scoped/Transient).
+  - Background job requirements should reference IHostedService, Worker Service, or Hangfire explicitly.
+  - Test requirements should distinguish unit tests (xUnit + Moq) from integration tests (WebApplicationFactory + TestContainers).
+  - Logging requirements must reference Serilog or Microsoft.Extensions.Logging — not Console.WriteLine.

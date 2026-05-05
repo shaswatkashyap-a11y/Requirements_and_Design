@@ -1,0 +1,10 @@
+methodology: scrum
+display_name: Scrum
+document_title: Product Backlog & Requirements Document
+functional_req_heading: User Stories (Epic Breakdown)
+artifact_order:
+  - functional_req
+  - task
+  - test_case
+  - risk_entry
+  - architecture

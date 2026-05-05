@@ -1,0 +1,84 @@
+service_line: java
+display_name: Java / Spring Boot
+category: custom_dev
+
+terminology:
+  user: Application User / API Consumer
+  system: Java Application / Spring Boot Service
+  module: Spring Service / Maven Module
+  requirement: Functional Requirement / API Requirement
+  environment: Environment (Dev / QA / Staging / Production)
+  data_store: Database / JPA Repository (PostgreSQL / MySQL / Oracle)
+
+roles:
+  - name: Java Developer
+    description: Implements Spring Boot services, REST APIs, and JPA entities
+  - name: Tech Lead / Solutions Architect
+    description: Defines service boundaries, API contracts, and data model design
+  - name: DevOps Engineer
+    description: Manages Docker, Kubernetes, Maven/Gradle builds, and CI/CD pipelines
+  - name: QA Engineer
+    description: Writes and executes JUnit/Testcontainers integration tests and regression suites
+  - name: Database Administrator
+    description: Manages schema migrations, query optimization, and connection pooling
+
+extra_sections:
+  - id: api_specification
+    title: API Specification Overview
+    placement: after
+    relative_to: module_overview
+    required: true
+    content_guidance: >
+      Summarize the REST API surface: list all major endpoint groups (Controllers),
+      HTTP methods, authentication mechanism (OAuth 2.0 / JWT / API Key), and
+      versioning strategy (URI versioning vs header versioning). Note OpenAPI/Swagger
+      documentation requirement. Include a sample request/response structure for
+      at least one key endpoint per module.
+
+  - id: data_model_overview
+    title: Data Model & Persistence Overview
+    placement: after
+    relative_to: api_specification
+    required: true
+    content_guidance: >
+      Describe the JPA entity model: key entities per module, relationships
+      (OneToMany, ManyToMany, etc.), primary database choice, schema migration
+      strategy (Flyway or Liquibase), and ORM configuration notes
+      (lazy vs eager loading strategy, N+1 prevention approach).
+
+compliance_standards:
+  - name: OWASP Top 10
+    description: Web application security risks — SQL injection, XSS, broken auth
+    applicable_sections: [nonfunctional_requirements, detailed_requirements]
+  - name: OAuth 2.0 / OpenID Connect
+    description: Industry standard for API authentication and authorization
+    applicable_sections: [api_specification, nonfunctional_requirements]
+
+highlight_artifacts:
+  - type: architecture
+    emphasis: >
+      Present components as named Spring layers: Controller, Service, Repository,
+      Domain Entity. Reference Spring Boot starters and third-party integrations
+      (Kafka, Redis, Spring Security) explicitly by name.
+  - type: nonfunctional_req
+    emphasis: >
+      Include JVM-specific targets: heap sizing, GC strategy, connection pool sizing
+      (HikariCP), API throughput (req/s), response time p95, and Kafka consumer lag
+      thresholds where applicable.
+  - type: task
+    emphasis: >
+      Frame tasks as Spring development work: scaffold Spring Boot module, define
+      JPA entities and Flyway migration, implement REST controller + service + repository,
+      write JUnit 5 + Testcontainers integration tests.
+  - type: risk
+    emphasis: >
+      Highlight Java-specific risks: Spring version compatibility, JPA lazy loading
+      pitfalls, N+1 query problems, JVM memory pressure under load, and Kafka consumer
+      lag under burst traffic.
+
+content_notes:
+  - Always refer to persistence as "JPA entities" and "repositories" — not generic "database tables".
+  - Background job requirements should reference Celery or Spring Batch/Quartz Scheduler explicitly.
+  - All inter-service communication requirements must specify REST vs messaging (Kafka/RabbitMQ).
+  - Test requirements should distinguish unit tests (JUnit + Mockito) from integration tests (Testcontainers).
+  - Dependency injection and bean management are Spring-managed — avoid suggesting manual instantiation.

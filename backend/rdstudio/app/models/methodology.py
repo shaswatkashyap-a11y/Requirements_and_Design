@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, JSON
 from app.db.database import Base
 
 
@@ -9,3 +9,4 @@ class Methodology(Base):
     name = Column(String(50), nullable=False)
     code = Column(String(50), unique=True, nullable=False)
     description = Column(String(255), nullable=True)
+    artifact_types = Column(JSON, nullable=True)

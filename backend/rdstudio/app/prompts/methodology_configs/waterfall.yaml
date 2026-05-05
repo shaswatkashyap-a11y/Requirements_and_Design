@@ -1,0 +1,11 @@
+methodology: waterfall
+display_name: Waterfall
+document_title: Software Requirements Specification
+functional_req_heading: Functional Requirements
+artifact_order:
+  - functional_req
+  - architecture
+  - nonfunctional_req
+  - task
+  - test_case
+  - risk_entry

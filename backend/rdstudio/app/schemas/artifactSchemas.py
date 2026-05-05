@@ -24,6 +24,8 @@ class ArtifactResponse(BaseModel):
     sort_order: int
     confidence: float | None
     source_section_ids: list[int] | None
+    stale_status:       str       = "current"
+    current_version_id: int | None = None
 
     class Config:
         from_attributes = True
@@ -40,3 +42,4 @@ class ArtifactSummaryResponse(BaseModel):
 
     class Config:
         from_attributes = True
+

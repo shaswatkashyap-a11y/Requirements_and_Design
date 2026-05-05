@@ -2,7 +2,8 @@ import re
 import logging
 import asyncio
 import xml.etree.ElementTree as ET
-
+from app.services.moduleRepository import ModuleRepository
+from app.models.moduleVersion import ModuleVersionSource
 from app.services.artifactRepository import ArtifactRepository
 from app.services.llmClient import LLMClient,ParseError
 from app.services.promptBuilder import PromptBuilder
@@ -42,6 +43,15 @@ class GenerationOrchestrator:
 
 
             db_modules=self.repo.save_modules(generation_run_id,modules_data)
+
+            module_repo = ModuleRepository(self.repo.db)
+            for db_module, module_data in zip(db_modules, modules_data):
+                module_repo.append_version(
+                    module_id   = db_module.id,
+                    name        = module_data["name"],
+                    description = module_data.get("description", ""),
+                    source      = ModuleVersionSource.GENERATED,
+                )
 
             # ── STEP 2+: Generate artifacts in dependency rounds ──
             rounds= resolve_generation_order(requested_types)

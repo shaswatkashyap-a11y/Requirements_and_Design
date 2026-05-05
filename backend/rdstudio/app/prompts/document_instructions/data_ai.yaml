@@ -1,0 +1,143 @@
+service_line: data_ai
+display_name: Data & Analytics
+category: ai_intelligence
+
+terminology:
+  user: Data Consumer / Analyst / Business Stakeholder
+  system: Data Platform / Analytics Platform
+  module: Data Domain / Data Pipeline / Analytics Area
+  requirement: Data Requirement / Analytics Requirement
+  environment: Data Environment (Dev / QA / Production)
+  data_store: Data Warehouse / Data Lake / Lakehouse / BI Semantic Layer
+
+roles:
+  - name: Data Engineer
+    description: Builds and maintains data ingestion pipelines, transformations (dbt), and orchestration (Airflow/Prefect)
+  - name: Analytics Engineer
+    description: Models data using dbt, defines semantic layer, and maintains data quality tests
+  - name: BI Developer
+    description: Builds dashboards, reports, and self-service analytics in Power BI / Tableau / Looker / Metabase
+  - name: Data Architect
+    description: Designs data platform architecture, data model, and governance framework
+  - name: Business Analyst
+    description: Defines KPI definitions, reporting requirements, and data consumer use cases
+  - name: Data Governance Lead
+    description: Owns data quality standards, data catalog, lineage, and access control policies
+
+extra_sections:
+  - id: data_source_inventory
+    title: Data Source Inventory
+    placement: after
+    relative_to: module_overview
+    required: true
+    content_guidance: >
+      List all data sources feeding the platform: source system name, type
+      (transactional DB / SaaS API / file / event stream / third-party data),
+      data objects/tables in scope, ingestion method (batch / CDC / streaming),
+      ingestion frequency (real-time / hourly / daily / weekly), volume estimate
+      (rows/day, GB/day), and owner/steward. Highlight sources with PII or sensitive data.
+
+  - id: data_pipeline_architecture
+    title: Data Pipeline Architecture
+    placement: after
+    relative_to: data_source_inventory
+    required: true
+    content_guidance: >
+      Describe the data platform architecture layers:
+      - Ingestion Layer: tools (Fivetran / Airbyte / custom Python / Kafka / Debezium CDC),
+        raw landing zone (S3 / ADLS / GCS / Snowflake raw schema)
+      - Storage Layer: warehouse (Snowflake / BigQuery / Redshift / Databricks), lake vs
+        lakehouse approach, table formats (Delta / Iceberg / Hudi) if applicable
+      - Transformation Layer: dbt models (staging → intermediate → mart layers),
+        orchestration (Airflow / Prefect / dbt Cloud), SLA per pipeline
+      - Serving Layer: BI semantic layer (dbt metrics / LookML / Power BI dataset),
+        data mart structures per domain, API layer if programmatic access required
+      - Orchestration: DAG structure, dependency management, failure alerting
+
+  - id: data_dictionary
+    title: Data Dictionary & Semantic Definitions
+    placement: after
+    relative_to: data_pipeline_architecture
+    required: true
+    content_guidance: >
+      For each key data domain/module, define: entity name, business definition,
+      key metrics and KPI definitions (formula, grain, time dimension), dimension
+      tables (with key attributes), fact tables (with measures), and data freshness
+      SLA (max acceptable lag from source to serving). Clarify any metric calculation
+      disputes or conflicting definitions across business units.
+
+  - id: bi_reporting_requirements
+    title: BI & Reporting Requirements
+    placement: after
+    relative_to: data_dictionary
+    required: true
+    content_guidance: >
+      List all dashboards and reports required: report name, primary audience,
+      key metrics displayed, filters/dimensions available, refresh frequency,
+      target BI tool (Power BI / Tableau / Looker / Metabase / Superset),
+      and access control (who can view/edit). Flag any self-service analytics
+      requirements (ad-hoc query capability, data export). Note mobile access
+      requirements for dashboards.
+
+  - id: data_governance_and_quality
+    title: Data Governance & Quality Requirements
+    placement: before
+    relative_to: appendix
+    required: true
+    content_guidance: >
+      Define data governance requirements: data catalog tool (Alation / Atlan / DataHub /
+      dbt docs), lineage tracking (column-level lineage tool), data quality framework
+      (dbt tests, Great Expectations, Soda), quality dimensions (completeness, accuracy,
+      timeliness, consistency) with measurable thresholds per domain. Include data
+      access control model (row-level security, column masking for PII), data
+      retention policy, and right-to-erasure (GDPR) implementation approach.
+
+compliance_standards:
+  - name: GDPR / CCPA
+    description: Personal data handling, right to erasure, and consent management in data platforms
+    applicable_sections: [data_governance_and_quality, data_source_inventory]
+  - name: SOX (Sarbanes-Oxley)
+    description: Financial data integrity, audit trail, and access controls for financial reporting pipelines
+    applicable_sections: [nonfunctional_requirements, data_governance_and_quality]
+  - name: HIPAA
+    description: Protected health information (PHI) handling requirements if healthcare data is in scope
+    applicable_sections: [nonfunctional_requirements, data_governance_and_quality]
+  - name: DAMA-DMBOK
+    description: Data Management Body of Knowledge — standard reference for data governance practices
+    applicable_sections: [data_governance_and_quality]
+
+highlight_artifacts:
+  - type: architecture
+    emphasis: >
+      Present as data platform layers: Ingestion (Fivetran/Airbyte/Kafka), Storage
+      (Snowflake/BigQuery/Databricks), Transformation (dbt + Airflow), Serving
+      (BI semantic layer + dashboards), Governance (catalog + lineage + quality).
+      Name all tools explicitly — never use generic terms like "the database" or
+      "the pipeline tool".
+  - type: nonfunctional_req
+    emphasis: >
+      Group NFRs under data-specific categories: Data Freshness (pipeline SLA — max lag
+      from source to serving), Data Quality (completeness %, accuracy thresholds, zero
+      critical test failures), Query Performance (BI dashboard load time p95, ad-hoc
+      query SLA), Availability (pipeline uptime %, missed SLA alerting), and
+      Storage Cost (cost per TB/month target).
+  - type: risk
+    emphasis: >
+      Include data-specific risks: source system schema changes breaking ingestion,
+      pipeline SLA misses during high-volume periods, metric definition disagreements
+      between business units, PII data leakage through dashboards, cost escalation
+      from unoptimized BigQuery/Snowflake queries, and data catalog adoption failure.
+  - type: test_case
+    emphasis: >
+      Include data testing types: source data validation (schema, volume, null checks),
+      dbt model tests (uniqueness, not-null, referential integrity, custom business rules),
+      pipeline integration tests (end-to-end data flow from source to mart),
+      BI report validation (metric values vs source of truth), and SLA monitoring tests.
+
+content_notes:
+  - Always define KPIs with formula, grain (daily/weekly/monthly), and time dimension — never leave metrics vague.
+  - Distinguish "data lake" (raw storage) from "data warehouse" (structured, query-optimized) from "lakehouse" (Delta/Iceberg hybrid).
+  - dbt model layer naming must follow: staging (stg_) → intermediate (int_) → mart (dim_ / fct_) convention.
+  - All PII fields must be identified at the source level — not discovered downstream.
+  - 'Pipeline SLAs must be expressed as: Data available in [destination] by [time] after [source event/cut-off].'
+  - Row-level security and column masking requirements must be documented per role/user group, not just mentioned.

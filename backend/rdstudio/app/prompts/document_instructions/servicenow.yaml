@@ -1,0 +1,104 @@
+service_line: servicenow
+display_name: ServiceNow
+category: erp_crm
+
+terminology:
+  user: ServiceNow User / Platform User
+  system: ServiceNow Instance / Now Platform
+  module: ServiceNow Application / Scoped App
+  requirement: Platform Requirement / Process Requirement
+  environment: ServiceNow Instance (Sub-Production / Production)
+  data_store: ServiceNow Table / CMDB CI / Attachment Record
+
+roles:
+  - name: ServiceNow Developer
+    description: Builds scoped apps, Business Rules, Client Scripts, REST integrations, and Flow Designer flows
+  - name: ServiceNow Administrator
+    description: Configures ITSM processes, SLAs, assignment rules, notifications, and access controls
+  - name: Process Owner
+    description: Defines ITIL-aligned process requirements (Incident, Change, Problem, Request Management)
+  - name: Integration Specialist
+    description: Designs MID Server configurations, REST/SOAP integrations, and spoke development in IntegrationHub
+  - name: Platform Architect
+    description: Governs scoped app strategy, upgrade readiness, and platform health
+
+extra_sections:
+  - id: servicenow_application_design
+    title: ServiceNow Application & Scope Design
+    placement: after
+    relative_to: module_overview
+    required: true
+    content_guidance: >
+      Define the scoped application structure: application scope (prefix), key tables
+      (extending Task or base table), table relationships, and data model per module.
+      Specify whether requirements are met via OOTB configuration (ITSM, HRSD, CSM,
+      ITOM, SecOps) or custom scoped app development. List ServiceNow products/plugins
+      being activated. Note Now Platform version (e.g., Washington DC, Xanadu release).
+
+  - id: process_flow_and_automation
+    title: Process Flow & Automation Design
+    placement: after
+    relative_to: servicenow_application_design
+    required: true
+    content_guidance: >
+      For each module, describe the process flow: trigger (form submission, inbound
+      email, API call, schedule), automation steps (Flow Designer flows, Business Rules,
+      Workflow activities), SLA definitions (response and resolution targets), assignment
+      logic (assignment groups, round-robin, skills-based routing), escalation rules,
+      and notification events. Distinguish Flow Designer (preferred) from legacy Workflow.
+
+  - id: integration_specifications
+    title: Integration Specifications
+    placement: after
+    relative_to: process_flow_and_automation
+    required: false
+    content_guidance: >
+      List all integrations between ServiceNow and external systems: integration name,
+      direction (inbound/outbound), protocol (REST/SOAP/JDBC via MID Server),
+      authentication (Basic / OAuth 2.0 / API Key), trigger (event-driven / scheduled),
+      IntegrationHub spoke (if available), and data mapping summary. Flag integrations
+      requiring MID Server for on-premise connectivity.
+
+compliance_standards:
+  - name: ITIL v4
+    description: IT service management best practices — Incident, Change, Problem, Request, and Service management
+    applicable_sections: [detailed_requirements, process_flow_and_automation]
+  - name: SOC 2 Type II
+    description: ServiceNow platform security and availability
+    applicable_sections: [nonfunctional_requirements]
+  - name: GDPR
+    description: Personal data handling within ServiceNow tables (HR, customer records)
+    applicable_sections: [nonfunctional_requirements]
+
+highlight_artifacts:
+  - type: architecture
+    emphasis: >
+      Present components as ServiceNow platform layers: UI Layer (Service Portal /
+      Now Mobile / Agent Workspace), Process Layer (Flows, Business Rules, SLAs),
+      Data Layer (Tables, CMDB, Attachments), Integration Layer (IntegrationHub,
+      MID Server, REST APIs). Reference specific ServiceNow products (ITSM, HRSD,
+      CSM, ITOM, SecOps, SPM) by name.
+  - type: nonfunctional_req
+    emphasis: >
+      Include ServiceNow-specific targets: form load time, Flow Designer execution
+      time, batch import job duration, SLA breach thresholds, API rate limits
+      (inbound REST calls per hour), and upgrade readiness (skip vs in-place upgrade).
+  - type: task
+    emphasis: >
+      Frame tasks as ServiceNow development work: create/extend table with fields
+      and relationships, build Flow Designer flow with approval steps, configure
+      SLA definitions and exclusion calendars, develop Business Rule (before/after
+      insert/update), build Service Portal widget, configure IntegrationHub spoke.
+  - type: risk
+    emphasis: >
+      Highlight ServiceNow risks: customization debt impacting upgrade readiness,
+      Business Rule order conflicts, Flow Designer vs legacy Workflow migration,
+      MID Server single-point-of-failure for critical integrations, CMDB data
+      quality issues, and instance cloning cadence gaps.
+
+content_notes:
+  - 'Use Now Platform terminology: "tables" not "database tables", "records" not "rows", "fields" not "columns".'
+  - Always specify scoped app vs global scope — global scope modifications are discouraged for new development.
+  - All automation requirements should default to Flow Designer — note explicitly if legacy Workflow is required.
+  - ACL (Access Control List) requirements must be documented per table and per operation (read/write/create/delete).
+  - Update set / source control (Git via App Engine Studio) strategy must be noted in deployment requirements.

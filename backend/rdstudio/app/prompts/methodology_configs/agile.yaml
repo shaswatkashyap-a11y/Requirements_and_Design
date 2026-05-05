@@ -1,0 +1,10 @@
+methodology: agile
+display_name: Agile
+document_title: Product Requirements Document
+functional_req_heading: User Stories
+artifact_order:
+  - functional_req
+  - test_case
+  - risk_entry
+  - architecture
+  - task

@@ -1,0 +1,132 @@
+service_line: agentic_ai
+display_name: Agentic AI / LLM Systems
+category: ai_intelligence
+
+terminology:
+  user: Agent Operator / End User / Human-in-the-Loop Reviewer
+  system: AI Agent System / LLM-Powered Application
+  module: Agent / Tool / Orchestration Component
+  requirement: Agent Requirement / Capability Requirement
+  environment: Agent Environment (Development / Staging / Production)
+  data_store: Vector Store / Agent Memory / Knowledge Base / Tool Output Cache
+
+roles:
+  - name: AI Engineer
+    description: Builds agent orchestration logic, tool integrations, and LLM prompt pipelines
+  - name: Prompt Engineer
+    description: Designs and iterates system prompts, few-shot examples, and prompt templates
+  - name: LLM Integration Specialist
+    description: Integrates LLM provider APIs (OpenAI, Anthropic, Google, Azure OpenAI) and manages model selection
+  - name: MLOps / AI Ops Engineer
+    description: Manages deployment, observability (LangSmith/Langfuse), cost monitoring, and evaluation pipelines
+  - name: AI Safety Reviewer
+    description: Reviews agent behavior for safety, hallucination risks, and compliance with usage policies
+
+extra_sections:
+  - id: agent_architecture
+    title: Agent Architecture & Orchestration Design
+    placement: after
+    relative_to: module_overview
+    required: true
+    content_guidance: >
+      Define the agent system architecture:
+      - Agent topology: single agent vs multi-agent (supervisor / hierarchical / peer-to-peer)
+      - Orchestration framework: LangGraph / CrewAI / AutoGen / LangChain / custom
+      - LLM provider and model per agent role (e.g., GPT-4o for reasoning, GPT-4o-mini for routing)
+      - Agent state design: what state is maintained across steps, how state is persisted
+      - Decision loop: ReAct / Plan-and-Execute / Reflection / SELF-REFINE pattern
+      - Human-in-the-loop checkpoints: when and how humans review/approve agent actions
+      - Context window management: how long contexts are handled (chunking, summarization, compression)
+
+  - id: tool_specifications
+    title: Tool Specifications
+    placement: after
+    relative_to: agent_architecture
+    required: true
+    content_guidance: >
+      List all tools available to agent(s): tool name, description (as the LLM sees it),
+      input schema (parameters), output schema, error handling behavior, retry policy,
+      authorization required (yes/no), and which agent(s) have access to this tool.
+      Distinguish deterministic tools (API calls, DB queries, code execution) from
+      LLM-powered sub-agents. Note tool call rate limits and timeout thresholds.
+
+  - id: memory_and_knowledge_base
+    title: Memory & Knowledge Base Design
+    placement: after
+    relative_to: tool_specifications
+    required: true
+    content_guidance: >
+      Define memory architecture:
+      - Short-term memory: conversation history window size, summarization strategy
+      - Long-term memory: vector store (Pinecone / Weaviate / pgvector / Chroma),
+        embedding model, chunking strategy (size, overlap), retrieval approach
+        (semantic search, hybrid, MMR), and relevance threshold
+      - Episodic memory: whether past task outcomes are stored and retrieved
+      - Knowledge base: source documents, update frequency, ingestion pipeline
+      If RAG is used: retrieval pipeline design (query expansion, re-ranking, citation).
+
+  - id: guardrails_and_safety
+    title: Guardrails, Safety & Evaluation
+    placement: after
+    relative_to: memory_and_knowledge_base
+    required: true
+    content_guidance: >
+      Define safety controls:
+      - Input guardrails: prompt injection detection, PII scrubbing, topic filtering
+      - Output guardrails: hallucination detection, factuality checks, toxicity filtering,
+        format validation before returning to user
+      - Action guardrails: confirmation required before irreversible tool calls
+        (send email, delete record, execute code)
+      - Evaluation framework: offline evals (RAGAS, custom test suite), online monitoring
+        (LangSmith / Langfuse traces), hallucination rate KPI, task completion rate KPI
+      - Fallback behavior: what happens when LLM fails, tool errors, or confidence is low
+
+compliance_standards:
+  - name: EU AI Act
+    description: High-risk AI classification, transparency requirements, and human oversight mandates
+    applicable_sections: [nonfunctional_requirements, guardrails_and_safety]
+  - name: NIST AI Risk Management Framework (AI RMF)
+    description: Govern, Map, Measure, Manage framework for responsible agentic AI systems
+    applicable_sections: [nonfunctional_requirements, guardrails_and_safety]
+  - name: LLM Provider Usage Policies
+    description: Anthropic / OpenAI / Google usage policies — prohibited use cases, data retention, PII handling
+    applicable_sections: [nonfunctional_requirements, guardrails_and_safety]
+  - name: OWASP LLM Top 10
+    description: LLM-specific security risks — prompt injection, insecure output handling, training data poisoning
+    applicable_sections: [nonfunctional_requirements, guardrails_and_safety]
+
+highlight_artifacts:
+  - type: architecture
+    emphasis: >
+      Present as agent system layers: Orchestration Layer (framework, agent loop, state machine),
+      LLM Layer (provider, model, prompt templates, token budget), Tool Layer (tool definitions,
+      APIs called, MCP servers), Memory Layer (conversation context, vector store, knowledge base),
+      Observability Layer (tracing, cost tracking, evaluation). Name all frameworks, providers,
+      and vector stores explicitly.
+  - type: nonfunctional_req
+    emphasis: >
+      Include agentic-specific targets: end-to-end task completion latency (p50/p95),
+      token cost per task ($/task budget), hallucination rate (measured via eval suite),
+      task completion rate (% of tasks fully resolved without human escalation),
+      tool call error rate, and context window utilization (% before hitting limit).
+  - type: risk
+    emphasis: >
+      Always include: prompt injection attacks from external data sources (tool outputs,
+      retrieved documents), hallucination in critical tool inputs, runaway agent loops
+      (max iteration limit required), token cost escalation under heavy load, LLM API
+      rate limiting and outage, PII leakage through tool calls or LLM outputs,
+      and non-deterministic behavior making testing hard.
+  - type: test_case
+    emphasis: >
+      Include agentic test types: unit tests per tool (mock LLM, assert tool called correctly),
+      prompt regression tests (golden dataset of input → expected output), adversarial tests
+      (prompt injection attempts, off-topic queries), end-to-end workflow tests, and
+      evaluation suite runs (RAGAS scores, human eval on sample outputs).
+
+content_notes:
+  - Always specify the LLM provider and model name — never say "the AI model" generically.
+  - All tool calls that have side effects (write, delete, send, execute) must have a confirmation/approval requirement documented.
+  - Context window limits must be respected — document the token budget strategy for each agent.
+  - Prompt templates should be treated as first-class artifacts with version control requirements.
+  - Cost controls are non-negotiable — token budget per task and monthly cost cap must be in NFRs.
+  - Distinguish agent "capabilities" (what the agent can do) from "permissions" (what it is allowed to do).

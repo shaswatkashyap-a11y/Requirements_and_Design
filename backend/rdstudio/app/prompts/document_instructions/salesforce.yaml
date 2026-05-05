@@ -1,0 +1,120 @@
+service_line: salesforce
+display_name: Salesforce
+category: erp_crm
+
+terminology:
+  user: Salesforce User / Business User
+  system: Salesforce Org / Salesforce Platform
+  module: Salesforce Functional Area / Cloud / App
+  requirement: Salesforce Requirement
+  environment: Salesforce Org (Sandbox / UAT / Production)
+  data_store: Salesforce Object (sObject) / Custom Object / External Data Source
+
+roles:
+  - name: Salesforce Administrator
+    description: Configures declarative features — profiles, permission sets, flows, validation rules, reports
+  - name: Salesforce Developer
+    description: Implements Apex classes, LWC components, triggers, and integration code
+  - name: Integration Architect
+    description: Designs MuleSoft or REST/SOAP integration patterns between Salesforce and external systems
+  - name: Business Analyst
+    description: Translates business requirements into Salesforce solution design (declarative vs custom)
+  - name: Release Manager
+    description: Manages Salesforce DX deployments, change sets, and sandbox refresh strategy
+
+extra_sections:
+  - id: salesforce_object_model
+    title: Salesforce Object & Data Model
+    placement: after
+    relative_to: module_overview
+    required: true
+    content_guidance: >
+      List all standard and custom objects involved per module: object API name,
+      purpose, key fields (including custom fields with data type), and relationships
+      (Master-Detail, Lookup, Many-to-Many junction objects). Note any Large Data
+      Volume (LDV) objects and their sharing/query optimization strategy.
+      Include record types and page layouts per user profile where applicable.
+
+  - id: config_vs_custom_matrix
+    title: Configuration vs Customization Matrix
+    placement: after
+    relative_to: salesforce_object_model
+    required: true
+    content_guidance: >
+      For each functional requirement, classify the implementation approach:
+      Declarative (Flow, Validation Rule, Formula Field, Reports, Profiles) vs
+      Programmatic (Apex, LWC, Trigger, REST API). This matrix is critical for
+      estimating development effort and maintaining upgrade safety.
+      Flag any requirements that cross Governor Limits and require custom architecture.
+
+  - id: governor_limits_analysis
+    title: Governor Limits Considerations
+    placement: after
+    relative_to: config_vs_custom_matrix
+    required: true
+    content_guidance: >
+      Identify requirements that risk hitting Salesforce Governor Limits: SOQL queries
+      per transaction (100), DML statements per transaction (150), heap size (6MB sync /
+      12MB async), CPU time (10s sync / 60s async), callouts per transaction (100).
+      For each risk area, specify the mitigation: bulkification, async processing
+      (Queueable, Batch Apex, Future methods), or Platform Events.
+
+  - id: deployment_strategy
+    title: Salesforce Deployment & Release Strategy
+    placement: before
+    relative_to: appendix
+    required: true
+    content_guidance: >
+      Define deployment approach: Salesforce DX (source-driven) vs change sets.
+      Sandbox strategy: Dev Sandbox → Partial Copy → Full Sandbox → Production.
+      CI/CD pipeline (GitHub Actions + SFDX CLI or Copado / Gearset). Sandbox
+      refresh cadence. Metadata API components in scope. Rollback strategy for
+      failed deployments.
+
+compliance_standards:
+  - name: Salesforce Well-Architected Framework
+    description: Trusted, easy, adaptable — Salesforce's architectural pillars
+    applicable_sections: [nonfunctional_requirements, config_vs_custom_matrix]
+  - name: Salesforce Governor Limits
+    description: Platform-enforced execution limits that all Apex and SOQL must respect
+    applicable_sections: [governor_limits_analysis, nonfunctional_requirements]
+  - name: SOX (Sarbanes-Oxley)
+    description: Financial data integrity and audit trail requirements (if financial Salesforce data in scope)
+    applicable_sections: [nonfunctional_requirements]
+  - name: GDPR / CCPA
+    description: Data privacy for customer personal data stored in Salesforce objects
+    applicable_sections: [nonfunctional_requirements, salesforce_object_model]
+
+highlight_artifacts:
+  - type: architecture
+    emphasis: >
+      Present components as Salesforce layers: UI Layer (LWC / Aura / Visualforce),
+      Business Logic Layer (Apex Classes, Triggers, Flows), Data Layer (sObjects,
+      External Objects, Platform Events), Integration Layer (REST API, MuleSoft,
+      Named Credentials). Always name the Salesforce Cloud (Sales Cloud, Service Cloud,
+      Experience Cloud, etc.) being used.
+  - type: nonfunctional_req
+    emphasis: >
+      Include Salesforce-specific targets: page load time (LWC rendering), SOQL query
+      selectivity for LDV objects, API call volume vs daily API limits (per org edition),
+      sandbox refresh frequency, and deployment window constraints.
+  - type: task
+    emphasis: >
+      Frame tasks as Salesforce development work: create custom object + fields +
+      relationships, build LWC component, write Apex class with test coverage ≥ 75%,
+      configure Flow automation, set up Named Credential for integration,
+      write Apex trigger with handler pattern.
+  - type: risk
+    emphasis: >
+      Always include Governor Limits risks, seasonal Salesforce release (Spring/Summer/Winter)
+      feature changes, license cost implications for additional users/features,
+      over-customization reducing upgrade compatibility, and MuleSoft/middleware
+      reliability for critical integrations.
+
+content_notes:
+  - Always use Salesforce API names for objects (e.g., "Account", "Opportunity", "Custom_Object__c") — not generic names.
+  - Distinguish "declarative" from "programmatic" implementation for every requirement.
+  - All Apex code requirements must note required test coverage (minimum 75%, target 90%+).
+  - Integration requirements must specify Named Credentials and authentication mechanism (OAuth, Basic).
+  - Data migration requirements must note data loader approach and field mapping strategy.
+  - Avoid recommending Visualforce for new development — default to LWC.

@@ -1,0 +1,112 @@
+service_line: netsuite
+display_name: NetSuite
+category: erp_crm
+
+terminology:
+  user: NetSuite User / Business User
+  system: NetSuite Account / NetSuite Environment
+  module: NetSuite Module / Functional Area (e.g., Financials, Order Management, Inventory)
+  requirement: NetSuite Requirement / Functional Specification
+  environment: NetSuite Account (Sandbox / Production)
+  data_store: NetSuite Record Type / Custom Record / Transaction Record
+
+roles:
+  - name: NetSuite Functional Consultant
+    description: Configures NetSuite modules, defines business processes, and writes functional specs
+  - name: NetSuite Developer
+    description: Writes SuiteScript 2.x (Client Scripts, User Event Scripts, Scheduled Scripts, RESTlets)
+  - name: NetSuite Administrator
+    description: Manages roles, permissions, saved searches, workflows, and system configuration
+  - name: Integration Developer
+    description: Builds SuiteTalk REST/SOAP integrations, SuiteFlow connectors, and CSV imports
+  - name: Business Process Owner
+    description: Validates process design and signs off on NetSuite configuration and custom development
+
+extra_sections:
+  - id: netsuite_module_configuration
+    title: NetSuite Module Configuration Scope
+    placement: after
+    relative_to: module_overview
+    required: true
+    content_guidance: >
+      Specify NetSuite modules and features to be enabled per functional area:
+      Financials (General Ledger, AP, AR, Fixed Assets), Order Management
+      (Sales Orders, Purchase Orders, Fulfillment), Inventory Management,
+      CRM (Cases, Campaigns), Project Management, or SuiteCommerce.
+      Note NetSuite edition (Standard, Premium, Enterprise) and any SuiteApps
+      from the SuiteApp Marketplace in scope. Document subsidiary and multi-currency
+      requirements where applicable.
+
+  - id: suitescript_customizations
+    title: SuiteScript Customizations & Custom Records
+    placement: after
+    relative_to: netsuite_module_configuration
+    required: true
+    content_guidance: >
+      List all SuiteScript customizations per module:
+      - Client Scripts (form-level validation, field defaulting)
+      - User Event Scripts (before/after submit business logic)
+      - Scheduled Scripts (batch processing, data sync)
+      - RESTlets (custom REST API endpoints)
+      - Map/Reduce Scripts (high-volume data processing)
+      - Custom Record Types (with fields and relationships)
+      - SuiteFlow Workflows (approval flows, state machines)
+      For each: name, script type, trigger, complexity (Low/Medium/High).
+
+  - id: integration_points
+    title: Integration Points & Data Exchange
+    placement: after
+    relative_to: suitescript_customizations
+    required: false
+    content_guidance: >
+      List all integrations between NetSuite and external systems: integration name,
+      direction (inbound/outbound/bidirectional), protocol (SuiteTalk REST / SOAP /
+      RESTlet / CSV Import), authentication (Token-Based Authentication — TBA),
+      trigger (real-time / scheduled), and data objects mapped. Note SuiteCloud
+      Platform governance limits for external integrations (concurrent requests, record
+      processing limits).
+
+compliance_standards:
+  - name: NetSuite SuiteSuccess Methodology
+    description: Oracle NetSuite's implementation methodology — Lead to Cash, Record to Report, etc.
+    applicable_sections: [detailed_requirements, netsuite_module_configuration]
+  - name: SOX (Sarbanes-Oxley)
+    description: Financial data integrity, audit trail, and segregation of duties for NetSuite Financials
+    applicable_sections: [nonfunctional_requirements]
+  - name: ASC 606 / IFRS 15
+    description: Revenue recognition standards applicable to NetSuite Advanced Revenue Management
+    applicable_sections: [nonfunctional_requirements, netsuite_module_configuration]
+
+highlight_artifacts:
+  - type: architecture
+    emphasis: >
+      Present components as NetSuite layers: UI Layer (NetSuite UI / SuiteCommerce /
+      Portlets), Automation Layer (SuiteFlow Workflows, SuiteScript), Data Layer
+      (Standard Records, Custom Records, Saved Searches), Integration Layer
+      (SuiteTalk REST/SOAP, RESTlets, CSV Imports). Name specific NetSuite
+      modules (GL, AP, AR, SO, PO, WMS) by abbreviation.
+  - type: nonfunctional_req
+    emphasis: >
+      Include NetSuite-specific targets: SuiteScript governance unit limits
+      (1,000 per scheduled script, 5,000 for Map/Reduce), saved search query
+      performance, CSV import throughput, SuiteTalk API call rate limits,
+      and system availability during NetSuite maintenance windows.
+  - type: task
+    emphasis: >
+      Frame tasks as NetSuite development work: enable module features in Setup,
+      create custom record type with fields, write User Event Script for business rule,
+      configure SuiteFlow workflow with approval routing, build RESTlet for external
+      integration, create saved search and KPI dashboard.
+  - type: risk
+    emphasis: >
+      Highlight NetSuite risks: SuiteScript governance unit exhaustion for high-volume
+      processing, NetSuite scheduled maintenance window impact on integrations,
+      multi-subsidiary complexity in financial consolidation, SuiteApp compatibility
+      on version upgrades, and TBA token management for integrations.
+
+content_notes:
+  - 'Use NetSuite terminology: "records" not "rows", "sublists" not "line items on a form", "saved searches" not "database queries".'
+  - All authentication for integrations must use Token-Based Authentication (TBA) — not username/password.
+  - SuiteScript must be version 2.x (SuiteScript 2.0 or 2.1) — not legacy SuiteScript 1.0.
+  - Governance limits must be assessed for every SuiteScript — flag scripts at risk of exceeding limits.
+  - Report and dashboard requirements should specify whether KPIs, Portlets, Saved Searches, or SuiteAnalytics Workbook is used.

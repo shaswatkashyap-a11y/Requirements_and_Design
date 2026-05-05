@@ -1,0 +1,10 @@
+<nonfunctional_requirements>
+  <requirement>
+    <req_id>NFR-001</req_id>
+    <category>Performance|Security|Scalability|Reliability|...</category>
+    <title>...</title>
+    <description>...</description>
+    <measurable_criteria>optional measurable target</measurable_criteria>
+    <priority>high|medium|low</priority>
+  </requirement>
+</nonfunctional_requirements>

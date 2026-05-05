@@ -1,0 +1,117 @@
+service_line: ai_ml
+display_name: AI / Machine Learning
+category: ai_intelligence
+
+terminology:
+  user: ML Practitioner / Data Scientist / Model Consumer
+  system: ML System / ML Platform / Model Serving Infrastructure
+  module: ML Pipeline Component / Model Domain
+  requirement: ML Requirement / Model Requirement
+  environment: ML Environment (Development / Staging / Production)
+  data_store: Feature Store / Data Warehouse / Training Dataset / Model Registry
+
+roles:
+  - name: Data Scientist
+    description: Designs model architecture, feature engineering, and evaluates model performance
+  - name: ML Engineer
+    description: Builds training pipelines, model serving infrastructure, and MLOps tooling
+  - name: Data Engineer
+    description: Manages data ingestion, transformation, and feature pipeline reliability
+  - name: MLOps Engineer
+    description: Operates model registry, CI/CD for models, drift monitoring, and retraining workflows
+  - name: Business Analyst
+    description: Translates business KPIs into model performance requirements and evaluation criteria
+
+extra_sections:
+  - id: ml_pipeline_architecture
+    title: ML Pipeline Architecture
+    placement: after
+    relative_to: module_overview
+    required: true
+    content_guidance: >
+      Describe the end-to-end ML pipeline stages per model/domain:
+      1. Data Ingestion (sources, ingestion frequency, volume)
+      2. Data Preprocessing & Validation (cleaning, schema validation, data quality checks)
+      3. Feature Engineering (feature store: Feast / Tecton / in-house; online vs offline features)
+      4. Model Training (framework: scikit-learn / TensorFlow / PyTorch / XGBoost; compute: GPU / CPU;
+         training frequency: scheduled / triggered)
+      5. Model Evaluation (metrics, threshold for promotion)
+      6. Model Registry (MLflow / W&B / SageMaker Model Registry; versioning and lineage)
+      7. Model Serving (REST inference endpoint: FastAPI / TensorFlow Serving / Triton;
+         batch inference: Spark / Databricks; latency targets)
+      8. Monitoring (drift detection, performance degradation alerting, retraining triggers)
+
+  - id: model_performance_requirements
+    title: Model Performance Requirements
+    placement: after
+    relative_to: ml_pipeline_architecture
+    required: true
+    content_guidance: >
+      Define quantified model performance requirements per model:
+      - Task type (classification / regression / ranking / NLP / computer vision)
+      - Primary metric and threshold (e.g., AUC ≥ 0.85, RMSE ≤ 0.05, Precision@K ≥ 0.80)
+      - Secondary metrics and acceptable ranges
+      - Inference latency targets (p50, p95, p99)
+      - Training time budget
+      - Model explainability requirements (SHAP, LIME, feature importance)
+      - Fairness and bias requirements (protected attributes to monitor)
+
+  - id: data_requirements
+    title: Data Requirements & Governance
+    placement: after
+    relative_to: model_performance_requirements
+    required: true
+    content_guidance: >
+      Specify training data requirements: sources, volume, historical lookback period,
+      labeling approach (supervised / self-supervised / weak supervision), data freshness
+      SLA, and class imbalance handling strategy. Document data lineage tracking approach.
+      Note PII data handling in training sets (anonymization, differential privacy).
+      Define train/validation/test split strategy and temporal holdout approach.
+
+compliance_standards:
+  - name: EU AI Act
+    description: Risk classification (limited / high risk) and transparency requirements for AI systems in EU
+    applicable_sections: [nonfunctional_requirements, model_performance_requirements]
+  - name: NIST AI Risk Management Framework (AI RMF)
+    description: Govern, Map, Measure, Manage framework for responsible AI
+    applicable_sections: [nonfunctional_requirements]
+  - name: ISO/IEC 42001
+    description: AI management system standard for responsible AI development and deployment
+    applicable_sections: [nonfunctional_requirements]
+  - name: GDPR / CCPA
+    description: Personal data usage in training datasets and model inference outputs
+    applicable_sections: [data_requirements, nonfunctional_requirements]
+
+highlight_artifacts:
+  - type: architecture
+    emphasis: >
+      Present components as ML system layers: Data Layer (ingestion, feature store, data lake),
+      Training Layer (orchestration: Kubeflow / SageMaker Pipelines / Prefect / Airflow;
+      compute: GPU cluster / SageMaker Training Jobs), Model Layer (registry, versioning),
+      Serving Layer (online endpoint / batch pipeline), Monitoring Layer (drift detection,
+      alerting). Name all frameworks and tools explicitly.
+  - type: nonfunctional_req
+    emphasis: >
+      Group NFRs under ML-specific categories: Model Performance (accuracy thresholds),
+      Latency (inference p50/p95/p99), Throughput (predictions/second for batch),
+      Data Freshness (feature pipeline SLA), Model Freshness (max staleness before retraining),
+      Explainability (SHAP available within X seconds), Fairness (bias metrics per group).
+  - type: risk
+    emphasis: >
+      Include ML-specific risks: training data quality and label noise, model performance
+      degradation (concept drift, data drift), GPU compute cost overruns, training
+      pipeline failures, model bias and fairness violations, regulatory scrutiny
+      (EU AI Act high-risk classification), and feature store consistency (training-serving skew).
+  - type: test_case
+    emphasis: >
+      Include ML-specific test types: data validation tests (Great Expectations / Pandera),
+      model evaluation tests (offline metrics on holdout set), shadow deployment tests
+      (compare new vs current model on live traffic), A/B test design, and bias/fairness
+      evaluation tests per protected attribute.
+
+content_notes:
+  - Always specify the ML task type (classification, regression, ranking, NLP, CV) before describing requirements.
+  - Model performance thresholds must be quantified — never use vague terms like "accurate" or "good performance".
+  - Distinguish online inference (real-time API) from batch inference (scheduled pipeline) for each model.
+  - Training-serving skew is a critical risk — feature computation must be identical in training and serving.
+  - 'Retraining triggers must be explicitly defined: scheduled (weekly/monthly), drift-triggered, or performance-degradation-triggered.'

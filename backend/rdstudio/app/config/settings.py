@@ -10,6 +10,7 @@ LLM_MAX_TOKENS = int(os.getenv("LLM_MAX_TOKENS", 4096))
 LLM_MAX_RETRIES = int(os.getenv("LLM_MAX_RETRIES", "3"))
 LLM_REQUEST_TIMEOUT = int(os.getenv("LLM_REQUEST_TIMEOUT", 180))
 LLM_MODEL_NAME = os.getenv("LLM_MODEL_NAME","llama3.1:8b")
+print(f"LLM_MODEL_NAME loaded as: {LLM_MODEL_NAME}")  # ← add this
 
 PROMPTS_DIR = os.path.join(os.path.dirname(__file__), "..", "prompts")
 

@@ -1,0 +1,95 @@
+service_line: python_dev
+display_name: Python / FastAPI
+category: custom_dev
+
+terminology:
+  user: Application User / API Consumer
+  system: Python Application / FastAPI Service
+  module: Python Package / FastAPI Router
+  requirement: Functional Requirement / API Requirement
+  environment: Environment (Dev / QA / Staging / Production)
+  data_store: Database / SQLAlchemy Model (PostgreSQL / MySQL)
+
+roles:
+  - name: Python Developer
+    description: Implements FastAPI/Django endpoints, SQLAlchemy models, and async services
+  - name: Tech Lead / Solutions Architect
+    description: Defines service boundaries, API contracts, Pydantic schemas, and async strategy
+  - name: DevOps Engineer
+    description: Manages Docker, Kubernetes, GitHub Actions CI/CD, and Celery workers
+  - name: QA Engineer
+    description: Writes pytest unit and integration tests, manages test fixtures and coverage
+  - name: Database Administrator
+    description: Manages Alembic schema migrations, query optimization, and connection pooling
+
+extra_sections:
+  - id: api_specification
+    title: API Specification Overview
+    placement: after
+    relative_to: module_overview
+    required: true
+    content_guidance: >
+      Summarize the REST API surface: list all major route groups (APIRouter), HTTP
+      methods, authentication mechanism (OAuth 2.0 / JWT / API Key via FastAPI Security),
+      and versioning strategy. Note auto-generated OpenAPI/Swagger docs via FastAPI.
+      Include Pydantic request/response schema names for key endpoints per module.
+      Document async vs sync endpoint decision for each route group.
+
+  - id: data_model_overview
+    title: Data Model & Persistence Overview
+    placement: after
+    relative_to: api_specification
+    required: true
+    content_guidance: >
+      Describe SQLAlchemy model structure: key models per module, relationships
+      (relationship(), ForeignKey), database choice, Alembic migration strategy,
+      and async session management (AsyncSession vs Session). Note connection pool
+      configuration (pool_size, max_overflow) and any read replica routing.
+
+  - id: background_tasks_overview
+    title: Background Tasks & Async Processing
+    placement: after
+    relative_to: data_model_overview
+    required: false
+    content_guidance: >
+      If background processing is required: describe Celery task definitions,
+      broker choice (Redis / RabbitMQ), queue structure (task routing by priority),
+      retry and failure handling strategy, and Flower monitoring setup.
+      Distinguish from FastAPI BackgroundTasks (lightweight, in-process).
+
+compliance_standards:
+  - name: OWASP Top 10
+    description: Web application security risks — injection, broken auth, XSS
+    applicable_sections: [nonfunctional_requirements, detailed_requirements]
+  - name: OAuth 2.0 / OpenID Connect
+    description: Industry standard for API authentication and authorization
+    applicable_sections: [api_specification, nonfunctional_requirements]
+
+highlight_artifacts:
+  - type: architecture
+    emphasis: >
+      Present components using Python/FastAPI naming: APIRouter (controller layer),
+      Service class, Repository class, SQLAlchemy Model (domain). Name third-party
+      integrations explicitly: Celery, Redis, Pydantic, Alembic.
+  - type: nonfunctional_req
+    emphasis: >
+      Include Python-specific targets: async concurrency (uvicorn workers + event loop),
+      connection pool sizing, Celery concurrency settings, API response time p95,
+      memory usage under load, and mypy type safety coverage percentage.
+  - type: task
+    emphasis: >
+      Frame tasks as Python development work: scaffold FastAPI router + service + repository,
+      define SQLAlchemy models + Alembic migration, implement Pydantic schemas,
+      write pytest unit and integration tests with fixtures.
+  - type: risk
+    emphasis: >
+      Highlight Python-specific risks: GIL limitations for CPU-bound tasks, async/sync
+      mixing causing event loop blocking, N+1 queries via SQLAlchemy lazy loading,
+      Celery worker reliability, and dependency version conflicts in large environments.
+
+content_notes:
+  - Always refer to data validation as "Pydantic schemas" — not generic "DTOs" or "request objects".
+  - All schema definitions should note whether they are request models, response models, or internal models.
+  - Background jobs must be routed through Celery — not bare threads or asyncio.create_task for long work.
+  - Test requirements should distinguish unit tests (pytest + mocks) from integration tests (real DB + TestClient).
+  - Type hints and mypy compliance should be noted as a code quality requirement.

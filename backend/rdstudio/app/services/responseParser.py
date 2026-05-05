@@ -120,3 +120,31 @@ class ResponseParser:
             f"Please respond again with ONLY the correctly formatted XML. "
             f"No preamble, no explanation, just the XML."
         )
+    
+    @staticmethod
+    def build_correction_prompt_trimmed(
+        malformed_output: str,
+        error_msg: str,
+        artifact_type: str,
+    ) -> str:
+        """
+        Lightweight correction prompt specifically for refinement retries.
+    
+        Why not use build_correction_prompt()?
+          The existing method prepends the FULL original_prompt before the correction.
+          For bulk generation that is fine — context window is large.
+          For refinement, the original user_prompt is already ~1,650 tokens.
+          Adding malformed_output[:1000] (~250 tokens) on top pushes us dangerously
+          close to 4096. This version sends only what the LLM needs to fix the error:
+          the error message and the broken output. The LLM already has the refinement
+          instructions in the system_prompt from the previous turn — no need to repeat them.
+    
+        Kept under ~300 tokens so the retry still has ~2,000 tokens for output.
+        """
+        return (
+            f"Your previous response had a formatting error that must be fixed.\n"
+            f"Error: {error_msg}\n\n"
+            f"Your malformed output (first 500 chars):\n{malformed_output[:500]}\n\n"
+            f"Return ONLY a valid <{artifact_type}> XML element. "
+            f"No preamble. No explanation. Just the XML."
+        )

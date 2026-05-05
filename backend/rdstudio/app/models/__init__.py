@@ -8,4 +8,7 @@ from app.models.serviceLine import (
 )
 from app.models.generationRun import GenerationRun
 from app.models.module import Module
+from app.models.moduleVersion import ModuleVersion
 from app.models.artifact import Artifact
+from app.models.artifactVersion import ArtifactVersion
+from app.models.promptTemplate import PromptTemplate

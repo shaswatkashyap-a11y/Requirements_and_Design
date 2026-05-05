@@ -1,0 +1,89 @@
+service_line: azure
+display_name: Microsoft Azure
+category: cloud
+
+terminology:
+  user: Azure Workload Consumer / Application User
+  system: Azure Environment / Azure Subscription
+  module: Azure Service Domain
+  requirement: Cloud Requirement
+  environment: Azure Subscription (Dev / UAT / Production)
+  data_store: Azure Data Store (Azure SQL / Cosmos DB / Blob Storage)
+
+roles:
+  - name: Azure Solutions Architect
+    description: Designs Azure resource topology, service selection, and landing zone
+  - name: DevOps / Platform Engineer
+    description: Manages Azure DevOps pipelines, Bicep/ARM templates, and AKS clusters
+  - name: Application Developer
+    description: Builds services on Azure App Service, Azure Functions, or AKS
+  - name: Azure Security Engineer
+    description: Owns Azure AD, Key Vault, Defender for Cloud, and policy assignments
+  - name: FinOps Analyst
+    description: Monitors Azure Cost Management and optimizes reserved instances
+
+extra_sections:
+  - id: azure_architecture_overview
+    title: Azure Architecture Overview
+    placement: after
+    relative_to: module_overview
+    required: true
+    content_guidance: >
+      Describe the target Azure architecture: subscription and resource group strategy,
+      virtual network (VNet) and subnet design, compute choices (App Service / AKS /
+      Azure Functions), data tier (Azure SQL / Cosmos DB / Azure Cache for Redis),
+      storage (Blob Storage / Azure Files), API gateway (API Management), CDN (Azure
+      Front Door), and monitoring (Azure Monitor, Application Insights, Log Analytics).
+
+  - id: azure_devops_pipeline
+    title: Azure DevOps & Deployment Strategy
+    placement: after
+    relative_to: azure_architecture_overview
+    required: true
+    content_guidance: >
+      Cover CI/CD pipeline design in Azure DevOps (or GitHub Actions), IaC tooling
+      (Bicep / ARM / Terraform), environment promotion (Dev → UAT → Prod), blue-green
+      or canary deployment strategy, and rollback procedure. Reference Azure Container
+      Registry if containers are used.
+
+  - id: cost_estimation
+    title: Cost Estimation & Azure FinOps
+    placement: before
+    relative_to: appendix
+    required: false
+    content_guidance: >
+      Identify cost categories: compute (Pay-As-You-Go vs Reserved vs Spot),
+      storage (LRS / GRS / ZRS tiers), networking (ExpressRoute / VPN Gateway),
+      and managed service fees (API Management, Azure Cognitive Services).
+      Reference Azure Pricing Calculator and cost alerts via Azure Budgets.
+
+compliance_standards:
+  - name: Microsoft Azure Well-Architected Framework
+    description: Five pillars mirroring AWS WAF — reliability, security, cost, operational excellence, performance
+    applicable_sections: [nonfunctional_requirements, azure_architecture_overview]
+  - name: ISO 27001
+    description: Information security management standard applicable to Azure-hosted workloads
+    applicable_sections: [nonfunctional_requirements]
+  - name: Azure Policy & Blueprints
+    description: Governance guardrails enforced at subscription level
+    applicable_sections: [azure_devops_pipeline, nonfunctional_requirements]
+
+highlight_artifacts:
+  - type: architecture
+    emphasis: >
+      Name Azure services explicitly (e.g., "Azure App Service Plan", "Azure Kubernetes
+      Service") — never use generic terms. Include resource group and region placement.
+  - type: nonfunctional_req
+    emphasis: >
+      Reference Azure SLAs per service (e.g., App Service 99.95%, Cosmos DB 99.999%).
+      Include availability zones, geo-redundancy, and RTO/RPO requirements.
+  - type: risk
+    emphasis: >
+      Flag Azure-specific risks: regional outages, Azure AD dependency, API Management
+      throttling, AKS upgrade windows, and Microsoft support tier requirements.
+
+content_notes:
+  - Always use "Azure Active Directory (Azure AD)" or "Microsoft Entra ID" for identity — not just "AD".
+  - Distinguish between Azure regions and availability zones explicitly.
+  - Key Vault should be referenced for all secret and certificate management requirements.
+  - Resource naming conventions (Azure naming best practices) should be noted in the infrastructure section.

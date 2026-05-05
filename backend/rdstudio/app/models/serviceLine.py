@@ -1,5 +1,5 @@
 from sqlalchemy.orm import relationship
-from sqlalchemy import Column,Integer,func,ForeignKey,String,Table
+from sqlalchemy import Column, Integer, ForeignKey, String, Table, JSON
 from app.db.database import Base
 
 # junction table: Project ↔ ServiceLine (many-to-many)
@@ -32,6 +32,7 @@ class ServiceLine(Base):
     category_id = Column(Integer, ForeignKey("service_line_categories.id"), nullable=False)
     name = Column(String(100), nullable=False)         # "React"
     code = Column(String(50), unique=True, nullable=False)  # "react"
-    icon = Column(String(50), nullable=True)           # for frontend rendering
+    icon = Column(String(50), nullable=True)
+    extra_artifact_types = Column(JSON, nullable=True)
 
     category = relationship("ServiceLineCategory", back_populates="service_lines")

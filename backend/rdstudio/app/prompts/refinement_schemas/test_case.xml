@@ -1,0 +1,15 @@
+<test_cases>
+  <test_case>
+    <test_id>TC-001</test_id>
+    <title>...</title>
+    <linked_requirement_id>FR-001</linked_requirement_id>
+    <preconditions>
+      <precondition>...</precondition>
+    </preconditions>
+    <steps>
+      <step>...</step>
+    </steps>
+    <expected_result>...</expected_result>
+    <test_type>functional|integration|unit|e2e</test_type>
+  </test_case>
+</test_cases>

@@ -100,6 +100,8 @@ class LLMClient:
         parser_fn,
         correction_prompt_fn=None,
         max_parse_retries: int = 2,
+        temperature: float = LLM_TEMPERATURE,
+        max_tokens: int    = LLM_MAX_TOKENS,
     ):
         """Generate + parse. If parsing fails, retry with correction prompt
         that includes the malformed output."""
@@ -122,6 +124,8 @@ class LLMClient:
                     raw_output = await self.generate(
                         system_prompt=system_prompt,
                         user_prompt=corrected_prompt,
+                        temperature   = temperature,   
+                        max_tokens    = max_tokens, 
                     )
                 else:
                     raise

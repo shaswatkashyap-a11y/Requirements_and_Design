@@ -1,0 +1,48 @@
+# Document Instruction File Schema
+# ─────────────────────────────────────────────────────────────────────────────
+# One file per service line. The document builder loads this alongside the
+# methodology base template (agile/scrum/waterfall) to produce the final
+# requirements document. Service lines affect CONTENT, not structure.
+#
+# Fields:
+#   service_line        — matches the filename of the service_line XML prompt
+#   display_name        — human-readable label used in document headers
+#   category            — grouping: cloud | custom_dev | erp_crm | ai_intelligence
+#
+#   terminology         — maps generic terms to domain-specific equivalents
+#     user              — who uses the system (e.g., "End User", "SAP User")
+#     system            — the platform/product name (e.g., "Salesforce Org")
+#     module            — what modules are called (e.g., "Epic", "Functional Area")
+#     requirement       — how requirements are referred to
+#     environment       — deployment environments naming convention
+#     data_store        — what data stores are called
+#
+#   roles               — actor/stakeholder names common in this domain
+#     - name            — role title
+#       description     — one-line description
+#
+#   extra_sections      — sections to inject beyond the 9 standard template sections
+#     - id              — unique slug for this section
+#       title           — section heading in the document
+#       placement       — "after" or "before"
+#       relative_to     — standard section id to place relative to
+#                         Standard section ids:
+#                           cover, executive_summary, scope, assumptions,
+#                           stakeholders, module_overview, detailed_requirements,
+#                           nonfunctional_requirements, acceptance_criteria, appendix
+#       required        — whether to always include this section
+#       content_guidance — what the document builder should populate here
+#
+#   compliance_standards — regulatory or industry standards to reference
+#     - name            — standard name (e.g., "SOX", "HIPAA", "OWASP Top 10")
+#       description     — one-line explanation
+#       applicable_sections — list of standard section ids where this is relevant
+#
+#   highlight_artifacts — how to present specific artifact types in this domain
+#     - type            — functional_req | nonfunctional_req | architecture |
+#                         task | test_case | risk
+#       emphasis        — free text: how to format or present this artifact type
+#
+#   content_notes       — free-form instructions for the document builder renderer
+#                         Use these for cross-cutting rules that don't fit above.
+# ─────────────────────────────────────────────────────────────────────────────

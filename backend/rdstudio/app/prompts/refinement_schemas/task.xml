@@ -1,0 +1,14 @@
+<tasks>
+  <task>
+    <task_id>T-001</task_id>
+    <title>...</title>
+    <description>...</description>
+    <task_type>task|subtask|spike|bug</task_type>
+    <parent_task_id>optional</parent_task_id>
+    <estimated_hours>optional number</estimated_hours>
+    <acceptance_criteria>
+      <criterion>...</criterion>
+    </acceptance_criteria>
+    <linked_requirement_id>optional</linked_requirement_id>
+  </task>
+</tasks>

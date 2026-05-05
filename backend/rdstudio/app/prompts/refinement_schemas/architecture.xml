@@ -1,0 +1,13 @@
+<architecture>
+  <component>
+    <component_name>...</component_name>
+    <description>...</description>
+    <technology_suggestion>optional</technology_suggestion>
+    <interfaces>
+      <interface>...</interface>
+    </interfaces>
+    <data_entities>
+      <entity>...</entity>
+    </data_entities>
+  </component>
+</architecture>

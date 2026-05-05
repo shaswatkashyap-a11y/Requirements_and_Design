@@ -1,0 +1,97 @@
+service_line: angular
+display_name: Angular (Frontend)
+category: custom_dev
+
+terminology:
+  user: End User / Browser User
+  system: Angular Application / Single Page Application (SPA)
+  module: Angular Module / Feature Module
+  requirement: UI Requirement / Component Requirement
+  environment: Deployment Environment (Dev / Staging / Production CDN)
+  data_store: Browser Storage (localStorage / sessionStorage) / NgRx Store
+
+roles:
+  - name: Angular Developer
+    description: Builds Angular components, services, directives, and NgRx state logic
+  - name: UX / UI Designer
+    description: Defines wireframes, design system, and Angular Material theme
+  - name: Tech Lead
+    description: Decides module architecture, lazy loading strategy, and RxJS patterns
+  - name: QA Engineer
+    description: Writes Jasmine/Karma unit tests and Cypress/Playwright E2E tests
+  - name: Accessibility Specialist
+    description: Ensures WCAG 2.1 AA compliance using Angular CDK a11y utilities
+
+extra_sections:
+  - id: angular_module_structure
+    title: Angular Module & Component Structure
+    placement: after
+    relative_to: module_overview
+    required: true
+    content_guidance: >
+      Define the Angular module hierarchy: AppModule, CoreModule (singleton services,
+      guards, interceptors), SharedModule (reusable components, pipes, directives),
+      and Feature Modules (lazy-loaded per route). List key components per feature
+      module with their input/output bindings. Note whether standalone components
+      (Angular 15+) are used instead of NgModules.
+
+  - id: state_management_strategy
+    title: State Management Strategy (NgRx / Services)
+    placement: after
+    relative_to: angular_module_structure
+    required: true
+    content_guidance: >
+      Define state management approach: NgRx Store (actions, reducers, effects,
+      selectors) for complex global state, or BehaviorSubject-based services for
+      simpler state. Identify which feature modules use NgRx feature states.
+      Document HTTP client strategy (HttpClient interceptors for auth, error handling,
+      retry logic) and RxJS operator patterns in use.
+
+  - id: routing_and_navigation
+    title: Routing & Navigation Structure
+    placement: after
+    relative_to: state_management_strategy
+    required: true
+    content_guidance: >
+      Define Angular Router configuration: top-level routes, lazy-loaded feature
+      routes (loadChildren), route guards (CanActivate, CanDeactivate), and
+      route resolvers for pre-fetching data. Include breadcrumb and navigation
+      structure. Note router outlet nesting for shell/layout components.
+
+compliance_standards:
+  - name: WCAG 2.1 AA
+    description: Web accessibility — Angular CDK a11y, ARIA roles, keyboard navigation
+    applicable_sections: [nonfunctional_requirements, angular_module_structure]
+  - name: OWASP Top 10 (Frontend)
+    description: XSS prevention via Angular's built-in sanitization, CSRF, CSP headers
+    applicable_sections: [nonfunctional_requirements]
+
+highlight_artifacts:
+  - type: architecture
+    emphasis: >
+      Present architecture as Angular layers: Modules (feature boundaries), Components
+      (view layer), Services (business logic, DI-provided), Directives, Pipes, Guards,
+      Interceptors, NgRx Store (if used). Name Angular Material or PrimeNG as the
+      UI component library where applicable.
+  - type: nonfunctional_req
+    emphasis: >
+      Include Angular-specific targets: Lighthouse scores, bundle size budgets (angular.json
+      budgets configuration), lazy loading chunk sizes, change detection strategy
+      (OnPush vs Default), and RxJS memory leak prevention (takeUntilDestroyed).
+  - type: test_case
+    emphasis: >
+      Frame tests as Angular testing scenarios: TestBed component tests, service unit
+      tests with HttpClientTestingModule, and NgRx effects tests. Include E2E
+      scenarios (Cypress/Playwright) for critical user flows.
+  - type: risk
+    emphasis: >
+      Highlight Angular-specific risks: RxJS subscription memory leaks, zone.js
+      performance overhead, large bundle sizes from poorly configured lazy loading,
+      NgRx boilerplate complexity, and Angular version upgrade churn.
+
+content_notes:
+  - Always use "Angular modules" or "feature modules" — not "React components" or generic "modules".
+  - Dependency injection should be Angular's DI system — not manual instantiation.
+  - All HTTP calls must go through Angular's HttpClient — not fetch() directly.
+  - Form requirements should specify Reactive Forms (FormBuilder, FormGroup) vs Template-driven Forms.
+  - All async operations must be RxJS Observable-based — note where Promises are acceptable.

@@ -1,0 +1,90 @@
+service_line: aws
+display_name: Amazon Web Services (AWS)
+category: cloud
+
+terminology:
+  user: Application User / AWS Workload Consumer
+  system: AWS Infrastructure / Cloud Environment
+  module: AWS Service Domain
+  requirement: Cloud Requirement
+  environment: AWS Account (Dev / Staging / Production)
+  data_store: AWS Data Store (RDS / DynamoDB / S3)
+
+roles:
+  - name: Cloud Architect
+    description: Designs the AWS infrastructure topology and service selection
+  - name: DevOps Engineer
+    description: Manages CI/CD pipelines, IaC (Terraform/CloudFormation), and deployments
+  - name: Application Developer
+    description: Builds services hosted on AWS compute (EC2, Lambda, ECS)
+  - name: Security Engineer
+    description: Owns IAM policies, KMS encryption, VPC security groups, and compliance
+  - name: FinOps Analyst
+    description: Monitors and optimizes cloud spend and reserved capacity
+
+extra_sections:
+  - id: aws_architecture_overview
+    title: AWS Architecture Overview
+    placement: after
+    relative_to: module_overview
+    required: true
+    content_guidance: >
+      Include a narrative description of the target AWS architecture. Cover: VPC design and
+      subnet strategy, compute choice (EC2/ECS Fargate/Lambda) with justification, data tier
+      (RDS multi-AZ / DynamoDB / ElastiCache), storage (S3 buckets and lifecycle policies),
+      CDN (CloudFront), load balancing (ALB/NLB), and observability stack (CloudWatch,
+      X-Ray, AWS Config). Reference artifacts for specific service selections.
+
+  - id: infrastructure_requirements
+    title: Infrastructure & Deployment Requirements
+    placement: after
+    relative_to: aws_architecture_overview
+    required: true
+    content_guidance: >
+      List IaC tooling (Terraform or CloudFormation), environment promotion strategy
+      (dev → staging → prod), auto-scaling policies (target tracking / step scaling),
+      multi-AZ or multi-region requirements, disaster recovery RTO/RPO targets,
+      and backup policies (automated RDS snapshots, S3 versioning).
+
+  - id: cost_estimation
+    title: Cost Estimation & FinOps Considerations
+    placement: before
+    relative_to: appendix
+    required: false
+    content_guidance: >
+      Provide high-level cost categories: compute (on-demand vs reserved vs spot),
+      data transfer (egress costs), storage (S3 tiers, RDS storage), and managed
+      service fees (ElastiCache, MSK). Flag cost optimization levers: right-sizing,
+      S3 Intelligent-Tiering, Lambda provisioned concurrency trade-offs.
+
+compliance_standards:
+  - name: AWS Well-Architected Framework
+    description: Five pillars — operational excellence, security, reliability, performance efficiency, cost optimization
+    applicable_sections: [nonfunctional_requirements, infrastructure_requirements]
+  - name: SOC 2 Type II
+    description: Cloud security and availability audit standard
+    applicable_sections: [nonfunctional_requirements, aws_architecture_overview]
+  - name: CIS AWS Foundations Benchmark
+    description: Security configuration baseline for AWS accounts
+    applicable_sections: [nonfunctional_requirements]
+
+highlight_artifacts:
+  - type: architecture
+    emphasis: >
+      Present each architecture component as a named AWS service (not generic terms).
+      E.g., "API Gateway + Lambda" not "API layer". Include region and AZ placement
+      where relevant.
+  - type: nonfunctional_req
+    emphasis: >
+      Group NFRs under Well-Architected pillars. Include quantified SLAs:
+      availability (e.g., 99.9%), latency (p95 targets), RTO/RPO, and cost budgets.
+  - type: risk
+    emphasis: >
+      Highlight risks around service limits, region outages, data egress costs,
+      and vendor lock-in. Include AWS-specific mitigations (multi-AZ, S3 CRR, etc.).
+
+content_notes:
+  - Use "AWS Region" and "Availability Zone (AZ)" consistently — avoid generic terms like "data center".
+  - All storage references should specify the AWS service (S3, EBS, EFS, Glacier) — not just "cloud storage".
+  - Security requirements must reference IAM roles, not usernames/passwords.
+  - Tag strategy (cost allocation tags, environment tags) should be mentioned in the infrastructure section.

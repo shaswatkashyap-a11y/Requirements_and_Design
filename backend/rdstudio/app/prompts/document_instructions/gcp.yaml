@@ -1,0 +1,93 @@
+service_line: gcp
+display_name: Google Cloud Platform (GCP)
+category: cloud
+
+terminology:
+  user: Application User / GCP Workload Consumer
+  system: GCP Infrastructure / Cloud Environment
+  module: GCP Service Domain
+  requirement: Cloud Requirement
+  environment: GCP Project (Dev / Staging / Production)
+  data_store: GCP Data Store (Cloud Spanner / Firestore / BigQuery / Cloud Storage)
+
+roles:
+  - name: Cloud Architect
+    description: Designs GCP resource topology, service selection, and landing zone
+  - name: DevOps / Site Reliability Engineer
+    description: Manages Cloud Build pipelines, Terraform, GKE clusters, and SLOs
+  - name: Application Developer
+    description: Builds services on Cloud Run, GKE, or Cloud Functions
+  - name: Security Engineer
+    description: Owns IAM policies, Secret Manager, VPC Service Controls, and Security Command Center
+  - name: FinOps Analyst
+    description: Monitors GCP billing, committed use discounts, and budget alerts
+
+extra_sections:
+  - id: gcp_architecture_overview
+    title: GCP Architecture Overview
+    placement: after
+    relative_to: module_overview
+    required: true
+    content_guidance: >
+      Describe the target GCP architecture: project and folder hierarchy, VPC and
+      subnet design, compute choices (Compute Engine / Cloud Run / GKE / Cloud Functions)
+      with justification, data tier (Cloud Spanner / Firestore / Cloud SQL / BigQuery /
+      Memorystore), storage (Cloud Storage buckets and lifecycle rules), API gateway
+      (Cloud Endpoints / Apigee), CDN (Cloud CDN / Cloud Armor), and observability
+      (Cloud Monitoring, Cloud Logging, Cloud Trace, Error Reporting).
+
+  - id: gcp_deployment_strategy
+    title: GCP DevOps & Deployment Strategy
+    placement: after
+    relative_to: gcp_architecture_overview
+    required: true
+    content_guidance: >
+      Cover CI/CD pipeline design (Cloud Build or GitHub Actions), artifact storage
+      (Artifact Registry), IaC tooling (Terraform or Deployment Manager), environment
+      promotion strategy (Dev → Staging → Prod projects), and release strategy
+      (blue-green, canary via Traffic Director or Cloud Run traffic splitting).
+      Include rollback procedure and SLO/SLA definitions.
+
+  - id: cost_estimation
+    title: Cost Estimation & GCP FinOps
+    placement: before
+    relative_to: appendix
+    required: false
+    content_guidance: >
+      Identify cost categories: compute (on-demand vs committed use discounts vs
+      preemptible/spot), BigQuery (storage + query costs), networking (egress, Cloud
+      Interconnect), and managed service fees (Apigee, Vertex AI, Memorystore).
+      Reference GCP Pricing Calculator and budget alerts via Cloud Billing.
+
+compliance_standards:
+  - name: Google Cloud Architecture Framework
+    description: Six pillars — operational excellence, security, reliability, performance, cost, sustainability
+    applicable_sections: [nonfunctional_requirements, gcp_architecture_overview]
+  - name: SOC 2 Type II
+    description: Cloud security and availability audit standard
+    applicable_sections: [nonfunctional_requirements]
+  - name: CIS Google Cloud Platform Foundation Benchmark
+    description: Security configuration baseline for GCP projects
+    applicable_sections: [nonfunctional_requirements]
+
+highlight_artifacts:
+  - type: architecture
+    emphasis: >
+      Name GCP services explicitly (e.g., "Cloud Run", "Cloud Spanner", "Pub/Sub") —
+      never use generic terms. Include GCP project, region, and zone placement.
+  - type: nonfunctional_req
+    emphasis: >
+      Reference GCP SLAs per service. Include SLO targets (availability, latency p50/p95),
+      disaster recovery RTO/RPO, and multi-region requirements where applicable.
+  - type: risk
+    emphasis: >
+      Flag GCP-specific risks: regional outages, Pub/Sub message ordering guarantees,
+      BigQuery slot contention, GKE upgrade windows, committed use discount lock-in,
+      and data egress costs.
+
+content_notes:
+  - Use "GCP Project" consistently — not "account" or "subscription" (those are AWS/Azure terms).
+  - IAM references must use GCP constructs — service accounts, roles, and bindings — not usernames.
+  - All secret management requirements should reference Secret Manager.
+  - VPC Service Controls should be noted for sensitive data perimeter requirements.
+  - Resource labeling strategy (environment, cost-center, team labels) should appear in the deployment section.

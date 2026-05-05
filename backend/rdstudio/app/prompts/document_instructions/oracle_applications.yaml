@@ -1,0 +1,118 @@
+service_line: oracle_applications
+display_name: Oracle Applications (EBS / Fusion Cloud)
+category: erp_crm
+
+terminology:
+  user: Oracle User / Business User
+  system: Oracle Application Instance / Oracle Fusion Environment
+  module: Oracle Module / Responsibility / Functional Area (e.g., Oracle GL, AP, AR, SCM)
+  requirement: Functional Specification / Oracle Requirement
+  environment: Oracle Instance (DEV / TEST / UAT / PROD) or Cloud Environment (Dev / Test / Production)
+  data_store: Oracle Table / Interface Table / Oracle Business Object / FBDI Template
+
+roles:
+  - name: Oracle Functional Consultant
+    description: Configures Oracle modules, defines business process setups, and writes functional specifications
+  - name: Oracle Technical Developer
+    description: Develops PL/SQL packages, Oracle Reports, BI Publisher reports, OAF personalization, or VBCS pages
+  - name: Oracle DBA
+    description: Manages Oracle database performance, APPS schema, patching, and cloning
+  - name: Integration Architect
+    description: Designs Oracle Integration Cloud (OIC) flows, REST/SOAP APIs, and file-based integrations
+  - name: Business Process Owner
+    description: Validates process design, setups, and signs off on functional requirements
+
+extra_sections:
+  - id: oracle_application_setup
+    title: Oracle Application Setup & Configuration Scope
+    placement: after
+    relative_to: module_overview
+    required: true
+    content_guidance: >
+      Define Oracle application scope: EBS modules (GL, AP, AR, FA, CM, PO, INV,
+      OM, WIP, QA, HRMS) or Oracle Fusion Cloud modules (Financials, SCM, HCM, CX,
+      Projects, Procurement). Document key setups: Operating Units, Legal Entities,
+      Ledgers/Chart of Accounts, Inventory Organizations, Business Groups, and
+      Security (Responsibilities / Roles in Fusion). Note Oracle release and patch level.
+
+  - id: rice_objects
+    title: RICE Objects & Custom Development Scope
+    placement: after
+    relative_to: oracle_application_setup
+    required: true
+    content_guidance: >
+      List all RICE objects in scope per module:
+      - Reports (Oracle BI Publisher / Oracle Reports / OTBI / FRS)
+      - Interfaces (inbound/outbound file-based via FBDI, or API-based via REST/SOAP)
+      - Conversions (data migration using FBDI templates, Open Interface tables, or ADFdi)
+      - Extensions (OAF Personalizations, Oracle JET customization, VBCS in Fusion,
+        PL/SQL packages, Workflow AME rules, OTBI custom subject areas)
+      For each: name, type, source/target, complexity (Low/Medium/High), owning module.
+
+  - id: integration_architecture
+    title: Integration Architecture
+    placement: after
+    relative_to: rice_objects
+    required: false
+    content_guidance: >
+      Describe integrations between Oracle and external systems: integration name,
+      direction, protocol (Oracle Integration Cloud OIC / REST / SOAP / File-Based /
+      EDI), authentication, trigger (real-time event / scheduled / file drop), and
+      data objects mapped. For EBS: note Oracle SOA Suite, Oracle E-Business Suite
+      Integrated SOA Gateway, or custom PL/SQL-based integration approach.
+
+  - id: data_migration_strategy
+    title: Data Migration Strategy
+    placement: before
+    relative_to: appendix
+    required: true
+    content_guidance: >
+      Define data migration scope: legacy source system(s), data objects to migrate
+      (master data: Customers, Suppliers, Items, Employees; transactional: Open AR,
+      Open AP, Open PO, Beginning Balances), migration tool (FBDI in Fusion /
+      Open Interface tables in EBS / Oracle Data Integrator), data cleansing approach,
+      cutover plan, and reconciliation strategy. Note mock cutover iterations planned.
+
+compliance_standards:
+  - name: Oracle Unified Method (OUM)
+    description: Oracle's implementation methodology for EBS and Fusion Cloud projects
+    applicable_sections: [detailed_requirements, oracle_application_setup]
+  - name: SOX (Sarbanes-Oxley)
+    description: Financial controls, segregation of duties, and audit trail for Oracle Financials
+    applicable_sections: [nonfunctional_requirements]
+  - name: GDPR
+    description: Personal data handling for HR and customer data in Oracle HCM/CX
+    applicable_sections: [nonfunctional_requirements]
+
+highlight_artifacts:
+  - type: architecture
+    emphasis: >
+      For EBS: present as Oracle E-Business Suite layers — Forms/OAF/Self-Service UI,
+      Concurrent Programs, PL/SQL Packages (APPS schema), Oracle Workflow/AME,
+      Interface Tables, Oracle DB. For Fusion Cloud: present as SaaS layers —
+      Oracle Fusion UI (VBCS/JET), REST APIs (FSCM/HCM REST), OTBI/BIP Reporting,
+      Oracle Integration Cloud (OIC), Oracle Autonomous DB. Name modules explicitly.
+  - type: nonfunctional_req
+    emphasis: >
+      Include Oracle-specific targets: Concurrent Program completion time, FBDI
+      import throughput (records/hour), BI Publisher report generation time,
+      system availability during Oracle Cloud quarterly updates (Fusion) or
+      patching windows (EBS), and REST API rate limits for Fusion integrations.
+  - type: task
+    emphasis: >
+      Frame tasks using Oracle project phases: Configure setups (Realize), develop
+      RICE objects (Realize), unit test (SIT), data migration mock runs (UAT),
+      cutover rehearsal (Hypercare preparation), go-live support (Hypercare).
+  - type: risk
+    emphasis: >
+      Include: Oracle Fusion quarterly update impact on customizations, EBS patching
+      conflicts with custom code, FBDI data rejection rates from data quality issues,
+      Open Interface table purging requirements, SoD conflicts in role design,
+      and OIC integration failure handling with retry logic.
+
+content_notes:
+  - Distinguish Oracle EBS from Oracle Fusion Cloud — they have different technical stacks and terminology.
+  - 'For EBS: use "Concurrent Programs", "Responsibilities", "Profile Options", "Flexfields" — not generic terms.'
+  - 'For Fusion: use "Scheduled Processes", "Roles", "Profile Values", "Descriptive Flexfields (DFFs)" terminology.'
+  - All data migration requirements must reference the specific Oracle interface table or FBDI template.
+  - Personalization vs customization must be explicitly classified — personalizations are upgrade-safe, customizations are not.

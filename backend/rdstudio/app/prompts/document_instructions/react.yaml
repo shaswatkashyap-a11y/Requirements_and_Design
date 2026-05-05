@@ -1,0 +1,95 @@
+service_line: react
+display_name: React (Frontend)
+category: custom_dev
+
+terminology:
+  user: End User / Browser User
+  system: React Application / Single Page Application (SPA)
+  module: Feature Area / React Module
+  requirement: UI Requirement / Component Requirement
+  environment: Deployment Environment (Dev / Staging / Production CDN)
+  data_store: Browser Storage (localStorage / sessionStorage) / API Cache
+
+roles:
+  - name: Frontend Developer
+    description: Builds React components, hooks, and state management logic
+  - name: UX / UI Designer
+    description: Defines wireframes, design system, and interaction patterns
+  - name: Tech Lead
+    description: Decides component architecture, state management strategy, and API integration patterns
+  - name: QA Engineer
+    description: Writes React Testing Library unit tests and Playwright/Cypress E2E tests
+  - name: Accessibility Specialist
+    description: Ensures WCAG 2.1 AA compliance across all UI components
+
+extra_sections:
+  - id: ui_component_inventory
+    title: UI Component Inventory
+    placement: after
+    relative_to: module_overview
+    required: true
+    content_guidance: >
+      List key reusable components per module: component name, purpose, props interface
+      (input/output data), and which modules share it. Distinguish page-level components
+      (routes) from reusable UI components (buttons, modals, tables, forms).
+      Note design system/component library in use (Tailwind, MUI, shadcn/ui, etc.).
+
+  - id: state_management_strategy
+    title: State Management Strategy
+    placement: after
+    relative_to: ui_component_inventory
+    required: true
+    content_guidance: >
+      Define how state is managed: global state tool (Redux Toolkit / Zustand / Context),
+      which data lives in global store vs local component state vs server cache
+      (React Query / SWR). Document slice/store structure per module, and data
+      fetching approach (fetch, Axios, React Query). Include loading and error state
+      handling patterns.
+
+  - id: routing_and_navigation
+    title: Routing & Navigation Structure
+    placement: after
+    relative_to: state_management_strategy
+    required: true
+    content_guidance: >
+      Define the route hierarchy using React Router (or Next.js routing if applicable):
+      public vs protected routes, route parameters, nested layouts, and navigation
+      patterns (breadcrumbs, tabs, sidebars). Include auth guard implementation approach.
+
+compliance_standards:
+  - name: WCAG 2.1 AA
+    description: Web Content Accessibility Guidelines — keyboard navigation, screen reader support, color contrast
+    applicable_sections: [nonfunctional_requirements, ui_component_inventory]
+  - name: OWASP Top 10 (Frontend)
+    description: XSS prevention, CSRF protection, secure cookie handling, CSP headers
+    applicable_sections: [nonfunctional_requirements]
+
+highlight_artifacts:
+  - type: architecture
+    emphasis: >
+      Present components as React architecture layers: Page Components (route-level),
+      Feature Components (domain-specific), UI Components (shared/reusable), Hooks
+      (custom logic), Store Slices (state). Name the bundler (Vite/Next.js) and
+      CSS strategy (Tailwind / CSS Modules / styled-components).
+  - type: nonfunctional_req
+    emphasis: >
+      Include frontend-specific targets: Lighthouse scores (Performance ≥ 90, Accessibility ≥ 95),
+      First Contentful Paint (FCP), Largest Contentful Paint (LCP), bundle size limits,
+      and Core Web Vitals targets (CLS, INP).
+  - type: test_case
+    emphasis: >
+      Frame tests as React Testing Library scenarios: render component, simulate user
+      interaction (click, type, submit), assert DOM output. Include E2E test scenarios
+      (Playwright/Cypress) for critical user flows.
+  - type: risk
+    emphasis: >
+      Highlight frontend risks: prop drilling complexity, over-fetching / waterfall
+      API calls, bundle size bloat, browser compatibility issues, and state
+      synchronization bugs between tabs.
+
+content_notes:
+  - Always refer to pages as "route-level components" and shared UI as "reusable components".
+  - Form handling requirements should note the form library (React Hook Form, Formik) and validation (Zod, Yup).
+  - API integration requirements must specify the data fetching approach — not just "call the API".
+  - Error boundaries should be noted as a requirement for production resilience.
+  - All date/time display requirements must note timezone handling strategy.

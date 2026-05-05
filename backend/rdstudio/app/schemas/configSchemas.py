@@ -29,3 +29,30 @@ class MethodologyResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ServiceLineCreateResponse(BaseModel):
+    id: int
+    name: str
+    code: str
+    icon: str | None
+    category_id: int
+    extra_artifact_types: list[str] | None
+
+    class Config:
+        from_attributes = True
+
+
+class MethodologyCreateResponse(BaseModel):
+    id: int
+    name: str
+    code: str
+    description: str | None
+    artifact_types: list[str] | None
+
+    class Config:
+        from_attributes = True
+
+
+class DeleteResponse(BaseModel):
+    detail: str

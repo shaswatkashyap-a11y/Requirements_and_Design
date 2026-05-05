@@ -1,0 +1,13 @@
+<functional_requirements>
+  <requirement>
+    <req_id>FR-001</req_id>
+    <title>...</title>
+    <description>...</description>
+    <user_story>As a ... I can ... so that ...</user_story>
+    <acceptance_criteria>
+      <criterion>...</criterion>
+    </acceptance_criteria>
+    <priority>high|medium|low</priority>
+    <source_section>optional</source_section>
+  </requirement>
+</functional_requirements>

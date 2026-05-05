@@ -1,0 +1,116 @@
+service_line: sap
+display_name: SAP
+category: erp_crm
+
+terminology:
+  user: SAP User / Business User
+  system: SAP System / SAP Landscape
+  module: SAP Module / Functional Area (e.g., SAP FI, SAP MM, SAP SD)
+  requirement: Functional Specification / SAP Requirement
+  environment: SAP System (DEV / QAT / PRD)
+  data_store: SAP Table / SAP Business Object / IDoc / BAPI
+
+roles:
+  - name: SAP Functional Consultant
+    description: Configures SAP modules, defines business processes, and writes functional specifications
+  - name: SAP ABAP Developer
+    description: Develops custom ABAP programs, BAdIs, user exits, SmartForms, and enhancements
+  - name: SAP Basis Administrator
+    description: Manages SAP system landscape, transports, performance, and system health
+  - name: Business Process Owner
+    description: Validates process design and signs off on functional requirements
+  - name: Integration Architect
+    description: Designs SAP integration using SAP Integration Suite (CPI), IDocs, or BAPIs
+
+extra_sections:
+  - id: sap_system_landscape
+    title: SAP System Landscape & Transport Strategy
+    placement: after
+    relative_to: module_overview
+    required: true
+    content_guidance: >
+      Define the SAP system landscape: DEV → QAT → PRD transport path, SAP release
+      and support pack level, client strategy (client 100 dev / 200 test / 300 prod
+      convention), and transport management approach (TMS). Identify SAP modules in
+      scope (FI, CO, MM, SD, PP, HR, etc.) and SAP edition (ECC, S/4HANA, SAP Cloud).
+
+  - id: ricefw_object_list
+    title: RICEFW Objects & Custom Development Scope
+    placement: after
+    relative_to: sap_system_landscape
+    required: true
+    content_guidance: >
+      List all RICEFW objects in scope per module:
+      - Reports (custom ABAP reports, ALV grids)
+      - Interfaces (inbound/outbound IDocs, BAPIs, RFC calls, SAP CPI flows)
+      - Conversions (data migration via LSMW, BAPI, or custom programs)
+      - Enhancements (BAdIs, user exits, implicit enhancements)
+      - Forms (SmartForms, Adobe Forms, SAPscript)
+      - Workflows (SAP Business Workplace or SAP Build Process Automation)
+      For each object: name, type, complexity estimate (Low/Medium/High), owning module.
+
+  - id: process_flow_overview
+    title: Business Process Flow Overview
+    placement: after
+    relative_to: ricefw_object_list
+    required: true
+    content_guidance: >
+      For each module, describe the end-to-end business process flow: trigger event,
+      key transaction codes (T-codes), process steps, integration touchpoints with
+      other SAP modules, and output documents. Identify process gaps between current
+      state (AS-IS) and future state (TO-BE) that require configuration or custom dev.
+
+  - id: data_migration_approach
+    title: Data Migration Approach
+    placement: before
+    relative_to: appendix
+    required: true
+    content_guidance: >
+      Define data migration strategy: legacy source systems, objects to migrate
+      (master data: customers, vendors, materials; transactional data: open items,
+      stock), migration tool (LSMW, BAPI programs, SAP Data Services), cutover plan,
+      data cleansing requirements, and reconciliation approach. Note go-live
+      cutover window constraints.
+
+compliance_standards:
+  - name: SAP Activate Methodology
+    description: SAP's agile project methodology — Discover, Prepare, Explore, Realize, Deploy, Run
+    applicable_sections: [detailed_requirements, sap_system_landscape]
+  - name: SOX (Sarbanes-Oxley)
+    description: Financial controls, segregation of duties, and audit trail for SAP FI/CO modules
+    applicable_sections: [nonfunctional_requirements, detailed_requirements]
+  - name: GDPR
+    description: Personal data handling for HR and customer data in SAP
+    applicable_sections: [nonfunctional_requirements]
+
+highlight_artifacts:
+  - type: architecture
+    emphasis: >
+      Present components as SAP technical layers: Presentation Layer (SAP GUI /
+      SAP Fiori / Web Dynpro), Application Layer (ABAP Application Server / SAP BTP),
+      Database Layer (SAP HANA / Oracle / SQL Server). Name integration middleware
+      (SAP CPI, SAP PI/PO, RFC, IDoc) explicitly. Reference SAP module codes (FI, MM, SD, etc.).
+  - type: nonfunctional_req
+    emphasis: >
+      Include SAP-specific targets: dialog response time (< 1 second for online
+      transactions), batch job completion windows, IDoc processing throughput,
+      system availability (24/7 or business-hours SLA), and transport promotion
+      cycle time. Reference SAP Early Watch Alert (EWA) KPIs.
+  - type: task
+    emphasis: >
+      Frame tasks using SAP Activate phases: configuration tasks (Explore/Realize),
+      ABAP development tasks (Realize), integration development (Realize), unit
+      testing (Realize), user acceptance testing (Deploy), cutover activities (Deploy).
+  - type: risk
+    emphasis: >
+      Always include: custom code upgrade risk for S/4HANA migration, transport
+      conflicts in parallel development, IDoc/interface failure handling, batch
+      job performance under period-end load, segregation of duties (SoD) conflicts,
+      and data migration data quality risks.
+
+content_notes:
+  - Use SAP T-codes when referencing transactions (e.g., VA01 for Create Sales Order, FB60 for Vendor Invoice).
+  - Always distinguish configuration (IMG/SPRO) from custom development (ABAP) for each requirement.
+  - All interface requirements must specify direction (inbound/outbound), format (IDoc/BAPI/RFC/REST), and trigger (event-driven vs batch).
+  - Authorization concept (roles and profiles) must be noted as a requirement for each module.
+  - Transport requests must be referenced for all configuration and development deliverables.
