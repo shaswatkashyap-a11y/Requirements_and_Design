@@ -7,9 +7,11 @@ import {
 } from "../api/generationApi";
 import ModuleNavigator from "../components/generation/ModuleNavigator";
 import ArtifactViewer from "../components/generation/ArtifactViewer";
+import ModuleEditPanel from "../components/generation/ModuleEditPanel";
 import ResultsSummary from "../components/generation/ResultsSummary";
 import StatusBadge from "../components/common/StatusBadge";
 import ValidationReport from "../components/generation/ValidationReport";
+import ExportPanel from "../components/generation/ExportPanel";
 
 export default function GenerationResults() {
   const { projectId, runId } = useParams();
@@ -19,7 +21,8 @@ export default function GenerationResults() {
   const [selectedModuleId, setSelectedModuleId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeView, setActiveView] = useState("artifacts"); // 'artifacts' | 'summary' | 'validate'
+  const [activeView, setActiveView] = useState("artifacts");
+  const [artifactRefreshKey, setArtifactRefreshKey] = useState(0);
 
   useEffect(() => {
     async function load() {
@@ -30,7 +33,6 @@ export default function GenerationResults() {
           fetchGenerationModules(runId),
         ]);
         setRun(runData);
-        // Sort by module_order
         const sorted = [...modulesData].sort(
           (a, b) => (a.module_order ?? 0) - (b.module_order ?? 0),
         );
@@ -46,6 +48,18 @@ export default function GenerationResults() {
   }, [runId]);
 
   const selectedModule = modules.find((m) => m.id === selectedModuleId) || null;
+
+  function handleModuleUpdated(updatedModule) {
+    setModules((prev) =>
+      prev.map((m) =>
+        m.id === updatedModule.id ? { ...m, ...updatedModule } : m,
+      ),
+    );
+  }
+
+  function handleArtifactsRegenerated() {
+    setArtifactRefreshKey((k) => k + 1);
+  }
 
   if (loading) {
     return (
@@ -138,11 +152,23 @@ export default function GenerationResults() {
             >
               Validate
             </button>
+            <button
+              onClick={() => setActiveView("export")}
+              className={`flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                activeView === "export"
+                  ? "bg-white text-gray-800 shadow-sm"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              Export
+            </button>
           </div>
         </div>
       </div>
 
-      {activeView === "validate" ? (
+      {activeView === "export" ? (
+        <ExportPanel run={run} modules={modules} runId={runId} />
+      ) : activeView === "validate" ? (
         <div className="flex-1 overflow-y-auto p-6">
           <ValidationReport runId={runId} />
         </div>
@@ -151,7 +177,6 @@ export default function GenerationResults() {
           <ResultsSummary run={run} modules={modules} runId={runId} />
         </div>
       ) : (
-        /* Artifacts view: left sidebar + main content */
         <div className="flex flex-1 min-h-0">
           {/* Left: Module Navigator */}
           <div
@@ -176,9 +201,23 @@ export default function GenerationResults() {
             )}
           </div>
 
-          {/* Right: Artifact Viewer */}
+          {/* Right: Artifact Viewer — ModuleEditPanel passed as topContent so it scrolls with artifacts */}
           <div className="flex-1 min-w-0 flex flex-col min-h-0 bg-gray-50">
-            <ArtifactViewer runId={runId} module={selectedModule} />
+            <ArtifactViewer
+              key={`${selectedModuleId}-${artifactRefreshKey}`}
+              runId={runId}
+              module={selectedModule}
+              topContent={
+                selectedModule ? (
+                  <ModuleEditPanel
+                    runId={runId}
+                    module={selectedModule}
+                    onModuleUpdated={handleModuleUpdated}
+                    onArtifactsRegenerated={handleArtifactsRegenerated}
+                  />
+                ) : null
+              }
+            />
           </div>
         </div>
       )}

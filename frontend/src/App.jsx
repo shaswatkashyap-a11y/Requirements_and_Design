@@ -6,6 +6,7 @@ import RequirementStudio from './pages/RequirementStudio'
 import SOWDetail from './pages/SOWDetail'
 import GenerationProgress from './pages/GenerationProgress'
 import GenerationResults from './pages/GenerationResults'
+import PromptEditor from './pages/PromptEditor'
 
 function Layout({ children }) {
   return (
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="/projects/:projectId/sow/:sowId" element={<SOWDetail />} />
           <Route path="/projects/:projectId/generations/:runId" element={<GenerationProgress />} />
           <Route path="/projects/:projectId/generations/:runId/results" element={<GenerationResults />} />
+          <Route path="/projects/:projectId/prompts" element={<PromptEditor />} />
         </Routes>
       </Layout>
     </BrowserRouter>
