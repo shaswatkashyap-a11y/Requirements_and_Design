@@ -4,11 +4,15 @@ import {
   updatePrompt,
   saveProjectVersion,
   activatePrompt,
+  deletePrompt,
   deactivateProjectOverride,
 } from "../../api/promptApi";
 import { PROMPT_SCHEMAS } from "../../config/promptSchemas";
 import AddConfigModal from "./AddConfigModal";
-import { deleteServiceLineByCode, deleteMethodologyByCode } from "../../api/configAdminApi";
+import {
+  deleteServiceLineByCode,
+  deleteMethodologyByCode,
+} from "../../api/configAdminApi";
 
 function prettyPrintXml(xmlStr) {
   try {
@@ -60,67 +64,74 @@ function prettyPrintXml(xmlStr) {
 
 function prettyPrintContent(raw) {
   try {
-    return JSON.stringify(JSON.parse(raw), null, 2)
+    return JSON.stringify(JSON.parse(raw), null, 2);
   } catch {
-    return prettyPrintXml(raw)
+    return prettyPrintXml(raw);
   }
 }
 
-
 function validatePromptContent(content, promptType, conceptKey) {
-  if (promptType === 'refinement') return null
+  if (promptType === "refinement") return null;
 
-  if (promptType === 'service_line_config' || promptType === 'methodology_config') {
-    let data
+  if (
+    promptType === "service_line_config" ||
+    promptType === "methodology_config"
+  ) {
+    let data;
     try {
-      data = JSON.parse(content)
+      data = JSON.parse(content);
     } catch {
-      return 'Invalid JSON — fix the syntax before saving.'
+      return "Invalid JSON — fix the syntax before saving.";
     }
-    const required = promptType === 'methodology_config'
-      ? ['document_title', 'functional_req_heading', 'artifact_order']
-      : ['terminology', 'roles', 'extra_sections']
+    const required =
+      promptType === "methodology_config"
+        ? ["document_title", "functional_req_heading", "artifact_order"]
+        : ["terminology", "roles", "extra_sections"];
     for (const key of required) {
-      if (!(key in data)) return `Missing required key: "${key}"`
+      if (!(key in data)) return `Missing required key: "${key}"`;
     }
-    return null
+    return null;
   }
 
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(content.trim(), 'application/xml')
-  if (doc.querySelector('parsererror'))
-    return 'Invalid XML — fix the syntax before saving.'
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(content.trim(), "application/xml");
+  if (doc.querySelector("parsererror"))
+    return "Invalid XML — fix the syntax before saving.";
 
-  const schema = PROMPT_SCHEMAS[promptType]?.[conceptKey]
-  if (!schema) return null
+  const schema = PROMPT_SCHEMAS[promptType]?.[conceptKey];
+  if (!schema) return null;
 
-  const root = doc.documentElement
+  const root = doc.documentElement;
   if (root.tagName !== schema.root)
-    return `Root element must be <${schema.root}>, found <${root.tagName}>.`
+    return `Root element must be <${schema.root}>, found <${root.tagName}>.`;
 
   for (const tag of schema.required) {
-    if (!root.querySelector(tag)) return `Missing required element <${tag}>.`
+    if (!root.querySelector(tag)) return `Missing required element <${tag}>.`;
   }
 
   if (schema.overrides) {
-    const overridesEl = root.querySelector('artifact_overrides')
+    const overridesEl = root.querySelector("artifact_overrides");
     if (overridesEl) {
       for (const tag of schema.overrides) {
         if (!overridesEl.querySelector(tag))
-          return `Missing required override <${tag}> inside <artifact_overrides>.`
+          return `Missing required override <${tag}> inside <artifact_overrides>.`;
       }
     }
   }
 
-  return null
+  return null;
 }
-
 
 function getConceptLabel(prompt) {
   return prompt.scope_key || prompt.artifact_type || prompt.section || "global";
 }
 
-export default function PromptEditPanel({ prompt, projectId, onSaved }) {
+export default function PromptEditPanel({
+  prompt,
+  projectId,
+  hasProjectOverride,
+  onSaved,
+}) {
   const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
   const [overriding, setOverriding] = useState(false);
@@ -149,8 +160,16 @@ export default function PromptEditPanel({ prompt, projectId, onSaved }) {
 
   const isGlobal = !prompt.project_id;
   const isActiveOverride = !isGlobal && prompt.is_active;
+  const isConfigType =
+    prompt.prompt_type === "methodology_config" ||
+    prompt.prompt_type === "service_line_config";
   const isInactiveOverride = !isGlobal && !prompt.is_active;
-  const isConfigurable = ['service_line', 'methodology', 'service_line_config', 'methodology_config'].includes(prompt.prompt_type);
+  const isConfigurable = [
+    "service_line",
+    "methodology",
+    "service_line_config",
+    "methodology_config",
+  ].includes(prompt.prompt_type);
 
   async function handleSave() {
     const conceptKey = prompt.scope_key || prompt.artifact_type;
@@ -185,23 +204,34 @@ export default function PromptEditPanel({ prompt, projectId, onSaved }) {
   }
 
   async function handleDelete() {
-    if (!window.confirm(`Delete "${getConceptLabel(prompt)}"? This cannot be undone.`)) return
-    setDeleting(true)
-    setError(null)
+    if (
+      !window.confirm(
+        `Delete "${getConceptLabel(prompt)}"? This cannot be undone.`,
+      )
+    )
+      return;
+    setDeleting(true);
+    setError(null);
     try {
-      if (prompt.prompt_type === 'service_line' || prompt.prompt_type === 'service_line_config') {
-        await deleteServiceLineByCode(prompt.scope_key)
-      } else if (prompt.prompt_type === 'methodology' || prompt.prompt_type === 'methodology_config') {
-        await deleteMethodologyByCode(prompt.scope_key)
+      if (
+        prompt.prompt_type === "service_line" ||
+        prompt.prompt_type === "service_line_config"
+      ) {
+        await deleteServiceLineByCode(prompt.scope_key);
+      } else if (
+        prompt.prompt_type === "methodology" ||
+        prompt.prompt_type === "methodology_config"
+      ) {
+        await deleteMethodologyByCode(prompt.scope_key);
       } else {
-        setError('This prompt type cannot be deleted from here.')
-        return
+        setError("This prompt type cannot be deleted from here.");
+        return;
       }
-      onSaved?.()
+      onSaved?.();
     } catch (err) {
-      setError(err.message)
+      setError(err.message);
     } finally {
-      setDeleting(false)
+      setDeleting(false);
     }
   }
 
@@ -242,23 +272,25 @@ export default function PromptEditPanel({ prompt, projectId, onSaved }) {
               ● Active
             </span>
           )}
-          {projectId && !isActiveOverride && (
+          {isInactiveOverride && projectId && (
             <button
               onClick={handleOverride}
               disabled={overriding}
-              className={`flex items-center gap-1 px-3 py-1.5 text-xs rounded border disabled:opacity-40 transition-colors ${
-                isGlobal
-                  ? "border-gray-300 text-gray-600 hover:bg-gray-50"
-                  : "border-indigo-300 text-indigo-600 hover:bg-indigo-50"
-              }`}
+              className="flex items-center gap-1 px-3 py-1.5 text-xs rounded border border-indigo-300 text-indigo-600 hover:bg-indigo-50 disabled:opacity-40 transition-colors"
             >
-              {overriding
-                ? "Updating…"
-                : isGlobal
-                  ? "Revert to Global"
-                  : "Activate Override"}
+              {overriding ? "Updating…" : "Activate Override"}
             </button>
           )}
+          {isGlobal && projectId && hasProjectOverride && (
+            <button
+              onClick={handleOverride}
+              disabled={overriding}
+              className="flex items-center gap-1 px-3 py-1.5 text-xs rounded border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-40 transition-colors"
+            >
+              {overriding ? "Updating…" : "Revert to Global"}
+            </button>
+          )}
+
           {isConfigurable && (
             <>
               <button
@@ -266,7 +298,11 @@ export default function PromptEditPanel({ prompt, projectId, onSaved }) {
                 disabled={deleting}
                 className="flex items-center gap-1 px-3 py-1.5 text-xs rounded border border-red-200 text-red-500 hover:bg-red-50 disabled:opacity-40 transition-colors"
               >
-                {deleting ? <Loader2 size={11} className="animate-spin" /> : <Trash2 size={11} />}
+                {deleting ? (
+                  <Loader2 size={11} className="animate-spin" />
+                ) : (
+                  <Trash2 size={11} />
+                )}
                 Delete
               </button>
               <button

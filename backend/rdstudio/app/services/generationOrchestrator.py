@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 from app.services.moduleRepository import ModuleRepository
 from app.models.moduleVersion import ModuleVersionSource
 from app.services.artifactRepository import ArtifactRepository
+from app.services.generationRepository import GenerationRepository
 from app.services.llmClient import LLMClient,ParseError
 from app.services.promptBuilder import PromptBuilder
 from app.services.responseParser import ResponseParser
@@ -18,17 +19,18 @@ class GenerationOrchestrator:
       2. Generate artifacts in dependency order (parallel within each round)
       3. Save everything to DB with traceability"""
     
-    def __init__(self, repo: ArtifactRepository) -> None:
+    def __init__(self, repo: ArtifactRepository, gen_repo: GenerationRepository) -> None:
         self.repo=repo
+        self.gen_repo = gen_repo
         self.llm=LLMClient()
-        self.prompt_builder=PromptBuilder()
         self.parser=ResponseParser()
         
     async def run(self,generation_run_id:int):
         """Main entry point. Called from Celery task."""
     
         try:
-            run=self.repo.get_generation_run(generation_run_id)
+            run=self.gen_repo.get_generation_run(generation_run_id)
+            self.prompt_builder = PromptBuilder(db=self.repo.db, project_id=run.project_id)
             sow_id=run.sow_id
             methodology=run.methodology
             service_line_codes=run.service_line_codes
@@ -37,7 +39,7 @@ class GenerationOrchestrator:
             sections=self.repo.get_sow_sections(sow_id)
 
             # ── STEP 1: Extract modules ──
-            self.repo.update_status(generation_run_id,"extracting_modules","Analyzing SOW and identifying functional modules...")
+            self.gen_repo.update_status(generation_run_id,"extracting_modules","Analyzing SOW and identifying functional modules...")
             
             modules_data=await self._extract_modules(sections,methodology,service_line_codes) 
 
@@ -58,7 +60,7 @@ class GenerationOrchestrator:
             all_artifacts_by_module={m.id : {} for m in db_modules}
 
             for round_idx,round_types in enumerate(rounds):
-                self.repo.update_status(
+                self.gen_repo.update_status(
                     generation_run_id,"generating_artifacts",
                     f"Round {round_idx + 1}/{len(rounds)} : {','.join(round_types)}",
                     current_round=round_idx+1, total_rounds=len(rounds) 
@@ -101,12 +103,12 @@ class GenerationOrchestrator:
                     
                     self.repo.save_artifacts(module_id,db_artifacts)
 
-            self.repo.update_status(generation_run_id, "completed")
+            self.gen_repo.update_status(generation_run_id, "completed")
             logger.info(f"Pipeline completed for run {generation_run_id}")
 
         except Exception as e:
             logger.exception(f"Pipeline failed for run {generation_run_id}")
-            self.repo.set_failed(generation_run_id, str(e))
+            self.gen_repo.set_failed(generation_run_id, str(e))
             raise
 
 

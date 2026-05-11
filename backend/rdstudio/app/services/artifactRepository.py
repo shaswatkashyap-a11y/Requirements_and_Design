@@ -6,12 +6,7 @@ from app.config.artifact_dependencies import ARTIFACT_DEPENDENCIES
 import logging
 from datetime import datetime,timezone
 from sqlalchemy.orm import Session
-from app.models.generationRun import GenerationRun
 from app.models.module import Module
-from app.models.artifact import Artifact
-from datetime import datetime
-from sqlalchemy.orm import Session
-from app.models.promptTemplate import PromptTemplate
 
 logger = logging.getLogger(__name__)
 
@@ -21,64 +16,6 @@ class ArtifactRepository:
 
     def __init__(self,db:Session) -> None:
         self.db=db
-
-    def get_generation_run(self,run_id:int):
-        run=self.db.query(GenerationRun).get(run_id) #not using filter cause .get() first checks cache increase in performance
-
-        if not run:
-            raise ValueError(f"GenerationRun {run_id} not found")
-        
-        return run
-    
-    def create_generation_run(
-            self, project_id:int, sow_id:int,
-            methodology:str, service_line_codes:list[str], artifact_types:list[str],
-            config_snapshot:dict | None = None):
-        
-        run = GenerationRun(
-            project_id=project_id,
-            sow_id=sow_id,
-            methodology=methodology,
-            service_line_codes=service_line_codes,
-            artifact_types_requested=artifact_types,
-            config_snapshot=config_snapshot
-        )
-
-        self.db.add(run)
-        self.db.commit()
-        self.db.refresh(run)
-        return run
-    
-    def update_status(
-            self,run_id:int,status:str,
-            message:str | None =None,
-            current_round:int| None =None,
-            total_rounds:int | None =None,
-            ):
-        run = self.get_generation_run(run_id)
-        run.status = status  # type: ignore[assignment]
-
-        if message is not None:
-            run.progress_message = message  # type: ignore[assignment]
-        if current_round is not None:
-            run.current_round = current_round  # type: ignore[assignment]
-        if total_rounds is not None:
-            run.total_rounds = total_rounds  # type: ignore[assignment]
-        
-        if status in ("extracting_modules") and not run.started_at:
-            run.started_at=datetime.now(timezone.utc)
-        
-        if status == "completed":
-            run.completed_at = datetime.now(timezone.utc)
-        self.db.commit()
-
-    def set_failed(self, run_id:int, error:str):
-
-        run = self.get_generation_run(run_id)
-        run.status="failed"
-        run.error_log=error
-        run.completed_at=datetime.now(timezone.utc)
-        self.db.commit()
 
     def save_modules(self, run_id:int, modules_data:list[dict]):
         modules=[]
@@ -306,72 +243,3 @@ class ArtifactRepository:
             {"stale_status": StaleStatus.STALE_ACKNOWLEDGED}
         )
         self.db.commit()
-
-
-#=========================================================================
-#Prompt repo for handling base, methodologies, and service lines
-class PromptRepository:
-
-    def __init__(self, db: Session):
-        self.db = db
-
-    def get_prompt(
-        self,
-        prompt_type:   str,
-        artifact_type: str | None,
-        scope_key:     str | None,
-        section:       str,
-    ) -> str | None:
-        """
-        Fetch the content of one active prompt row.
-        Returns None if no matching active row exists — callers treat
-        None as "fall back to the XML file on disk".
-        """
-        row = (
-            self.db.query(PromptTemplate)
-            .filter(
-                PromptTemplate.prompt_type   == prompt_type,
-                PromptTemplate.artifact_type == artifact_type,
-                PromptTemplate.scope_key     == scope_key,
-                PromptTemplate.section       == section,
-                PromptTemplate.is_active     == True,
-            )
-            .first()
-        )
-        return row.content if row else None
-
-    def get_all(self) -> list[PromptTemplate]:
-        """Return all active rows ordered for the UI list view."""
-        return (
-            self.db.query(PromptTemplate)
-            .filter(PromptTemplate.is_active == True)
-            .order_by(PromptTemplate.prompt_type, PromptTemplate.artifact_type, PromptTemplate.section)
-            .all()
-        )
-
-    def get_by_id(self, id: int) -> PromptTemplate | None:
-        return self.db.query(PromptTemplate).get(id)
-
-    def update_content(self, id: int, content: str) -> PromptTemplate | None:
-        """Update the content of an existing row."""
-        row = self.db.query(PromptTemplate).get(id)
-        if not row:
-            return None
-        row.content    = content
-        row.updated_at = datetime.utcnow()
-        self.db.commit()
-        self.db.refresh(row)
-        return row
-
-    def deactivate(self, id: int) -> None:
-        """
-        Soft delete — marks the row inactive.
-        PromptBuilder.get_prompt returns None for inactive rows,
-        which causes it to fall back to the XML file default.
-        This is the "reset to default" operation.
-        """
-        row = self.db.query(PromptTemplate).get(id)
-        if row:
-            row.is_active  = False
-            row.updated_at = datetime.utcnow()
-            self.db.commit()        

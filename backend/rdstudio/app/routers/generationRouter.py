@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timezone, timedelta
 
 from app.db.database import get_db
-from app.services.artifactRepository import ArtifactRepository
+from app.services.generationRepository import GenerationRepository
 from app.schemas.generationSchemas import (
     GenerationRequest,
     GenerationKickoffResponse,
@@ -21,8 +21,6 @@ from app.models.module import Module
 from app.models.artifact import Artifact
 from app.models.sow import Sow
 
-STALE_THRESHOLD_HOURS = 2
-IN_PROGRESS_STATUSES = {"extracting_modules", "generating_artifacts", "queued", "pending"}
 TERMINAL_STATUSES = {"completed", "failed"}
 
 router = APIRouter(tags=["Generation"])
@@ -52,8 +50,8 @@ def start_generation(
         request.methodology, request.service_line_codes
     )
 
-    repo = ArtifactRepository(db)
-    run = repo.create_generation_run(
+    gen_repo = GenerationRepository(db)
+    run = gen_repo.create_generation_run(
         project_id=project_id,
         sow_id=sow_id,
         methodology=request.methodology,
@@ -75,27 +73,6 @@ def start_generation(
         message="Generation pipeline started. Poll status for progress.",
     )
 
-
-# ── Poll status ──
-
-def _mark_stale_if_needed(run: GenerationRun, db: Session) -> None:
-    """Auto-fail a run that has been stuck in an in-progress status for > 2 hours."""
-    if run.status not in IN_PROGRESS_STATUSES:
-        return
-    if not run.started_at:
-        return
-    started = run.started_at
-    if started.tzinfo is None:
-        started = started.replace(tzinfo=timezone.utc)
-    age = datetime.now(timezone.utc) - started
-    if age > timedelta(hours=STALE_THRESHOLD_HOURS):
-        run.status = "failed"
-        run.error_log = "Run timed out — exceeded maximum duration (2 hours)."
-        run.completed_at = datetime.now(timezone.utc)
-        db.commit()
-        db.refresh(run)
-
-
 @router.get(
     "/generations/{run_id}",
     response_model=GenerationRunResponse,
@@ -104,7 +81,8 @@ def get_generation_status(run_id: int, db: Session = Depends(get_db)):
     run = db.query(GenerationRun).get(run_id)
     if not run:
         raise HTTPException(404, "Generation run not found")
-    _mark_stale_if_needed(run, db)
+    gen_repo = GenerationRepository(db)
+    gen_repo.mark_stale_if_needed(run)
     return run
 
 

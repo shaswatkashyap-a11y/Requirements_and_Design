@@ -17,19 +17,6 @@ from app.services.artifactRepository import ArtifactRepository
 logger = logging.getLogger(__name__)
 router = APIRouter(tags=["Refinement"])
 
-def _get_refinement_service(db: Session = Depends(get_db)) -> RefinementService:
-    """
-    Dependency injection factory.
-    Creates the service with all its dependencies wired up.
-    Called by FastAPI's Depends() on each request — lightweight because
-    LLMClient and PromptBuilder hold no per-request state.
-    """
-    orchestrator = RefinementOrchestrator(
-        llm            = LLMClient(),
-        prompt_builder = PromptBuilder(db=db),
-    )
-    return RefinementService(db=db, orchestrator=orchestrator)
-
 @router.post(
     "/generations/{run_id}/artifacts/{artifact_id}/refine",
     response_model=ArtifactRefinedResponse,
@@ -38,9 +25,10 @@ async def refine_artifact(
     run_id:      int,
     artifact_id: int,
     body:        RefineArtifactRequest,
-    svc:         RefinementService = Depends(_get_refinement_service),
     db:          Session           = Depends(get_db),
 ):
+    orchestrator = RefinementOrchestrator(llm=LLMClient(), prompt_builder=PromptBuilder(db=db))
+    svc = RefinementService(db=db, orchestrator=orchestrator)
     """
     Synchronous single-artifact refinement.
 
@@ -92,8 +80,10 @@ def manual_edit_artifact(
     run_id:      int,
     artifact_id: int,
     body:        ManualEditRequest,
-    svc:         RefinementService = Depends(_get_refinement_service),
+    db:          Session = Depends(get_db),
 ):
+    orchestrator = RefinementOrchestrator(llm=LLMClient(), prompt_builder=PromptBuilder(db=db))
+    svc = RefinementService(db=db, orchestrator=orchestrator)
     """
     Save a manual edit as a new version (source=manual).
     Synchronous — no LLM call, responds immediately.
