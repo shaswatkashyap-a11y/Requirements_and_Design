@@ -1,7 +1,8 @@
 from datetime import datetime
 from sqlalchemy.orm import Session
 from app.models.promptTemplate import PromptTemplate
-
+import xml.etree.ElementTree as ET
+from app.prompts.config.prompt_schemas import PROMPT_SCHEMAS
 
 class PromptRepository:
 
@@ -194,3 +195,35 @@ class PromptRepository:
             existing.is_active  = False
             existing.updated_at = datetime.utcnow()
             self.db.commit()
+
+#Function for validating XML files
+    def _validate_xml(self, content: str, prompt_type: str = None, concept_key: str = None) -> None:
+        if not content.strip().startswith("<"):
+            return
+        try:
+            root = ET.fromstring(content)
+        except ET.ParseError as e:
+            raise ValueError(f"Invalid XML: {e}")
+
+        if not prompt_type or not concept_key:
+            return
+
+        schema = PROMPT_SCHEMAS.get(prompt_type, {}).get(concept_key)
+        if not schema:
+            return
+
+        if root.tag != schema["root"]:
+            raise ValueError(f"Root element must be <{schema['root']}>, found <{root.tag}>.")
+
+
+        for tag in schema.get("required", []):
+            if root.find(tag) is None:
+                raise ValueError(f"Missing required element <{tag}>.")
+
+
+        if "overrides" in schema:
+            overrides_el = root.find("artifact_overrides")
+            if overrides_el is not None:
+                for tag in schema["overrides"]:
+                    if overrides_el.find(tag) is None:
+                        raise ValueError(f"Missing required override <{tag}> inside <artifact_overrides>.")

@@ -3,6 +3,7 @@ import logging
 from app.config.celery_config import celery_app
 from app.db.database import SessionLocal
 from app.services.artifactRepository import ArtifactRepository
+from app.services.generationRepository import GenerationRepository
 from app.services.generationOrchestrator import GenerationOrchestrator
 
 logger = logging.getLogger(__name__)
@@ -26,7 +27,8 @@ def run_generation_pipeline(self, generation_run_id: int):
     db = SessionLocal()
     try:
         repo = ArtifactRepository(db)
-        orchestrator = GenerationOrchestrator(repo)
+        gen_repo = GenerationRepository(db)
+        orchestrator = GenerationOrchestrator(repo=repo, gen_repo=gen_repo)
         asyncio.run(orchestrator.run(generation_run_id))
         logger.info(f"Pipeline completed for run {generation_run_id}")
 

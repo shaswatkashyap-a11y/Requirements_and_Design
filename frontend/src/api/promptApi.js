@@ -38,6 +38,11 @@ export async function saveProjectVersion(globalPromptId, projectId, content) {
   return res.json()
 }
 
+export async function deletePrompt(id) {
+  const res = await fetch(`${BASE}/prompts/${id}/reset`, { method: 'POST' })
+  if (!res.ok) throw new Error('Failed to delete prompt')
+}
+
 // Override on a project-specific row: activate it for the project
 export async function activatePrompt(id) {
   const res = await fetch(`${BASE}/prompts/${id}/activate`, { method: 'POST' })

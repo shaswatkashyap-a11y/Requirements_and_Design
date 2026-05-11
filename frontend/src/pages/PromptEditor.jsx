@@ -12,6 +12,15 @@ export default function PromptEditor() {
   const [loading,  setLoading]  = useState(true)
   const [error,    setError]    = useState(null)
 
+  const hasProjectOverride = selected
+  ? prompts.some(p =>
+      p.project_id != null &&
+      p.prompt_type === selected.prompt_type &&
+      p.scope_key === selected.scope_key &&
+      p.artifact_type === selected.artifact_type
+    )
+  : false
+
   useEffect(() => {
     loadPrompts()
   }, [projectId])
@@ -51,6 +60,7 @@ export default function PromptEditor() {
       <PromptEditPanel
         prompt    ={selected}
         projectId ={projectId ? Number(projectId) : null}
+        hasProjectOverride={hasProjectOverride}
         onSaved   ={loadPrompts}
       />
     </div>

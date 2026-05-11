@@ -1,9 +1,14 @@
 import json
-import re
-import xml.etree.ElementTree as ET
 from typing import Optional
-
-import yaml
+from app.services.configService import (
+    derive_code,
+    validate_service_line_xml,
+    validate_methodology_xml,
+    validate_service_line_yaml,
+    validate_methodology_yaml,
+    count_service_line_usage,
+    count_methodology_usage,
+)
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from sqlalchemy.orm import Session, joinedload
 
@@ -23,71 +28,6 @@ from app.schemas.configSchemas import (
 from app.services.methodology_config_loader import load_methodology_config
 
 router = APIRouter(prefix="/config", tags=["Config"])
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Helpers
-# ─────────────────────────────────────────────────────────────────────────────
-
-def _derive_code(name: str) -> str:
-    code = name.lower().strip()
-    code = re.sub(r"[^a-z0-9\s]", "", code)
-    code = re.sub(r"\s+", "_", code)
-    return re.sub(r"_+", "_", code).strip("_")
-
-
-def _validate_service_line_xml(content: str) -> ET.Element:
-    try:
-        root = ET.fromstring(content)
-    except ET.ParseError as e:
-        raise HTTPException(status_code=400, detail=f"Invalid XML: {e}")
-    if root.find("tech_context") is None:
-        raise HTTPException(status_code=400, detail="XML missing required <tech_context> tag")
-    if root.find("artifact_overrides") is None:
-        raise HTTPException(status_code=400, detail="XML missing required <artifact_overrides> tag")
-    return root
-
-
-def _validate_methodology_xml(content: str) -> ET.Element:
-    try:
-        root = ET.fromstring(content)
-    except ET.ParseError as e:
-        raise HTTPException(status_code=400, detail=f"Invalid XML: {e}")
-    if root.find("global_instructions") is None:
-        raise HTTPException(status_code=400, detail="XML missing required <global_instructions> tag")
-    return root
-
-
-def _validate_service_line_yaml(content: str) -> dict:
-    try:
-        data = yaml.safe_load(content)
-    except yaml.YAMLError as e:
-        raise HTTPException(status_code=400, detail=f"Invalid YAML: {e}")
-    for key in ("terminology", "roles", "extra_sections"):
-        if key not in data:
-            raise HTTPException(status_code=400, detail=f"YAML missing required key: '{key}'")
-    return data
-
-
-def _validate_methodology_yaml(content: str) -> dict:
-    try:
-        data = yaml.safe_load(content)
-    except yaml.YAMLError as e:
-        raise HTTPException(status_code=400, detail=f"Invalid YAML: {e}")
-    for key in ("document_title", "functional_req_heading", "artifact_order"):
-        if key not in data:
-            raise HTTPException(status_code=400, detail=f"YAML missing required key: '{key}'")
-    return data
-
-
-def _count_service_line_usage(db: Session, code: str) -> int:
-    runs = db.query(GenerationRun).all()
-    return sum(1 for r in runs if code in (r.service_line_codes or []))
-
-
-def _count_methodology_usage(db: Session, code: str) -> int:
-    return db.query(GenerationRun).filter(GenerationRun.methodology == code).count()
-
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Existing read endpoints
@@ -147,7 +87,7 @@ async def add_service_line(
     yaml_file: UploadFile = File(...),
     db: Session = Depends(get_db),
 ):
-    code = _derive_code(name)
+    code = derive_code(name)
     if not code:
         raise HTTPException(status_code=400, detail="Could not derive a valid code from the provided name")
 
@@ -160,8 +100,8 @@ async def add_service_line(
     xml_content = (await xml_file.read()).decode("utf-8")
     yaml_content = (await yaml_file.read()).decode("utf-8")
 
-    xml_root = _validate_service_line_xml(xml_content)
-    yaml_data = _validate_service_line_yaml(yaml_content)
+    xml_root = validate_service_line_xml(xml_content)
+    yaml_data = validate_service_line_yaml(yaml_content)
 
     # Extract extra artifact types from <artifact_overrides> child tags
     overrides_el = xml_root.find("artifact_overrides")
@@ -211,7 +151,7 @@ def delete_service_line_by_code(code: str, db: Session = Depends(get_db)):
     if not service_line:
         raise HTTPException(status_code=404, detail="Service line not found")
 
-    usage = _count_service_line_usage(db, service_line.code)
+    usage = count_service_line_usage(db, service_line.code)
     if usage > 0:
         raise HTTPException(
             status_code=400,
@@ -241,7 +181,7 @@ async def add_methodology(
     yaml_file: UploadFile = File(...),
     db: Session = Depends(get_db),
 ):
-    code = _derive_code(name)
+    code = derive_code(name)
     if not code:
         raise HTTPException(status_code=400, detail="Could not derive a valid code from the provided name")
 
@@ -251,8 +191,8 @@ async def add_methodology(
     xml_content = (await xml_file.read()).decode("utf-8")
     yaml_content = (await yaml_file.read()).decode("utf-8")
 
-    _validate_methodology_xml(xml_content)
-    yaml_data = _validate_methodology_yaml(yaml_content)
+    validate_methodology_xml(xml_content)
+    yaml_data = validate_methodology_yaml(yaml_content)
 
     artifact_types = yaml_data.get("artifact_order", [])
 
@@ -299,7 +239,7 @@ def delete_methodology_by_code(code: str, db: Session = Depends(get_db)):
     if not methodology:
         raise HTTPException(status_code=404, detail="Methodology not found")
 
-    usage = _count_methodology_usage(db, methodology.code)
+    usage = count_methodology_usage(db, methodology.code)
     if usage > 0:
         raise HTTPException(
             status_code=400,

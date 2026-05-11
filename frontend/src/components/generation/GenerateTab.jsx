@@ -31,6 +31,15 @@ export default function GenerateTab({ projectId, sowId, project }) {
   const [selectedPrompt, setSelectedPrompt] = useState(null);
   const [promptsLoading, setPromptsLoading] = useState(false);
 
+  const hasProjectOverride = selectedPrompt
+  ? prompts.some(p =>
+      p.project_id != null &&
+      p.prompt_type === selectedPrompt.prompt_type &&
+      p.scope_key === selectedPrompt.scope_key &&
+      p.artifact_type === selectedPrompt.artifact_type
+    )
+  : false
+
   async function loadHistory() {
     setLoadingHistory(true);
     try {
@@ -163,6 +172,7 @@ export default function GenerateTab({ projectId, sowId, project }) {
                 <PromptEditPanel
                   prompt={selectedPrompt}
                   projectId={projectId ? Number(projectId) : null}
+                  hasProjectOverride={hasProjectOverride}
                   onSaved={() => loadPrompts({ showSpinner: false })}
                 />
               </div>

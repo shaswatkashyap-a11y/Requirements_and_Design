@@ -10,9 +10,9 @@ _MAX_TOKENS  = 1200
 
 
 class ModuleRefinementService:
-    def __init__(self) -> None:
+    def __init__(self, db=None, project_id: int | None = None) -> None:
         self.llm            = LLMClient()
-        self.prompt_builder = PromptBuilder()
+        self.prompt_builder = PromptBuilder(db=db, project_id=project_id)
 
     async def refine(
         self,

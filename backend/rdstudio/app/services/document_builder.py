@@ -162,9 +162,6 @@ def _add_cover(doc: Document, run: GenerationRun, instructions: dict, db: Sessio
     config = _get_methodology_config(run.methodology, db)
     doc_title = config["document_title"]
 
-    _page_break(doc)
-    doc.add_paragraph()
-
     if LOGO_PATH.exists():
         p = doc.add_paragraph()
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER

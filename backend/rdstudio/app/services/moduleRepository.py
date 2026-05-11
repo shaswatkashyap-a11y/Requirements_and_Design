@@ -83,3 +83,11 @@ class ModuleRepository:
             synchronize_session=False,
         )
         self.db.commit()
+    def get_by_run(self, run_id: int, module_id: int) -> Module:
+        module = self.db.query(Module).filter(
+            Module.id                == module_id,
+            Module.generation_run_id == run_id,
+        ).first()
+        if not module:
+            raise ValueError("Module not found")
+        return module

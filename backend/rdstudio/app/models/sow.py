@@ -39,7 +39,7 @@ class SOWSection(Base):
     id = Column(Integer, primary_key=True, index=True)
     sow_id = Column(Integer, ForeignKey("sows.id"), nullable=False)
 
-    title = Column(String(500), nullable=False)
+    title = Column(String(500), nullable=False) 
     content = Column(Text, nullable=True)
     level = Column(Integer, default=1)
     section_order = Column(Integer, default=0)
