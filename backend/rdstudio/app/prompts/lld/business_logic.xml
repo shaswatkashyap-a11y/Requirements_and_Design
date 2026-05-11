@@ -16,7 +16,7 @@ CRITICAL RULES:
    SLA_Target_Hours = priority_matrix[Case.Priority]   # e.g. P1=4h, P2=8h, P3=24h, P4=72h
    SLA_Due_DateTime = Case.CreatedDate + SLA_Target_Hours
    SLA_Elapsed_Pct  = (Now - Case.CreatedDate) / SLA_Target_Hours * 100
-   SLA_Breached     = Now > SLA_Due_DateTime
+   SLA_Breached     = Now &gt; SLA_Due_DateTime
    ```
    Priority tiers must come from the SOW. If SOW does not specify, use P1=4h, P2=8h, P3=24h, P4=72h as defaults and label them as assumed.
 

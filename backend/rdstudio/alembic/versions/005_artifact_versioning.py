@@ -20,7 +20,7 @@ from alembic import op
 import sqlalchemy as sa
 
 revision: str = '005_artifact_versioning'
-down_revision: Union[str, Sequence[str], None] = '21c447f513e2'
+down_revision: Union[str, Sequence[str], None] = '004_relationship_resolved'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

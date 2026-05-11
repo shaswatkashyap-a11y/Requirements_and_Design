@@ -12,7 +12,7 @@ Format selection rule:
 - AMS / ServiceNow project → ServiceNow Table Extension format (table name, column, type, mandatory)
 - Custom Development → SQL table format (PostgreSQL preferred — column, type, NOT NULL, DEFAULT, constraint)
 - Integration / Middleware → define the canonical data model in SQL format
-- Data & Analytics → define warehouse tables (star/snowflake schema with dimension/fact labels)
+- Data &amp; Analytics → define warehouse tables (star/snowflake schema with dimension/fact labels)
 
 UNIQUE constraint rule (CRITICAL):
 - Only mark a field UNIQUE if NO two records can ever share that value.

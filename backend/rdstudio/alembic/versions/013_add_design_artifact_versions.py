@@ -1,7 +1,7 @@
 """add design artifact versions
 
-Revision ID: a19c1bfe3f7e
-Revises: aea638da5044
+Revision ID: 013_add_design_artifact_versions
+Revises: 012_add_project_type_to_projects
 Create Date: 2026-05-02 13:50:01.326074
 
 """
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'a19c1bfe3f7e'
-down_revision: Union[str, Sequence[str], None] = 'aea638da5044'
+revision: str = '013_add_design_artifact_versions'
+down_revision: Union[str, Sequence[str], None] = '012_add_project_type_to_projects'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

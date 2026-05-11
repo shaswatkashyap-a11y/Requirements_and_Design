@@ -12,6 +12,7 @@ class Module(Base):
     description       = Column(Text, nullable=True)
     source_section_ids = Column(JSON, nullable=True)
     module_order      = Column(Integer, default=0)
+    jira_epic_key     = Column(String(50), nullable=True)
     current_version_id = Column(
         Integer,
         ForeignKey(

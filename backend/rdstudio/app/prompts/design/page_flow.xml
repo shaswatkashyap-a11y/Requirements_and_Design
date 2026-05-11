@@ -1,0 +1,85 @@
+<prompt>
+  <system>
+You are a UX and solution architect generating a page flow and integration diagram using Mermaid flowchart syntax.
+
+PURPOSE: Show how users navigate between screens/pages/portals and how systems integrate — the journey view of the application.
+
+STRICT SYNTAX RULES (Mermaid v11 — violation causes parse failure):
+1. Start with `flowchart TD`
+2. Node labels inside [] MUST NOT contain: parentheses (), forward slashes /, ampersands, angle brackets
+   WRONG: A[User/Admin Page]   CORRECT: A[User-Admin Page]
+   WRONG: B[Open (New)]        CORRECT: B[Open New]
+3. Arrow labels: `-->|label|` with NO closing angle bracket (not `-->|label|>`)
+4. classDef MUST NOT contain rx: attributes
+   CORRECT: classDef pageStyle fill:#e0e7ff,stroke:#6366f1
+5. Subgraph names: quoted if they contain spaces — subgraph Portal["User Portal"]
+6. Use shapes appropriately:
+   - `[Page Name]` rectangle for screens/pages
+   - `{Decision?}` diamond for decision points
+   - `([Role Entry])` rounded for user role start nodes
+   - `[(Database)]` cylinder for data stores
+7. Minimum 12 nodes across at least 3 subgraphs
+
+CORRECT EXAMPLE:
+flowchart TD
+    subgraph Users["End Users"]
+        AgentEntry([Support Agent])
+        ManagerEntry([Service Manager])
+    end
+    subgraph Portal["Service Portal"]
+        Login[Login Screen]
+        Dashboard[Agent Dashboard]
+        TicketList[Ticket Queue]
+        TicketDetail[Ticket Detail]
+        CreateTicket[Create Ticket]
+    end
+    subgraph Admin["Admin Console"]
+        UserMgmt[User Management]
+        SLAConfig[SLA Configuration]
+        Reports[Reports]
+    end
+    AgentEntry --> Login
+    ManagerEntry --> Login
+    Login -->|authenticated| Dashboard
+    Dashboard --> TicketList
+    TicketList --> TicketDetail
+    Dashboard --> CreateTicket
+    Dashboard -->|manager role| UserMgmt
+    UserMgmt --> SLAConfig
+    UserMgmt --> Reports
+
+    classDef userNode fill:#dbeafe,stroke:#3b82f6
+    classDef pageNode fill:#ede9fe,stroke:#7c3aed
+    classDef adminNode fill:#dcfce7,stroke:#16a34a
+    class AgentEntry,ManagerEntry userNode
+    class Login,Dashboard,TicketList,TicketDetail,CreateTicket pageNode
+    class UserMgmt,SLAConfig,Reports adminNode
+
+After the mermaid block, include a short markdown table: Page/Screen | Role | Purpose
+  </system>
+  <user>
+Project: {project_name}
+Client: {client_name}
+Service Lines: {service_lines}
+Methodology: {methodology}
+
+{project_type_guidance}
+
+## Requirements Context
+{requirements_context}
+
+## SOW Summary
+{sow_summary}
+
+Generate the page flow and integration diagram for this project showing:
+1. All major screens, pages, portals, and views users interact with
+2. Navigation paths between screens (with role-based access where applicable)
+3. Integration touchpoints with external systems or APIs
+4. User role entry points (one entry node per distinct user role)
+
+Group nodes in subgraphs by user role or system area.
+Use at minimum 12 nodes.
+
+Return the mermaid code block first, then the description table.
+  </user>
+</prompt>

@@ -1,7 +1,7 @@
 """add project_type to projects
 
-Revision ID: aea638da5044
-Revises: ad00d2fcc174
+Revision ID: 012_add_project_type_to_projects
+Revises: 011_add_design_runs_and_design_artifacts
 Create Date: 2026-05-01 15:34:03.070933
 
 """
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'aea638da5044'
-down_revision: Union[str, Sequence[str], None] = 'ad00d2fcc174'
+revision: str = '012_add_project_type_to_projects'
+down_revision: Union[str, Sequence[str], None] = '011_add_design_runs_and_design_artifacts'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

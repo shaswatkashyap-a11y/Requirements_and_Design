@@ -1,7 +1,7 @@
 """new models for generation runs etc
 
-Revision ID: cfda7f76a367
-Revises: aa95ff19d6a7
+Revision ID: 002_new_models_for_generation_runs
+Revises: 001_initial_setup
 Create Date: 2026-04-03 16:44:36.008103
 
 """
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import mysql
 
 # revision identifiers, used by Alembic.
-revision: str = 'cfda7f76a367'
-down_revision: Union[str, Sequence[str], None] = 'aa95ff19d6a7'
+revision: str = '002_new_models_for_generation_runs'
+down_revision: Union[str, Sequence[str], None] = '001_initial_setup'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -57,7 +57,7 @@ def upgrade() -> None:
     sa.Column('methodology', sa.String(length=50), nullable=False),
     sa.Column('service_line_codes', sa.JSON(), nullable=False),
     sa.Column('artifact_types_requested', sa.JSON(), nullable=False),
-    sa.Column('status', sa.String(length=50), nullable=True, comment='pending → extracting_modules → generating_artifacts → completed → failed'),
+    sa.Column('status', sa.String(length=50), nullable=True, comment='pending -> extracting_modules -> generating_artifacts -> completed -> failed'),
     sa.Column('progress_message', sa.String(length=500), nullable=True),
     sa.Column('current_round', sa.Integer(), nullable=True),
     sa.Column('total_rounds', sa.Integer(), nullable=True),

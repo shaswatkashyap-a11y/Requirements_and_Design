@@ -7,16 +7,15 @@ from app.routers.moduleRouter import router as module_router
 from app.routers import *
 from app.routers.exportRouter import router as export_router
 from app.routers import designRouter, lldRouter
+from app.routers.jiraRouter import router as jira_router
 
 app = FastAPI(title="RDStudio", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173", 
+        "http://localhost:5173",
         "http://127.0.0.1:5173",
-        "http://localhost:5174",  # <-- Ye tera naya entry pass hai
-        "http://127.0.0.1:5174"
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -34,3 +33,4 @@ app.include_router(module_router, prefix="/api")
 app.include_router(export_router, prefix="/api")
 app.include_router(designRouter.router, prefix="/api")
 app.include_router(lldRouter.router, prefix="/api")
+app.include_router(jira_router, prefix="/api")

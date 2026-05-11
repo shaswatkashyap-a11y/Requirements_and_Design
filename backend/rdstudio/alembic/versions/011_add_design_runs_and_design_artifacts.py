@@ -1,7 +1,7 @@
 """add design_runs and design_artifacts
 
-Revision ID: ad00d2fcc174
-Revises: 21c447f513e2
+Revision ID: 011_add_design_runs_and_design_artifacts
+Revises: 010_seed_config_yamls
 Create Date: 2026-04-27 14:15:11.300255
 
 """
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'ad00d2fcc174'
-down_revision: Union[str, Sequence[str], None] = '21c447f513e2'
+revision: str = '011_add_design_runs_and_design_artifacts'
+down_revision: Union[str, Sequence[str], None] = '010_seed_config_yamls'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
