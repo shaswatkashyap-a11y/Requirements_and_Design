@@ -36,7 +36,6 @@ const navItems = [
     children: [
       { label: 'Requirement Studio', icon: FileText, path: '/requirement-studio' },
       { label: 'Design Studio (HLD)', icon: Compass, path: '/design-studio' },
-      { label: 'LLD Studio', icon: GitBranch, path: '/lld-studio' },
     ],
   },
   {
