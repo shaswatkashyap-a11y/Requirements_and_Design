@@ -2,7 +2,7 @@ import os
 import shutil
 import logging
 from sqlalchemy.orm import Session
-from fastapi import UploadFile,HTTPException,status
+from fastapi import UploadFile,status
 
 from app.models.project import Project
 from app.models.sow import Sow,SOWSection,SOWStatus,SOWTable

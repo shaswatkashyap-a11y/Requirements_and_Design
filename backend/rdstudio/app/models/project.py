@@ -20,8 +20,6 @@ class Project(Base):
     updated_at=Column(DateTime, server_default=func.now(), onupdate=func.now())
 
     sows=relationship("Sow",back_populates="project",cascade="all, delete-orphan")   
-    # modules=relationship("Module",back_populates="project",cascade="all, delete-orphan")  
-    requirements=relationship("Requirement",back_populates="project")
     generation_runs=relationship("GenerationRun",back_populates="project",cascade="all, delete-orphan")
 
     service_lines=relationship("ServiceLine",secondary=project_service_lines,backref="projects")

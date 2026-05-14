@@ -1,10 +1,10 @@
-"""010_seed_config_yamls
+"""009 - seed config YAMLs
 
-Seeds existing document_instructions and methodology_configs YAML files
-into prompt_templates so they appear in the prompt list UI.
+Seeds document_instructions and methodology_configs YAML files into
+prompt_templates so they appear in the Prompt Editor UI on fresh install.
 
-Revision ID: 010_seed_config_yamls
-Revises: 009_config_admin
+Revision ID: 009
+Revises: 008
 """
 from typing import Union
 from pathlib import Path
@@ -13,8 +13,8 @@ import yaml
 from alembic import op
 from sqlalchemy import text
 
-revision: str = '010_seed_config_yamls'
-down_revision: Union[str, None] = '009_config_admin'
+revision: str = '009'
+down_revision: Union[str, None] = '008'
 branch_labels = None
 depends_on = None
 
@@ -24,7 +24,7 @@ PROMPTS_DIR = Path(__file__).resolve().parents[2] / 'app' / 'prompts'
 def _seed(bind, prompt_type: str, directory: Path) -> None:
     for path in sorted(directory.glob('*.yaml')):
         if path.stem.startswith('_'):
-            continue  # skip _schema.yaml and any other meta files
+            continue
 
         existing = bind.execute(text(
             "SELECT id FROM prompt_templates "
@@ -32,7 +32,7 @@ def _seed(bind, prompt_type: str, directory: Path) -> None:
         ), {'pt': prompt_type, 'sk': path.stem}).fetchone()
 
         if existing:
-            continue  # already seeded or uploaded via UI — don't overwrite
+            continue
 
         with open(path, encoding='utf-8') as f:
             data = yaml.safe_load(f)

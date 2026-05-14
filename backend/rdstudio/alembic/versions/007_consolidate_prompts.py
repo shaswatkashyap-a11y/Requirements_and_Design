@@ -1,11 +1,19 @@
+"""007 - consolidate prompts
+
+Data migration: merges per-section prompt rows (system/user, global_instructions,
+tech_context) into single 'full' XML rows per artifact_type/scope_key.
+
+Revision ID: 007
+Revises: 006
+"""
 from typing import Union
 from alembic import op
 from sqlalchemy import text
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element, SubElement
 
-revision: str = '008_consolidate_prompts'
-down_revision: Union[str, None] = '007_module_versioning'
+revision: str = '007'
+down_revision: Union[str, None] = '006'
 branch_labels = None
 depends_on = None
 

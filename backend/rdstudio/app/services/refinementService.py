@@ -9,7 +9,6 @@ from app.models.artifactVersion import ArtifactVersionSource
 from app.services.artifactRepository import ArtifactRepository
 from app.services.refinementOrchestrator import RefinementOrchestrator
 from app.services.artifactSerializer import parse_single_artifact, render_artifact_markdown
-from app.services.artifactSerializer import parse_single_artifact, render_artifact_markdown
 from app.models.sow import Sow
 
 logger = logging.getLogger(__name__)

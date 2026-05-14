@@ -1,4 +1,3 @@
-from .requirement import Requirement
 from app.models.project import Project
 from app.models.sow import Sow, SOWSection, SOWTable
 
