@@ -1,0 +1,10 @@
+<risks>
+  <risk>
+    <risk_id>R-001</risk_id>
+    <description>...</description>
+    <likelihood>high|medium|low</likelihood>
+    <impact>high|medium|low</impact>
+    <mitigation>...</mitigation>
+    <owner>optional</owner>
+  </risk>
+</risks>

@@ -1,7 +1,7 @@
-"""seed_service_lines_and_methodologies
+"""seed service lines and methodologies
 
-Revision ID: 0eccb27da7f4
-Revises: cfda7f76a367
+Revision ID: 003_seed_service_lines_and_methodologies
+Revises: 002_new_models_for_generation_runs
 Create Date: 2026-04-03 16:51:39.850352
 
 """
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '0eccb27da7f4'
-down_revision: Union[str, Sequence[str], None] = 'cfda7f76a367'
+revision: str = '003_seed_service_lines_and_methodologies'
+down_revision: Union[str, Sequence[str], None] = '002_new_models_for_generation_runs'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

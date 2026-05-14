@@ -69,6 +69,8 @@ class SOWParser:
     # ── PDF parsing ──────────────────────────────────────────
 
     def _parse_pdf(self, path: Path) -> ParsedSOW:
+        pymupdf.TOOLS.mupdf_display_errors(False)  # suppress structure-tree warnings from tagged PDFs
+
         # single markdown string
         markdown = pymupdf4llm.to_markdown(
             str(path),

@@ -1,10 +1,12 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import mermaid from 'mermaid'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
   ArrowLeft, Compass, Loader2, AlertCircle,
   Layers, LayoutGrid, Wand2, Info, Wand,
   FolderTree, Cpu, Puzzle, Zap, ShieldCheck,
-  RefreshCw, Trash2, CheckCircle2, Clock, Network, Database, Lock, FileDown, Pencil, X, Save, History, RotateCcw,
+  RefreshCw, Trash2, CheckCircle2, Clock, Network, Database, Lock, FileDown, Pencil, X, Save, History, RotateCcw, GitBranch,
+  Download, Table2, Share2,
 } from 'lucide-react'
 import { fetchProject } from '../api/projectsApi'
 import { fetchProjectGenerations } from '../api/generationApi'
@@ -35,7 +37,10 @@ const HLD_SECTION_META = [
   { key: 'error_handling',        label: 'Error Handling',        icon: ShieldCheck, description: 'How errors are caught, retried, and surfaced — layer-by-layer strategy and logging standards.' },
   { key: 'api_design',            label: 'API Design',            icon: Network,     description: 'Endpoint contracts, request/response formats, authentication strategy, and rate limiting.' },
   { key: 'database_design',       label: 'Database Design',       icon: Database,    description: 'Core entities, relationships, indexing strategy, and data retention policy.' },
+  { key: 'er_diagram',            label: 'ER Diagram',            icon: Table2,      description: 'Mermaid erDiagram showing all database entities, attributes, primary/foreign keys, and relationships.' },
   { key: 'security_architecture', label: 'Security Architecture', icon: Lock,        description: 'Auth model, role definitions, encryption, secrets management, and audit logging.' },
+  { key: 'page_flow',             label: 'Page Flow & Integration', icon: Share2,    description: 'Mermaid flowchart showing all pages/screens, user navigation paths, and system integration points.' },
+  { key: 'system_architecture',   label: 'Architecture Diagram',  icon: GitBranch,   description: 'Visual Mermaid diagram showing all system components, data flows, and external integrations.' },
 ]
 
 function formatTimestamp(isoString) {
@@ -275,6 +280,228 @@ function MarkdownContent({ content }) {
   )
 }
 
+// ── Mermaid Diagram Renderer ──────────────────────────────────────────────────
+
+mermaid.initialize({ startOnLoad: false, theme: 'neutral', securityLevel: 'loose' })
+
+const MERMAID_CLASS_NAMES = ['userNode', 'internalNode', 'externalNode', 'dbNode']
+const MERMAID_CLASS_RE = new RegExp(`(\\w+)\\[(${MERMAID_CLASS_NAMES.join('|')}):([^\\]]+)\\]`, 'g')
+const MERMAID_CLASS_ROUND_RE = new RegExp(`(\\w+)\\(\\[(${MERMAID_CLASS_NAMES.join('|')}):([^\\]]+)\\]\\)`, 'g')
+
+function sanitizeMermaid(code) {
+  const firstLine = code.trim().split('\n')[0].trim().toLowerCase()
+  const isFlowchart = firstLine.startsWith('flowchart') || firstLine.startsWith('graph')
+
+  // Universal fixes
+  let result = code
+    .replace(/,rx:\d+/g, '')   // classDef rx:N is SVG attr not CSS — always strip
+    .replace(/—/g, '-')         // em dash trips the lexer in any diagram type
+
+  // Flowchart-only fixes (would corrupt erDiagram syntax)
+  if (isFlowchart) {
+    result = result
+      .replace(MERMAID_CLASS_RE, '$1[$3]')
+      .replace(MERMAID_CLASS_ROUND_RE, '$1([$3])')
+      .replace(/\|>/g, '|')
+      .replace(/(\w+)\[([^\]]+)\]/g, (_, id, label) =>
+        `${id}[${label.replace(/\(([^)]*)\)/g, '$1').replace(/\//g, '-').replace(/&/g, 'and')}]`
+      )
+  }
+
+  return result
+}
+
+function MermaidDiagram({ code, filename = 'diagram' }) {
+  const [svg,       setSvg]       = useState('')
+  const [error,     setError]     = useState(null)
+  const [cleanCode, setCleanCode] = useState('')
+  const containerRef = useRef(null)
+
+  useEffect(() => {
+    setSvg('')
+    setError(null)
+    const id    = `mermaid-${Math.random().toString(36).slice(2)}`
+    const clean = sanitizeMermaid(code.trim())
+    setCleanCode(clean)
+    mermaid.render(id, clean)
+      .then(({ svg: rendered }) => {
+        // Mermaid v11 resolves even on syntax errors — detect error SVG
+        if (rendered.toLowerCase().includes('syntax error') || rendered.toLowerCase().includes('parse error')) {
+          setError(true)
+        } else {
+          setSvg(rendered)
+        }
+      })
+      .catch(() => setError(true))
+  }, [code])
+
+  const handleDownloadPng = () => {
+    const svgEl = containerRef.current?.querySelector('svg')
+    if (!svgEl) return
+
+    // Clone so we don't mutate the displayed SVG
+    const clone = svgEl.cloneNode(true)
+
+    // Mermaid SVGs often have only viewBox — set explicit px dimensions
+    // so the browser knows the raster size when loading as an Image
+    const rect = svgEl.getBoundingClientRect()
+    const w = Math.max(rect.width || 0, 800)
+    const h = Math.max(rect.height || 0, 400)
+    clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+    clone.setAttribute('width',  String(w))
+    clone.setAttribute('height', String(h))
+
+    const svgString = new XMLSerializer().serializeToString(clone)
+
+    // base64 data URL is more reliable than blob URL for SVG→Canvas in all browsers
+    const encoded = btoa(unescape(encodeURIComponent(svgString)))
+    const dataUrl = `data:image/svg+xml;base64,${encoded}`
+
+    const scale  = 2
+    const canvas = document.createElement('canvas')
+    canvas.width  = w * scale
+    canvas.height = h * scale
+    const ctx = canvas.getContext('2d')
+
+    const img = new Image()
+    img.onload = () => {
+      ctx.scale(scale, scale)
+      ctx.fillStyle = '#ffffff'
+      ctx.fillRect(0, 0, w, h)
+      ctx.drawImage(img, 0, 0, w, h)
+      try {
+        const a = document.createElement('a')
+        a.download = `${filename}.png`
+        a.href = canvas.toDataURL('image/png')
+        a.click()
+      } catch {
+        // Canvas tainted fallback — download SVG instead
+        const a = document.createElement('a')
+        a.download = `${filename}.svg`
+        a.href = URL.createObjectURL(new Blob([svgString], { type: 'image/svg+xml' }))
+        a.click()
+      }
+    }
+    img.onerror = () => {
+      // Last resort: direct SVG download
+      const a = document.createElement('a')
+      a.download = `${filename}.svg`
+      a.href = URL.createObjectURL(new Blob([svgString], { type: 'image/svg+xml' }))
+      a.click()
+    }
+    img.src = dataUrl
+  }
+
+  if (error) return (
+    <div>
+      <p className="text-xs text-red-500 mb-2 flex items-center gap-1">
+        <AlertCircle size={12} /> Diagram syntax error — showing raw code. Regenerate this section to fix.
+      </p>
+      <pre className="bg-gray-900 text-emerald-400 rounded-xl p-4 text-[11px] font-mono overflow-x-auto my-2 leading-relaxed whitespace-pre">
+        {cleanCode || code}
+      </pre>
+    </div>
+  )
+
+  if (!svg) return (
+    <div className="flex items-center gap-2 text-gray-400 py-6 text-xs">
+      <Loader2 size={14} className="animate-spin" /> Rendering diagram...
+    </div>
+  )
+
+  return (
+    <div className="my-4 bg-white border border-gray-200 rounded-xl overflow-hidden">
+      <div className="flex items-center justify-end px-3 py-1.5 border-b border-gray-100 bg-gray-50">
+        <button
+          onClick={handleDownloadPng}
+          className="flex items-center gap-1 px-2.5 py-1 text-[11px] text-gray-500 border border-gray-200 rounded-lg hover:bg-white hover:text-indigo-600 hover:border-indigo-200 transition-all"
+        >
+          <Download size={11} /> Download PNG
+        </button>
+      </div>
+      <div className="p-4 overflow-x-auto">
+        <div ref={containerRef} dangerouslySetInnerHTML={{ __html: svg }} className="flex justify-center" />
+      </div>
+    </div>
+  )
+}
+
+const SECTION_FILENAMES = {
+  system_architecture: 'architecture-diagram',
+  er_diagram:          'er-diagram',
+  page_flow:           'page-flow-diagram',
+}
+
+function MarkdownContentWithMermaid({ content, sectionKey }) {
+  const blocks = []
+  const lines  = content.split('\n')
+  let i = 0
+  let diagramIndex = 0
+
+  while (i < lines.length) {
+    const line = lines[i]
+    if (line.startsWith('```')) {
+      const lang = line.slice(3).trim().toLowerCase()
+      const codeLines = []
+      i++
+      while (i < lines.length && !lines[i].startsWith('```')) { codeLines.push(lines[i]); i++ }
+      i++
+      if (lang === 'mermaid') {
+        const base = SECTION_FILENAMES[sectionKey] || 'diagram'
+        const filename = diagramIndex === 0 ? base : `${base}-${diagramIndex + 1}`
+        diagramIndex++
+        blocks.push({ type: 'mermaid', content: codeLines.join('\n'), filename })
+      } else {
+        blocks.push({ type: 'code', content: codeLines.join('\n') })
+      }
+      continue
+    }
+    if (line.startsWith('|')) {
+      const tableLines = []
+      while (i < lines.length && lines[i].startsWith('|')) { tableLines.push(lines[i]); i++ }
+      blocks.push({ type: 'table', lines: tableLines })
+      continue
+    }
+    blocks.push({ type: 'line', content: line })
+    i++
+  }
+
+  return (
+    <div className="max-w-none">
+      {blocks.map((block, idx) => {
+        if (block.type === 'mermaid') return <MermaidDiagram key={idx} code={block.content} filename={block.filename || 'diagram'} />
+        if (block.type === 'code') return (
+          <pre key={idx} className="bg-gray-900 text-emerald-400 rounded-xl p-4 text-[11px] font-mono overflow-x-auto my-4 leading-relaxed whitespace-pre">
+            {block.content}
+          </pre>
+        )
+        if (block.type === 'table') return <MdTable key={idx} lines={block.lines} />
+        const ln = block.content
+        if (ln.startsWith('#### ')) return <h4 key={idx} className="text-xs font-bold text-gray-800 mt-5 mb-1.5"><Inline text={ln.slice(5)} /></h4>
+        if (ln.startsWith('### ')) return (
+          <h3 key={idx} className="text-sm font-bold text-gray-900 mt-6 mb-2 flex items-center gap-2">
+            <span className="w-1.5 h-4 bg-indigo-400 rounded-full flex-shrink-0" />
+            <Inline text={ln.slice(4)} />
+          </h3>
+        )
+        if (ln.startsWith('## ')) return <h2 key={idx} className="text-base font-bold text-gray-900 mt-7 mb-3 pb-2 border-b-2 border-indigo-100"><Inline text={ln.slice(3)} /></h2>
+        if (ln.startsWith('# '))  return <h1 key={idx} className="text-lg font-bold text-gray-900 mt-4 mb-3"><Inline text={ln.slice(2)} /></h1>
+        if (ln.startsWith('- ') || ln.startsWith('* ') || ln.startsWith('• ')) {
+          const text = ln.replace(/^[-*•] /, '')
+          return (
+            <div key={idx} className="flex gap-2 text-xs text-gray-700 mb-1.5 leading-relaxed">
+              <span className="text-indigo-400 flex-shrink-0 mt-0.5 font-bold">▸</span>
+              <span><Inline text={text} /></span>
+            </div>
+          )
+        }
+        if (ln.trim() === '') return <div key={idx} className="h-3" />
+        return <p key={idx} className="text-xs text-gray-700 leading-relaxed mb-1"><Inline text={ln} /></p>
+      })}
+    </div>
+  )
+}
+
 // ── HLD Section Viewer ────────────────────────────────────────────────────────
 function HLDViewer({ artifacts, runId, onSectionRegenerated }) {
   const [activeSection,    setActiveSection]    = useState(HLD_SECTION_META[0].key)
@@ -350,7 +577,7 @@ function HLDViewer({ artifacts, runId, onSectionRegenerated }) {
   }
 
   const handleRegenerateAll = async () => {
-    if (!window.confirm('Regenerate all 8 sections? This will take a few minutes.')) return
+    if (!window.confirm(`Regenerate all ${HLD_SECTION_META.length} sections? This will take a few minutes.`)) return
     setRegeneratingAll(true)
     setRegenAllProgress(0)
     setActionError(null)
@@ -440,15 +667,15 @@ function HLDViewer({ artifacts, runId, onSectionRegenerated }) {
             return (
               <button
                 key={section.key}
-                onClick={() => done && switchSection(section.key)}
-                disabled={!done || editing || regeneratingAll}
+                onClick={() => (!editing && !regeneratingAll) && switchSection(section.key)}
+                disabled={editing || regeneratingAll}
                 title={section.description}
                 className={`w-full flex items-center gap-2.5 px-4 py-3 text-xs text-left border-b border-gray-100 last:border-0 transition-colors ${
                   active
                     ? 'bg-indigo-50 text-indigo-700 font-semibold'
-                    : done && !editing
+                    : !editing && !regeneratingAll
                     ? 'text-gray-600 hover:bg-gray-50'
-                    : 'text-gray-300 cursor-not-allowed'
+                    : 'text-gray-400 cursor-not-allowed'
                 }`}
               >
                 <Icon size={13} className="flex-shrink-0" />
@@ -457,7 +684,7 @@ function HLDViewer({ artifacts, runId, onSectionRegenerated }) {
                   ? <Loader2 size={12} className="animate-spin text-indigo-400 flex-shrink-0" />
                   : done
                   ? <CheckCircle2 size={12} className="text-green-500 flex-shrink-0" />
-                  : null}
+                  : <span className="text-[9px] text-amber-400 font-bold flex-shrink-0">NEW</span>}
               </button>
             )
           })}
@@ -466,7 +693,27 @@ function HLDViewer({ artifacts, runId, onSectionRegenerated }) {
 
       {/* Content */}
       <div className="flex-1 min-w-0 bg-white rounded-xl border border-gray-200 overflow-hidden">
-        {current ? (
+        {!current && activeSection ? (
+          <div className="flex flex-col items-center justify-center h-64 gap-3 p-8 text-center">
+            {(() => { const Icon = meta?.icon || Wand2; return <Icon size={28} className="text-indigo-200" /> })()}
+            <div>
+              <p className="text-sm font-semibold text-gray-700 mb-1">{meta?.label} not generated yet</p>
+              <p className="text-xs text-gray-400 mb-3">This section was added after your HLD was generated.</p>
+            </div>
+            {actionError && (
+              <p className="text-xs text-red-500 bg-red-50 border border-red-200 rounded-lg px-3 py-2 max-w-sm">{actionError}</p>
+            )}
+            <button
+              onClick={handleRegenerate}
+              disabled={!!regenerating}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-all"
+            >
+              {regenerating === activeSection
+                ? <><Loader2 size={13} className="animate-spin" /> Generating — this may take 30–60 seconds...</>
+                : <><Wand2 size={13} /> Generate {meta?.label}</>}
+            </button>
+          </div>
+        ) : current ? (
           <>
             {/* Section header */}
             <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100 bg-gray-50/60">
@@ -669,7 +916,10 @@ function HLDViewer({ artifacts, runId, onSectionRegenerated }) {
               </div>
             ) : (
               <div className="p-5 overflow-y-auto">
-                <MarkdownContent content={current.content_markdown} />
+                {['system_architecture', 'er_diagram', 'page_flow'].includes(activeSection)
+                  ? <MarkdownContentWithMermaid content={current.content_markdown} sectionKey={activeSection} />
+                  : <MarkdownContent content={current.content_markdown} />
+                }
               </div>
             )}
           </>
@@ -678,6 +928,7 @@ function HLDViewer({ artifacts, runId, onSectionRegenerated }) {
             <p className="text-sm">Select a section from the left.</p>
           </div>
         )}
+
       </div>
     </div>
     </div>
@@ -854,7 +1105,7 @@ function HLDTab({ project }) {
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-gray-900">HLD Generation</p>
           <p className="text-xs text-gray-500 mt-0.5">
-            Generate 8 HLD sections using your SOW and service line standards as context.
+            Generate {HLD_SECTION_META.length} HLD sections using your SOW and service line standards as context.
           </p>
 
           {/* Requirements Run selector */}
@@ -1007,13 +1258,13 @@ function HLDTab({ project }) {
           </div>
           <p className="text-sm font-semibold text-gray-900 mb-1">No HLD generated yet</p>
           <p className="text-xs text-gray-500 mb-4 max-w-sm mx-auto">
-            Click "Generate HLD" to produce 8 architecture documents using your SOW content and service
+            Click "Generate HLD" to produce {HLD_SECTION_META.length} architecture documents using your SOW content and service
             line design standards.
           </p>
           <div className="flex justify-center gap-2 flex-wrap">
-            {['Folder Structure', 'Component Structure', 'Design Patterns', 'Technology', 'Error Handling', 'API Design', 'Database Design', 'Security Architecture'].map((s) => (
-              <span key={s} className="text-[10px] px-2.5 py-1 rounded-full bg-gray-100 text-gray-500 border border-gray-200">
-                {s}
+            {HLD_SECTION_META.map((s) => (
+              <span key={s.key} className="text-[10px] px-2.5 py-1 rounded-full bg-gray-100 text-gray-500 border border-gray-200">
+                {s.label}
               </span>
             ))}
           </div>
@@ -1026,7 +1277,11 @@ function HLDTab({ project }) {
           artifacts={artifacts}
           runId={run.id}
           onSectionRegenerated={(updated) =>
-            setArtifacts((prev) => prev.map((a) => a.section_type === updated.section_type ? updated : a))
+            setArtifacts((prev) => {
+              const exists = prev.some((a) => a.section_type === updated.section_type)
+              if (exists) return prev.map((a) => a.section_type === updated.section_type ? updated : a)
+              return [...prev, updated]
+            })
           }
         />
       )}

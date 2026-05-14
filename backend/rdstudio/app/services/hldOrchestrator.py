@@ -116,14 +116,17 @@ def _build_project_type_guidance(project_type: str | None, requirements_context:
     return PROJECT_TYPE_GUIDANCE.get(ptype, PROJECT_TYPE_GUIDANCE["custom_dev"])
 
 HLD_SECTIONS = [
-    ("folder_structure",    "Folder Structure"),
-    ("component_structure", "Component Structure"),
-    ("design_patterns",     "Design Patterns"),
-    ("technology",          "Technology Stack"),
-    ("error_handling",      "Error Handling Strategy"),
-    ("api_design",          "API Design"),
-    ("database_design",     "Database and Data Model"),
+    ("folder_structure",      "Folder Structure"),
+    ("component_structure",   "Component Structure"),
+    ("design_patterns",       "Design Patterns"),
+    ("technology",            "Technology Stack"),
+    ("error_handling",        "Error Handling Strategy"),
+    ("api_design",            "API Design"),
+    ("database_design",       "Database and Data Model"),
+    ("er_diagram",            "ER Diagram"),
     ("security_architecture", "Security Architecture"),
+    ("page_flow",             "Page Flow & Integration"),
+    ("system_architecture",   "System Architecture Diagram"),
 ]
 
 
@@ -298,7 +301,7 @@ class HLDOrchestrator:
 
             run.status = "completed"
             run.completed_at = datetime.now(timezone.utc)
-            run.progress_message = "HLD generation complete — all 8 sections ready."
+            run.progress_message = f"HLD generation complete — all {len(HLD_SECTIONS)} sections ready."
             self.db.commit()
             logger.info(f"[Design Run {design_run_id}] Completed successfully")
 

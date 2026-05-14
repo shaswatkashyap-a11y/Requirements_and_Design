@@ -154,6 +154,26 @@ def seed_refinement_prompts(db):
     _insert(db, PromptType.REFINEMENT, None, None, "user",   PromptBuilder._REFINEMENT_USER_TEMPLATE)
 
 
+def seed_refinement_schemas(db):
+    """
+    refinement_schemas/{artifact_type}.xml — raw XML output schema used as the
+    {output_schema} placeholder in refinement prompts. Stored as section="schema".
+    """
+    schema_dir = os.path.join(PROMPTS_DIR, "refinement_schemas")
+    if not os.path.exists(schema_dir):
+        print("  refinement_schemas dir not found, skipping")
+        return
+    for fname in os.listdir(schema_dir):
+        if not fname.endswith(".xml"):
+            continue
+        artifact_type = fname.replace(".xml", "")
+        fpath = os.path.join(schema_dir, fname)
+        with open(fpath, "r", encoding="utf-8") as f:
+            content = f.read().strip()
+        if content:
+            _insert(db, PromptType.REFINEMENT, artifact_type, None, "schema", content)
+
+
 def main():
     db = SessionLocal()
     try:
@@ -167,6 +187,8 @@ def main():
         seed_examples(db)
         print("\n── Refinement prompts ──────────────────────")
         seed_refinement_prompts(db)
+        print("\n── Refinement schemas ──────────────────────")
+        seed_refinement_schemas(db)
         db.commit()
         print("\nSeed complete.\n")
     except Exception as e:

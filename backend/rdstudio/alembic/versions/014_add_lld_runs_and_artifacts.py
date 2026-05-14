@@ -1,7 +1,7 @@
-"""add_lld_runs_and_artifacts
+"""add lld_runs and lld_artifacts
 
-Revision ID: 92c0789a6054
-Revises: a19c1bfe3f7e
+Revision ID: 014_add_lld_runs_and_artifacts
+Revises: 013_add_design_artifact_versions
 Create Date: 2026-05-04 12:31:29.146921
 
 """
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '92c0789a6054'
-down_revision: Union[str, Sequence[str], None] = 'a19c1bfe3f7e'
+revision: str = '014_add_lld_runs_and_artifacts'
+down_revision: Union[str, Sequence[str], None] = '013_add_design_artifact_versions'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

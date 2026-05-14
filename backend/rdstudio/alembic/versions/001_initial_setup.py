@@ -1,7 +1,7 @@
 """initial setup
 
-Revision ID: aa95ff19d6a7
-Revises: 
+Revision ID: 001_initial_setup
+Revises:
 Create Date: 2026-04-01 11:19:13.025897
 
 """
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'aa95ff19d6a7'
+revision: str = '001_initial_setup'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None

@@ -16,6 +16,12 @@ class Project(Base):
     service_line=Column(String(255),nullable=True)
     project_type=Column(String(50),nullable=True)   # ams | custom_dev | implementation | integration | data_analytics
 
+    # Jira integration config (per project)
+    jira_url         = Column(String(255), nullable=True)
+    jira_project_key = Column(String(50),  nullable=True)
+    jira_user_email  = Column(String(255), nullable=True)
+    jira_api_token   = Column(String(500), nullable=True)
+
     created_at=Column(DateTime,server_default=func.now())
     updated_at=Column(DateTime, server_default=func.now(), onupdate=func.now())
 
