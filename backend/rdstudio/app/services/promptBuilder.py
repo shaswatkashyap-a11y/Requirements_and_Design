@@ -86,7 +86,11 @@ class PromptBuilder:
         }
 
     def _load_refinement_schema(self, artifact_type: str) -> str:
-        """Load the XML output schema for an artifact type from the refinement_schemas directory."""
+        """Load the XML output schema for an artifact type. DB-first, file fallback."""
+        if self.prompt_repo:
+            content = self.prompt_repo.get_prompt("refinement", artifact_type, None, "schema", project_id=self.project_id)
+            if content:
+                return content
         path = os.path.join(self.prompts_dir, "refinement_schemas", f"{artifact_type}.xml")
         if not os.path.exists(path):
             logger.warning(f"No refinement schema for: {artifact_type}")

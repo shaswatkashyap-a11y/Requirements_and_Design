@@ -10,7 +10,7 @@ import app.routers.promptRouter as promptRouter
 import app.routers.moduleRouter as moduleRouter
 import app.routers.exportRouter as exportRouter
 import app.routers.designRouter as designRouter
-import app.routers.lldRouter as lldRouter
+from app.routers.jiraRouter import router as jira_router
 app = FastAPI(title="RDStudio", version="0.1.0")
 
 app.add_middleware(
@@ -34,4 +34,4 @@ app.include_router(promptRouter.router, prefix="/api")
 app.include_router(moduleRouter.router, prefix="/api")
 app.include_router(exportRouter.router, prefix="/api")
 app.include_router(designRouter.router, prefix="/api")
-app.include_router(lldRouter.router, prefix="/api")
+app.include_router(jira_router, prefix="/api")

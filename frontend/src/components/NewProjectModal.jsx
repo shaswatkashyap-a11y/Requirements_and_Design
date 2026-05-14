@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { X, Plus } from 'lucide-react'
+import { X, Plus, ChevronDown, ChevronUp } from 'lucide-react'
 import { fetchMethodologies } from '../api/generationApi'
 
 const SERVICE_LINE_GROUPS = [
@@ -71,12 +71,17 @@ const empty = {
   methodology: '',
   project_type: '',
   service_line: [],
+  jira_url: '',
+  jira_project_key: '',
+  jira_user_email: '',
+  jira_api_token: '',
 }
 
 export default function NewProjectModal({ onClose, onSubmit, loading }) {
   const [form, setForm] = useState(empty)
   const [errors, setErrors] = useState({})
   const [methodologies, setMethodologies] = useState([])
+  const [showJira, setShowJira] = useState(false)
 
   useEffect(() => {
     fetchMethodologies()
@@ -263,6 +268,75 @@ export default function NewProjectModal({ onClose, onSubmit, loading }) {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Jira Integration (collapsible) */}
+          <div className="border border-gray-200 rounded-lg overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setShowJira((v) => !v)}
+              className="w-full flex items-center justify-between px-4 py-2.5 bg-gray-50 hover:bg-gray-100 transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <img src="https://cdn.worldvectorlogo.com/logos/jira-1.svg" alt="" className="w-4 h-4" onError={(e) => e.target.style.display='none'} />
+                <span className="text-xs font-medium text-gray-700">Jira Integration</span>
+                <span className="text-[10px] text-gray-400">(optional)</span>
+              </div>
+              {showJira ? <ChevronUp size={14} className="text-gray-400" /> : <ChevronDown size={14} className="text-gray-400" />}
+            </button>
+
+            {showJira && (
+              <div className="px-4 py-3 space-y-3 border-t border-gray-200 bg-white">
+                <p className="text-[11px] text-gray-500">
+                  Connect Jira to push generated requirements as Epics and Stories.
+                </p>
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Jira Site URL</label>
+                  <input
+                    type="text"
+                    placeholder="https://yourcompany.atlassian.net"
+                    value={form.jira_url}
+                    onChange={(e) => set('jira_url', e.target.value)}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Project Key</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. RND"
+                      value={form.jira_project_key}
+                      onChange={(e) => set('jira_project_key', e.target.value.toUpperCase())}
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Your Email</label>
+                    <input
+                      type="email"
+                      placeholder="you@company.com"
+                      value={form.jira_user_email}
+                      onChange={(e) => set('jira_user_email', e.target.value)}
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">API Token</label>
+                  <input
+                    type="password"
+                    placeholder="Paste your Atlassian API token"
+                    value={form.jira_api_token}
+                    onChange={(e) => set('jira_api_token', e.target.value)}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <p className="text-[10px] text-gray-400 mt-1">
+                    Generate at atlassian.com/account/api-tokens
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

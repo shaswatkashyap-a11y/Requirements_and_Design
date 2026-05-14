@@ -39,6 +39,7 @@ class Artifact(Base):
         nullable=False,
     )
     dependency_hash = Column(String(64), nullable=True)
+    jira_issue_key  = Column(String(50), nullable=True)
     current_version_id = Column(
         Integer,
         ForeignKey(
